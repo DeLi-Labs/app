@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { NetworkOptions } from "./NetworkOptions";
 import { getAddress } from "viem";
 import { Address } from "viem";
-import { useAccount, useDisconnect } from "wagmi";
 import {
   ArrowLeftOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
@@ -10,15 +9,12 @@ import {
   CheckCircleIcon,
   ChevronDownIcon,
   DocumentDuplicateIcon,
-  EyeIcon,
   QrCodeIcon,
 } from "@heroicons/react/24/outline";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
 import { useCopyToClipboard, useOutsideClick } from "~~/hooks/scaffold-eth";
 import { getTargetNetworks } from "~~/utils/scaffold-eth";
 import { isENS } from "~~/utils/scaffold-eth/common";
-
-const BURNER_WALLET_ID = "burnerWallet";
 
 const allowedNetworks = getTargetNetworks();
 
@@ -27,6 +23,7 @@ type AddressInfoDropdownProps = {
   blockExplorerAddressLink: string | undefined;
   displayName: string;
   ensAvatar?: string;
+  onDisconnect: () => Promise<void> | void;
 };
 
 export const AddressInfoDropdown = ({
@@ -34,9 +31,8 @@ export const AddressInfoDropdown = ({
   ensAvatar,
   displayName,
   blockExplorerAddressLink,
+  onDisconnect,
 }: AddressInfoDropdownProps) => {
-  const { disconnect } = useDisconnect();
-  const { connector } = useAccount();
   const checkSumAddress = getAddress(address);
 
   const { copyToClipboard: copyAddressToClipboard, isCopiedToClipboard: isAddressCopiedToClipboard } =
@@ -113,19 +109,11 @@ export const AddressInfoDropdown = ({
               </button>
             </li>
           ) : null}
-          {connector?.id === BURNER_WALLET_ID ? (
-            <li>
-              <label htmlFor="reveal-burner-pk-modal" className="h-8 btn-sm rounded-xl! flex gap-3 py-3 text-error">
-                <EyeIcon className="h-6 w-4 ml-2 sm:ml-0" />
-                <span>Reveal Private Key</span>
-              </label>
-            </li>
-          ) : null}
           <li className={selectingNetwork ? "hidden" : ""}>
             <button
               className="menu-item text-error h-8 btn-sm rounded-xl! flex gap-3 py-3"
               type="button"
-              onClick={() => disconnect()}
+              onClick={() => onDisconnect()}
             >
               <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Disconnect</span>
             </button>
