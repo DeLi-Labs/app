@@ -1,4 +1,4 @@
-.PHONY: build deploy generate-abis get-address account chain compile flatten fork format lint test verify
+.PHONY: build deploy prepare-lib-artifacts generate-abis get-address account chain compile flatten fork format lint test verify
 
 DEPLOY_SCRIPT ?= script/Deploy.s.sol
 
@@ -16,9 +16,18 @@ fork: setup-anvil-wallet
 	anvil --fork-url ${FORK_URL} --chain-id 31337
 
 # Deploy the contracts
-deploy:
+deploy: prepare-lib-artifacts
 	@if [ ! -f "$(DEPLOY_SCRIPT)" ]; then 		echo "Error: Deploy script '$(DEPLOY_SCRIPT)' not found"; 		exit 1; 	fi
 	@if [ "$(RPC_URL)" = "localhost" ]; then 		if [ "$(ETH_KEYSTORE_ACCOUNT)" = "scaffold-eth-default" ]; then 			forge script $(DEPLOY_SCRIPT) --rpc-url localhost --password localhost --broadcast --ffi; 		else 			forge script $(DEPLOY_SCRIPT) --rpc-url localhost --broadcast --ffi; 		fi 	else 		forge script $(DEPLOY_SCRIPT) --rpc-url $(RPC_URL) --broadcast --ffi; 	fi
+
+# Build artifacts required by vm.deployCode() in deploy scripts
+prepare-lib-artifacts:
+	@for d in lib/*; do \
+		if [ -d "$$d" ] && [ -f "$$d/foundry.toml" ]; then \
+			echo "Building $$d artifacts..."; \
+			( cd "$$d" && forge build ); \
+		fi; \
+	done
 
 # Deploy and generate ABIs
 deploy-and-generate-abis: deploy generate-abis 

@@ -48,58 +48,6 @@ contract LicenseSwapRouter is V4Router, ReentrancyLock, Permit2Forwarder {
         return _getLocker();
     }
 
-    function swapExactOutputSingle(
-        PoolKey calldata poolKey,
-        uint128 amountOut,
-        uint128 amountInMaximum,
-        bool zeroForOne,
-        bytes calldata hookData,
-        IAllowanceTransfer.PermitSingle calldata permitSingle,
-        bytes calldata permitSignature
-    ) external isNotLocked {
-        // Handle Permit2 approval if signature provided
-        if (permitSignature.length > 0) {
-            address owner = msgSender();
-            // Call Permit2 permit - will revert if signature is invalid, expired, or nonce is wrong
-            // If permit succeeds, we have approval and can proceed with swap
-            permit2.permit(owner, permitSingle, permitSignature);
-        }
-
-        // Encode actions: SWAP_EXACT_OUT_SINGLE, SETTLE_ALL, TAKE_ALL
-        bytes memory actions = abi.encodePacked(
-            uint8(Actions.SWAP_EXACT_OUT_SINGLE),
-            uint8(Actions.SETTLE_ALL),
-            uint8(Actions.TAKE_ALL)
-        );
-
-        // Encode params for each action
-        bytes[] memory params = new bytes[](3);
-
-        // SWAP_EXACT_OUT_SINGLE params
-        params[0] = abi.encode(
-            IV4Router.ExactOutputSingleParams({
-                poolKey: poolKey,
-                zeroForOne: zeroForOne,
-                amountOut: amountOut,
-                amountInMaximum: amountInMaximum,
-                hookData: hookData
-            })
-        );
-
-        if (zeroForOne) {
-            // Selling currency0 for currency1: settle input (currency0), take output (currency1)
-            params[1] = abi.encode(poolKey.currency0, amountInMaximum);
-            params[2] = abi.encode(poolKey.currency1, amountOut);
-        } else {
-            // Selling currency1 for currency0: settle input (currency1), take output (currency0)
-            params[1] = abi.encode(poolKey.currency1, amountInMaximum);
-            params[2] = abi.encode(poolKey.currency0, amountOut);
-        }
-
-        // Execute - V4Router's _unlockCallback handles the rest
-        poolManager.unlock(abi.encode(actions, params));
-    }
-
     function swapExactOutputSingleFor(
         PoolKey calldata poolKey,
         uint128 amountOut,
