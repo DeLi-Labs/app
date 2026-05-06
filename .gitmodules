@@ -1,0 +1,27 @@
+[submodule "packages/foundry/lib/forge-std"]
+	path = core/packages/foundry/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "packages/foundry/lib/openzeppelin-contracts"]
+	path = core/packages/foundry/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "packages/foundry/lib/solidity-bytes-utils"]
+	path = core/packages/foundry/lib/solidity-bytes-utils
+	url = https://github.com/gnsps/solidity-bytes-utils
+[submodule "packages/foundry/lib/uniswap-hooks"]
+	path = core/packages/foundry/lib/uniswap-hooks
+	url = https://github.com/openzeppelin/uniswap-hooks
+[submodule "packages/foundry/lib/solady"]
+	path = core/packages/foundry/lib/solady
+	url = https://github.com/vectorized/solady
+[submodule "packages/foundry/lib/commerce-payments"]
+	path = core/packages/foundry/lib/commerce-payments
+	url = https://github.com/base/commerce-payments
+[submodule "core/packages/foundry/lib/forge-std"]
+	path = core/packages/foundry/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "core/packages/foundry/lib/openzeppelin-contracts"]
+	path = core/packages/foundry/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "core/packages/foundry/lib/solidity-bytes-utils"]
+	path = core/packages/foundry/lib/solidity-bytes-utils
+	url = https://github.com/gnsps/solidity-bytes-utils

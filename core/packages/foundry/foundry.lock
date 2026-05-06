@@ -1,4 +1,10 @@
 {
+  "lib/commerce-payments": {
+    "tag": {
+      "name": "v1.0.0",
+      "rev": "d33b5d5f74fff55f1c0857b1cb6fb4995949330b"
+    }
+  },
   "lib/forge-std": {
     "tag": {
       "name": "v1.16.1",
@@ -11,10 +17,22 @@
       "rev": "5fd1781b1454fd1ef8e722282f86f9293cacf256"
     }
   },
+  "lib/solady": {
+    "tag": {
+      "name": "v0.1.26",
+      "rev": "acd959aa4bd04720d640bf4e6a5c71037510cc4b"
+    }
+  },
   "lib/solidity-bytes-utils": {
     "tag": {
       "name": "v0.8.4",
       "rev": "f4413cd6137b78403e3a1156bee6aceab46b46fa"
+    }
+  },
+  "lib/uniswap-hooks": {
+    "tag": {
+      "name": "v1.2.1",
+      "rev": "acbd604c409a827f7f98c9517236da860c4fca1a"
     }
   }
 }
