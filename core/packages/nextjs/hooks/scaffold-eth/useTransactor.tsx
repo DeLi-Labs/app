@@ -2,9 +2,9 @@ import { Hash, SendTransactionParameters, TransactionReceipt, WalletClient } fro
 import { Config, useWalletClient } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
 import { SendTransactionMutate } from "wagmi/query";
-import scaffoldConfig from "~~/scaffold.config";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { AllowedChainIds, getBlockExplorerTxLink, notification } from "~~/utils/scaffold-eth";
+import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { TransactorFuncOptions, getParsedErrorWithAllAbis } from "~~/utils/scaffold-eth/contract";
 
 type TransactionFunc = (
@@ -36,6 +36,7 @@ const TxnNotification = ({ message, blockExplorerLink }: { message: string; bloc
 export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => {
   let walletClient = _walletClient;
   const { data } = useWalletClient();
+  const { targetNetwork } = useTargetNetwork();
   if (walletClient === undefined && data) {
     walletClient = data;
   }
@@ -51,7 +52,7 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
     let transactionHash: Hash | undefined = undefined;
     let transactionReceipt: TransactionReceipt | undefined;
     let blockExplorerTxURL = "";
-    let chainId: number = scaffoldConfig.targetNetworks[0].id;
+    let chainId: number = targetNetwork.id;
     try {
       chainId = await walletClient.getChainId();
       // Get full transaction from public client

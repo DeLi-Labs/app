@@ -3,9 +3,13 @@
  * (The Graph, Ponder, custom indexers, etc.)
  */
 import type {
+  Campaign,
   CampaignPeriodAvgPriceDataItem,
+  CampaignPeriodDataItem,
   CampaignPeriodName,
   DiscoverIP,
+  IPDetails,
+  IPList,
   OwnerIPWithCampaigns,
   PatentDetail,
 } from "~~/types";
@@ -35,12 +39,37 @@ export interface IIndexerGateway {
   ): Promise<{ items: DiscoverIP[]; totalCount: number }>;
 
   /**
+   * Get unfiltered IP list by page (legacy shape used in profile flows).
+   */
+  getIpListPage(page: number, pageSize: number): Promise<IPList>;
+
+  /**
+   * Get detailed IP entity by token ID.
+   */
+  getIpDetails(tokenId: number): Promise<IPDetails>;
+
+  /**
    * Get all IPs owned by a specific address with their campaigns.
    *
    * @param ownerAddress - The owner address to filter IPs by
    * @returns Promise resolving to owner IPs with campaign aggregates
    */
   getOwnerIpsWithCampaigns(ownerAddress: string): Promise<OwnerIPWithCampaigns[]>;
+
+  /**
+   * Get campaign details by license address.
+   */
+  getCampaignDetails(licenseAddress: string): Promise<Campaign | null>;
+
+  /**
+   * Get campaign period aggregate data for charts/tables.
+   */
+  getCampaignPeriodData(
+    licenseAddress: string,
+    period: CampaignPeriodName,
+    fromTimestamp: bigint,
+    toTimestamp?: bigint,
+  ): Promise<CampaignPeriodDataItem[]>;
 
   /**
    * Get campaign period avg-price points (timestamp + avgPrice only) for charting.

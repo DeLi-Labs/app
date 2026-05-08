@@ -1,5 +1,5 @@
 import formidable from "formidable";
-import type { Address } from "viem";
+import type { Address, TypedData } from "viem";
 
 export type IP = {
   tokenId: number;
@@ -251,4 +251,43 @@ export type CampaignUploadFormData = {
   territoryRestriction: string[];
   usageRightsDefinition: string;
   transferrabilityFlag: "Transferrable" | "NonTransferrable";
+};
+
+// Permit2 PermitSingle typed data structure for EIP-712 signing
+// This matches the structure required by viem's signTypedData
+export type Permit2TypedData = {
+  PermitSingle: [
+    { name: "details"; type: "PermitDetails" },
+    { name: "spender"; type: "address" },
+    { name: "sigDeadline"; type: "uint256" },
+  ];
+  PermitDetails: [
+    { name: "token"; type: "address" },
+    { name: "amount"; type: "uint160" },
+    { name: "expiration"; type: "uint48" },
+    { name: "nonce"; type: "uint48" },
+  ];
+} & TypedData;
+
+// Permit message structure for EIP-712 signing
+// Note: Values are kept as strings/numbers for JSON serialization in API responses
+// but TypeScript types ensure they match Address and numeric types
+export type PermitMessage = {
+  domain: {
+    name: "Permit2";
+    chainId: number;
+    verifyingContract: Address;
+  };
+  types: Permit2TypedData;
+  primaryType: "PermitSingle";
+  message: {
+    details: {
+      token: Address;
+      amount: string; // uint160 as string for JSON serialization (can be converted to bigint)
+      expiration: string; // uint48 as string for JSON serialization (can be converted to number)
+      nonce: string; // uint48 as string for JSON serialization (can be converted to number)
+    };
+    spender: Address;
+    sigDeadline: string; // uint256 as string for JSON serialization (can be converted to bigint)
+  };
 };

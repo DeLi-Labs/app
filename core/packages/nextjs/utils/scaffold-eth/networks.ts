@@ -42,6 +42,20 @@ export const getAlchemyHttpUrl = (chainId: number) => {
     : undefined;
 };
 
+/**
+ * HTTP JSON-RPC URL for a configured target network.
+ * - **Browser:** `publicRpcOverrides` (`NEXT_PUBLIC_RPC_URL`) then `rpcOverrides`, then viem default.
+ * - **Node (API, SSR):** `rpcOverrides` (`RPC_URL`) only, then viem default.
+ */
+export function getRpcHttpUrl(chainId: number): string {
+  const chain = scaffoldConfig.targetNetworks.find(n => n.id === chainId);
+  if (!chain) {
+    throw new Error(`Chain ${chainId} not found in scaffold targetNetworks`);
+  }
+  const serverOverrides = scaffoldConfig.rpcOverrides as Record<number, string> | undefined;
+  return serverOverrides?.[chainId] ?? chain.rpcUrls.default.http[0] ?? "";
+}
+
 export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
   [chains.hardhat.id]: {
     color: "#b8af0c",

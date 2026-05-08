@@ -42,12 +42,12 @@ class IpProvider {
     return await this.indexerGateway.getIpList(page, pageSize, orderBy, orderDirection, category, name);
   }
 
-  async getIpListMCP(page: number, pageSize: number): Promise<IPList> {
-    return await this.indexerGateway.getIpListMCP(page, pageSize);
+  async getIpListPage(page: number, pageSize: number): Promise<IPList> {
+    return await this.indexerGateway.getIpListPage(page, pageSize);
   }
 
   async getIpDetails(tokenId: number): Promise<IPDetails> {
-    return await this.indexerGateway.getIpDetailsMCP(tokenId);
+    return await this.indexerGateway.getIpDetails(tokenId);
   }
 
   async getOwnerIpsWithCampaigns(ownerAddress: string): Promise<OwnerIPWithCampaigns[]> {

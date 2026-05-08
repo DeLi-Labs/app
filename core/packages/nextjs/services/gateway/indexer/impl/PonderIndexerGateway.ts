@@ -2,10 +2,16 @@ import { IIndexerGateway } from "../indexer";
 import { GraphQLClient } from "graphql-request";
 import { formatUnits, zeroAddress } from "viem";
 import { getSdk } from "~~/generated/graphql";
-import type { CampaignPeriodName } from "~~/types";
+import type { CampaignLicenseType, CampaignPeriodName } from "~~/types";
 import {
+  Attachment,
+  Campaign,
   CampaignPeriodAvgPriceDataItem,
+  CampaignPeriodDataItem,
   DiscoverIP,
+  IP,
+  IPDetails,
+  IPList,
   OwnerIPWithCampaigns,
   PatentDetail,
   PatentDetailCampaign,
@@ -18,6 +24,21 @@ export class PonderIndexerGateway implements IIndexerGateway {
     const ponderUrl = process.env.PONDER_URL || "http://localhost:42069/graphql";
     const graphQLClient = new GraphQLClient(ponderUrl);
     this.client = getSdk(graphQLClient);
+  }
+
+  async getIpListPage(page: number, pageSize: number): Promise<IPList> {
+    try {
+      const offset = page * pageSize;
+      const result = await this.client.Ips({
+        limit: pageSize,
+        offset,
+      });
+
+      return result.ips.items.map(ip => this.mapIpToIP(ip));
+    } catch (error) {
+      console.error("Error fetching IP list from Ponder:", error);
+      throw new Error(`Failed to fetch IP list: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
   }
 
   async getIpList(
@@ -92,6 +113,116 @@ export class PonderIndexerGateway implements IIndexerGateway {
       console.error(`Error fetching owner IPs with campaigns for ${ownerAddress}:`, error);
       throw new Error(
         `Failed to fetch owner IPs with campaigns: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    }
+  }
+
+  async getIpDetails(tokenId: number): Promise<IPDetails> {
+    try {
+      const result = await this.client.IpsDetails({
+        where: {
+          tokenId: tokenId.toString(),
+        },
+        limit: 1,
+      });
+
+      if (!result.ips.items || result.ips.items.length === 0) {
+        throw new Error(`IP with tokenId ${tokenId} not found`);
+      }
+
+      return this.mapIpToIPDetails(result.ips.items[0]);
+    } catch (error) {
+      console.error(`Error fetching IP details for tokenId ${tokenId} from Ponder:`, error);
+      throw new Error(`Failed to fetch IP details: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
+  }
+
+  async getCampaignDetails(licenseAddress: string): Promise<Campaign | null> {
+    try {
+      const result = await this.client.Campaigns({
+        where: {
+          licenseAddress: licenseAddress.toLowerCase(),
+        },
+        limit: 100,
+      });
+
+      if (!result.campaigns.items || result.campaigns.items.length === 0) {
+        return null;
+      }
+
+      const campaign = result.campaigns.items[0];
+      const licenseType = (campaign as { licenseType?: string }).licenseType as CampaignLicenseType | undefined;
+      return {
+        licenseAddress: campaign.licenseAddress,
+        numeraireAddress: campaign.numeraireAddress,
+        poolId: campaign.poolId,
+        licenseType: licenseType === "DYNAMIC" || licenseType === "FIXED" ? licenseType : "FIXED",
+        denomination: {
+          unit: campaign.denominationUnit as Campaign["denomination"]["unit"],
+          amount: parseFloat(formatUnits(BigInt(this.toStringValue(campaign.denominationAmount)), 18)),
+        },
+        licenseDuration: campaign.licenseDuration ? Number(campaign.licenseDuration) : 0,
+        territoryRestriction: campaign.territoryRestriction || [],
+        usageRightsDefinition: campaign.usageRightsDefinition || "",
+        transferrabilityFlag: (campaign.transferrabilityFlag as Campaign["transferrabilityFlag"]) || "Transferrable",
+      };
+    } catch (error) {
+      console.error(`Error fetching campaign for license ${licenseAddress}:`, error);
+      return null;
+    }
+  }
+
+  async getCampaignPeriodData(
+    licenseAddress: string,
+    period: CampaignPeriodName,
+    fromTimestamp: bigint,
+    toTimestamp?: bigint,
+  ): Promise<CampaignPeriodDataItem[]> {
+    try {
+      const where: Record<string, string> = {
+        licenseAddress: licenseAddress.toLowerCase(),
+        periodStartTimestamp_gte: fromTimestamp.toString(),
+      };
+      if (toTimestamp !== undefined) {
+        where.periodStartTimestamp_lte = toTimestamp.toString();
+      }
+      const result = await this.client.CampaignPeriodDatas({
+        whereHour: where,
+        whereDay: where,
+        whereWeek: where,
+        whereMonth: where,
+        orderBy: "periodStartTimestamp",
+        orderDirection: "asc",
+        limit: 1000,
+        fetchHour: period === "hour",
+        fetchDay: period === "day",
+        fetchWeek: period === "week",
+        fetchMonth: period === "month",
+      });
+
+      const data =
+        result.campaignHourDatas ?? result.campaignDayDatas ?? result.campaignWeekDatas ?? result.campaignMonthDatas;
+      if (!data?.items) {
+        return [];
+      }
+
+      return data.items.map(item => ({
+        id: item.id,
+        periodStartTimestamp: this.toStringValue(item.periodStartTimestamp),
+        licenseAddress: item.licenseAddress,
+        sqrtPriceX96PeriodStart: this.toStringValue(item.sqrtPriceX96PeriodStart),
+        highPrice: String(item.highPrice),
+        lowPrice: String(item.lowPrice),
+        avgPrice: String(item.avgPrice),
+        growthPercent: item.growthPercent,
+        retailPercent: item.retailPercent,
+        totalInteractions: this.toStringValue(item.totalInteractions),
+        totalSales: this.toStringValue(item.totalSales),
+      }));
+    } catch (error) {
+      console.error(`Error fetching campaign ${period} data for ${licenseAddress}:`, error);
+      throw new Error(
+        `Failed to fetch campaign period data: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
   }
@@ -327,6 +458,41 @@ export class PonderIndexerGateway implements IIndexerGateway {
     return "";
   }
 
+  /**
+   * Maps Ponder IP list item to IP type (for list view). Shape matches Ips query.
+   */
+  private mapIpToIP(ip: any): IP & { campaigns: Campaign[] } {
+    const campaigns =
+      ip.campaigns?.items.map((campaign: any) => {
+        const lt = campaign.licenseType as CampaignLicenseType | undefined;
+        return {
+          licenseAddress: campaign.licenseAddress,
+          numeraireAddress: campaign.numeraireAddress,
+          poolId: campaign.poolId,
+          licenseType: lt === "DYNAMIC" || lt === "FIXED" ? lt : "FIXED",
+          denomination: {
+            unit: campaign.denominationUnit as Campaign["denomination"]["unit"],
+            amount: parseFloat(formatUnits(BigInt(this.toStringValue(campaign.denominationAmount)), 18)),
+          },
+          territoryRestriction: campaign.territoryRestriction || [],
+          usageRightsDefinition: campaign.usageRightsDefinition || "",
+          transferrabilityFlag: (campaign.transferrabilityFlag as Campaign["transferrabilityFlag"]) || "Transferrable",
+          licenseDuration: campaign.licenseDuration ? Number(campaign.licenseDuration) : 0,
+        };
+      }) || [];
+
+    return {
+      tokenId: Number(ip.tokenId),
+      name: ip.name,
+      description: ip.description,
+      image: ip.image,
+      creationTimestamp: this.toStringValue(ip.creationTimestamp),
+      categoryId: ip.categoryId ?? null,
+      totalEmittedLicensesValueUSD: ip.totalEmittedLicensesValueUSD,
+      campaigns,
+    };
+  }
+
   private mapDiscoverIpToIP(ip: any): DiscoverIP {
     const topCampaign = ip.topGrowth24hCampaign
       ? {
@@ -369,6 +535,37 @@ export class PonderIndexerGateway implements IIndexerGateway {
       totalTradingVolumeUSD: ip.totalTradingVolumeUSD,
       topGrowth24hCampaignLicenseAddress: ip.topGrowth24hCampaignLicenseAddress ?? null,
       topCampaign,
+    };
+  }
+
+  /**
+   * Maps Ponder IP to IPDetails type (for detail view).
+   */
+  private mapIpToIPDetails(ip: any): IPDetails {
+    return {
+      tokenId: Number(ip.tokenId),
+      owner: (ip.accountAddress ?? zeroAddress) as `0x${string}`,
+      name: ip.name,
+      description: ip.description,
+      patentNumber: ip.patentNumber,
+      inventorNames: ip.inventorNames,
+      jurisdiction: ip.jurisdiction,
+      registrationAuthority: ip.registrationAuthority,
+      patentClassification: ip.patentClassification,
+      filingDate: ip.filingDate,
+      grantDate: ip.grantDate,
+      industry: ip.industry || [],
+      categoryId: ip.categoryId ?? null,
+      image: ip.image,
+      attachments:
+        ip.attachments?.items.map((att: any) => ({
+          name: att.name,
+          type: att.type as Attachment["type"],
+          description: att.description,
+          fileType: att.fileType,
+          fileSizeBytes: Number(att.fileSizeBytes),
+          uri: att.uri,
+        })) || [],
     };
   }
 }
