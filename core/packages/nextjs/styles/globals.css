@@ -1,12 +1,126 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Urbanist";
+  src: url("/Urbanist/Urbanist-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Urbanist";
+  src: url("/Urbanist/Urbanist-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* ===== Figma Design Tokens ===== */
+:root {
+  --font-urbanist: "Urbanist";
+
+  /* Colors */
+  --deli-main: #070A0D;
+  --deli-black-bg: rgba(0, 0, 0, 0.5);
+  --deli-background: #0F1314;
+  --deli-background-2: linear-gradient(180deg, #070A0D 0%, #090E12 100%);
+  --deli-white: #FFFFFF;
+  --deli-grey: #555555;
+  --deli-grey-light: #9FA1A1;
+  --deli-accent: #A7D1FE;
+  --deli-hover-bg: rgba(255, 255, 255, 0.04);
+  --deli-status-valid: #2BD700;
+  --deli-status-pending: #F5A003;
+  --deli-status-invalid: #D70000;
+  --deli-growth-positive-bg: linear-gradient(180deg, rgba(69, 255, 106, 0.3) 0%, rgba(9, 109, 1, 0.3) 100%);
+  --deli-growth-negative-bg: linear-gradient(180deg, #710000 0%, #370000 100%);
+
+  /* Strokes */
+  --deli-stroke-main: linear-gradient(140deg, rgba(167, 210, 255, 1) 4%, rgba(4, 48, 92, 1) 100%);
+  --deli-stroke-grey: linear-gradient(180deg, rgba(47, 57, 75, 1) 0%, rgba(47, 57, 75, 0.1) 100%);
+
+  /* Category Colors */
+  --deli-cat-medicine-from: rgba(69, 162, 255, 1);
+  --deli-cat-medicine-to: rgba(80, 1, 109, 1);
+  --deli-cat-engineering-from: rgba(69, 193, 255, 1);
+  --deli-cat-engineering-to: rgba(1, 14, 109, 1);
+  --deli-cat-energy-from: rgba(69, 255, 106, 1);
+  --deli-cat-energy-to: rgba(9, 109, 1, 1);
+  --deli-cat-technology-from: rgba(69, 255, 255, 1);
+  --deli-cat-technology-to: rgba(1, 109, 76, 1);
+  --deli-cat-resources-from: rgba(249, 255, 69, 1);
+  --deli-cat-resources-to: rgba(6, 75, 1, 1);
+  --deli-cat-creative-from: rgba(255, 137, 69, 1);
+  --deli-cat-creative-to: rgba(109, 34, 1, 1);
+
+  /* Category Stroke end colors (30% opacity) */
+  --deli-cat-medicine-to-30: rgba(80, 1, 109, 0.3);
+  --deli-cat-engineering-to-30: rgba(1, 14, 109, 0.3);
+  --deli-cat-energy-to-30: rgba(9, 109, 1, 0.3);
+  --deli-cat-technology-to-30: rgba(1, 109, 76, 0.3);
+  --deli-cat-resources-to-30: rgba(6, 75, 1, 0.3);
+  --deli-cat-creative-to-30: rgba(109, 34, 1, 0.3);
+
+  --deli-cat-medicine: linear-gradient(180deg, var(--deli-cat-medicine-from) 0%, var(--deli-cat-medicine-to) 100%);
+  --deli-cat-engineering:
+    linear-gradient(180deg, var(--deli-cat-engineering-from) 0%, var(--deli-cat-engineering-to) 100%);
+  --deli-cat-energy: linear-gradient(180deg, var(--deli-cat-energy-from) 0%, var(--deli-cat-energy-to) 100%);
+  --deli-cat-technology:
+    linear-gradient(180deg, var(--deli-cat-technology-from) 0%, var(--deli-cat-technology-to) 100%);
+  --deli-cat-resources:
+    linear-gradient(180deg, var(--deli-cat-resources-from) 0%, var(--deli-cat-resources-to) 100%);
+  --deli-cat-creative: linear-gradient(180deg, var(--deli-cat-creative-from) 0%, var(--deli-cat-creative-to) 100%);
+
+  /* Category Stroke Colors (30% opacity end) */
+  --deli-cat-stroke-medicine:
+    linear-gradient(145deg, var(--deli-cat-medicine-from) 7%, var(--deli-cat-medicine-to-30) 100%);
+  --deli-cat-stroke-engineering:
+    linear-gradient(139deg, var(--deli-cat-engineering-from) 8%, var(--deli-cat-engineering-to-30) 100%);
+  --deli-cat-stroke-energy: linear-gradient(146deg, var(--deli-cat-energy-from) 10%, var(--deli-cat-energy-to-30) 100%);
+  --deli-cat-stroke-technology:
+    linear-gradient(138deg, var(--deli-cat-technology-from) 9%, var(--deli-cat-technology-to-30) 100%);
+  --deli-cat-stroke-resources:
+    linear-gradient(145deg, var(--deli-cat-resources-from) 8%, var(--deli-cat-resources-to-30) 100%);
+  --deli-cat-stroke-creative:
+    linear-gradient(140deg, var(--deli-cat-creative-from) 9%, var(--deli-cat-creative-to-30) 100%);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 @theme {
+  --color-deli-main: #070A0D;
+  --color-deli-background: #0F1314;
+  --color-deli-accent: #A7D1FE;
+  --color-deli-white: #FFFFFF;
+  --color-deli-grey: #555555;
+  --color-deli-grey-light: #9FA1A1;
+  --color-deli-hover: rgba(255, 255, 255, 0.04);
+  --color-deli-cat-medicine: #45A2FF;
+  --color-deli-cat-engineering: #45C1FF;
+  --color-deli-cat-energy: #45FF6A;
+  --color-deli-cat-technology: #45FFFF;
+  --color-deli-cat-resources: #F9FF45;
+  --color-deli-cat-creative: #FF8945;
+
   --shadow-center: 0 0 12px -2px rgb(0 0 0 / 0.05);
   --animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-marquee: marquee 35s linear infinite;
+  --font-sans:
+    var(--font-urbanist), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
 }
 
 @plugin "daisyui" {
@@ -18,50 +132,50 @@
 @plugin "daisyui/theme" {
   name: "light";
 
-  --color-primary: #93bbfb;
-  --color-primary-content: #212638;
-  --color-secondary: #dae8ff;
-  --color-secondary-content: #212638;
-  --color-accent: #93bbfb;
-  --color-accent-content: #212638;
-  --color-neutral: #212638;
+  --color-primary: #070a0d;
+  --color-primary-content: #ffffff;
+  --color-secondary: #ffffff;
+  --color-secondary-content: #070a0d;
+  --color-accent: #a7d1fe;
+  --color-accent-content: #070a0d;
+  --color-neutral: #070a0d;
   --color-neutral-content: #ffffff;
   --color-base-100: #ffffff;
   --color-base-200: #f4f8ff;
   --color-base-300: #dae8ff;
-  --color-base-content: #212638;
-  --color-info: #93bbfb;
+  --color-base-content: #070a0d;
+  --color-info: #a7d1fe;
   --color-success: #34eeb6;
   --color-warning: #ffcf72;
   --color-error: #ff8863;
 
-  --radius-field: 1rem;
-  --radius-box: 1rem;
+  --radius-field: 10px;
+  --radius-box: 20px;
   --tt-tailw: 6px;
 }
 
 @plugin "daisyui/theme" {
   name: "dark";
 
-  --color-primary: #212638;
-  --color-primary-content: #f9fbff;
-  --color-secondary: #323f61;
-  --color-secondary-content: #f9fbff;
-  --color-accent: #4969a6;
-  --color-accent-content: #f9fbff;
-  --color-neutral: #f9fbff;
-  --color-neutral-content: #385183;
-  --color-base-100: #385183;
-  --color-base-200: #2a3655;
-  --color-base-300: #212638;
-  --color-base-content: #f9fbff;
-  --color-info: #385183;
+  --color-primary: #ffffff;
+  --color-primary-content: #070a0d;
+  --color-secondary: #070a0d;
+  --color-secondary-content: #ffffff;
+  --color-accent: #a7d1fe;
+  --color-accent-content: #070a0d;
+  --color-neutral: #ffffff;
+  --color-neutral-content: #070a0d;
+  --color-base-100: #070a0d;
+  --color-base-200: #0d1217;
+  --color-base-300: #151b21;
+  --color-base-content: #ffffff;
+  --color-info: #a7d1fe;
   --color-success: #34eeb6;
   --color-warning: #ffcf72;
   --color-error: #ff8863;
 
-  --radius-field: 1rem;
-  --radius-box: 1rem;
+  --radius-field: 10px;
+  --radius-box: 20px;
 
   --tt-tailw: 6px;
   --tt-bg: var(--color-primary);
@@ -71,9 +185,6 @@
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
 */
 @layer base {
   *,
@@ -106,9 +217,105 @@
   background: var(--color-base-200);
 }
 
+/* ===== Figma Typography Utility Classes ===== */
+.text-h1 {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 80px;
+  line-height: 1.1em;
+}
+
+.text-h2 {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 300;
+  font-size: 45px;
+  line-height: 1.3em;
+}
+
+.text-h3 {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 35px;
+  line-height: 1.2em;
+}
+
+.text-h4 {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.2em;
+}
+
+.text-h5 {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.3em;
+  text-transform: uppercase;
+}
+
+.text-h6 {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.3em;
+}
+
+.text-body-1-caps {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 300;
+  font-size: 19px;
+  line-height: 1.3em;
+  text-transform: uppercase;
+}
+
+.text-body-2-caps {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.3em;
+  text-transform: uppercase;
+}
+
+.text-body-2 {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.3em;
+}
+
+.text-body-3-caps {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.3em;
+  text-transform: uppercase;
+}
+
+.text-body-3 {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.2em;
+}
+
+.text-logo {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.2em;
+  letter-spacing: -0.05em;
+}
+
+.text-btn {
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 1.2em;
+}
+
 .btn {
   @apply shadow-md;
-  border-radius: 9999rem;
 }
 
 .btn.btn-ghost {
@@ -121,4 +328,33 @@
 
 .link:hover {
   opacity: 80%;
+}
+
+/* Toasts (react-hot-toast) themed for Deli UI */
+.deli-toast {
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--deli-white) !important;
+  background:
+    linear-gradient(var(--deli-background), var(--deli-background)) padding-box,
+    var(--deli-stroke-grey) border-box !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+.deli-toast-success {
+  background:
+    linear-gradient(var(--deli-background), var(--deli-background)) padding-box,
+    linear-gradient(140deg, rgba(43, 215, 0, 0.95) 4%, rgba(9, 109, 1, 0.35) 100%) border-box !important;
+}
+
+.deli-toast-error {
+  background:
+    linear-gradient(var(--deli-background), var(--deli-background)) padding-box,
+    linear-gradient(140deg, rgba(215, 0, 0, 0.95) 4%, rgba(113, 0, 0, 0.35) 100%) border-box !important;
+}
+
+.deli-toast-loading {
+  background:
+    linear-gradient(var(--deli-background), var(--deli-background)) padding-box,
+    var(--deli-stroke-main) border-box !important;
 }

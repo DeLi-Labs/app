@@ -851,7 +851,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 25048863,
+      deployedOnBlock: 25049653,
     },
     FixedPriceLicenseHook: {
       address: "0x1ccbed0313a2a3c1f3de7f3fb4acab1d7a13ea88",
@@ -2652,7 +2652,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 25048863,
+      deployedOnBlock: 25049653,
     },
     DynamicPriceLicenseHook: {
       address: "0x192f072ab455c30626c1fb2d81ab8c091e427aa0",
@@ -4090,7 +4090,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 25048864,
+      deployedOnBlock: 25049655,
     },
     LicenseSwapRouter: {
       address: "0xccc58f3abe26395fd65f339be33d6d0885d70430",
@@ -4603,7 +4603,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 25048864,
+      deployedOnBlock: 25049656,
     },
     CampaignManager: {
       address: "0x27e66bb812bffc4ce3daf475717d10ccc2b03fba",
@@ -5384,7 +5384,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 25048865,
+      deployedOnBlock: 25049656,
     },
     Permit2PaymentCollector: {
       address: "0x42fc1eA2463bbb61C6C1C89D02a432162dF1Ca46",

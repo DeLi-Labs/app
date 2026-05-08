@@ -1,0 +1,447 @@
+
+
+query Ips($orderBy: String, $orderDirection: String, $limit: Int, $offset: Int, $where: ipFilter) {
+  ips(orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit, offset: $offset, where: $where) {
+    items {
+      tokenId
+      name
+      description
+      image
+      creationTimestamp
+      categoryId
+      totalEmittedLicensesValueUSD
+      campaigns {
+        items {
+          licenseAddress
+          numeraireAddress
+          poolId
+          licenseType
+          denominationUnit
+          denominationAmount
+          licenseDuration
+          territoryRestriction
+          usageRightsDefinition
+          transferrabilityFlag
+        }
+      }
+    }
+  }
+}
+
+query DiscoverIps($orderBy: String, $orderDirection: String, $limit: Int, $offset: Int, $where: ipFilter) {
+  ips(orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit, offset: $offset, where: $where) {
+    items {
+      tokenId
+      accountAddress
+      name
+      patentNumber
+      inventorNames
+      jurisdiction
+      registrationAuthority
+      patentClassification
+      filingDate
+      grantDate
+      description
+      image
+      creationTimestamp
+      status
+      statusUpdateTimestamp
+      statusUpdateExplanation
+      reasonCode
+      caseReference
+      industry
+      categoryId
+      retailPercent
+      growthPercent
+      totalInteractions
+      totalSales
+      totalEmittedLicensesValueUSD
+      totalTradingVolumeUSD
+      topGrowth24hCampaignLicenseAddress
+      topGrowth24hCampaign {
+        licenseAddress
+        licenseSymbol
+        numeraireAddress
+        numeraireSymbol
+        poolId
+        licenseType
+        denominationUnit
+        denominationAmount
+        licenseDuration
+        territoryRestriction
+        usageRightsDefinition
+        transferrabilityFlag
+        currentPrice
+        totalSupply
+        totalEmittedLicensesValueUSD
+        totalTradingVolumeUSD
+        campaignDayDatas(orderBy: "periodStartTimestamp", orderDirection: "desc", limit: 1) {
+          items {
+            id
+            periodStartTimestamp
+            licenseAddress
+            totalEmittedLicensesValueUSD
+            totalTradingVolumeUSD
+            sqrtPriceX96PeriodStart
+            highPrice
+            lowPrice
+            avgPrice
+            growthPercent
+            retailPercent
+            totalInteractions
+            totalSales
+          }
+        }
+      }
+    }
+    totalCount
+  }
+}
+
+query IpsDetails($orderBy: String, $orderDirection: String, $limit: Int, $offset: Int, $where: ipFilter) {
+  ips(orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit, offset: $offset, where: $where) {
+    items {
+      tokenId
+      accountAddress
+      name
+      description
+      patentNumber
+      inventorNames
+      jurisdiction
+      registrationAuthority
+      patentClassification
+      filingDate
+      grantDate
+      industry
+      categoryId
+      image
+      attachments {
+        items {
+          name
+          type
+          description
+          fileType
+          fileSizeBytes
+          uri
+        }
+      }
+    }
+  }
+}
+
+query Campaigns($orderBy: String, $orderDirection: String, $limit: Int, $offset: Int, $where: campaignFilter) {
+  campaigns(orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit, offset: $offset, where: $where) {
+    items {
+      licenseAddress
+      numeraireAddress
+      poolId
+      licenseType
+      denominationUnit
+      denominationAmount
+      licenseDuration
+      territoryRestriction
+      usageRightsDefinition
+      transferrabilityFlag
+    }
+  }
+}
+
+query CampaignPeriodDatas(
+  $whereHour: campaignHourDataFilter,
+  $whereDay: campaignDayDataFilter,
+  $whereWeek: campaignWeekDataFilter,
+  $whereMonth: campaignMonthDataFilter,
+  $orderBy: String,
+  $orderDirection: String,
+  $limit: Int,
+  $fetchHour: Boolean!,
+  $fetchDay: Boolean!,
+  $fetchWeek: Boolean!,
+  $fetchMonth: Boolean!
+) {
+  campaignHourDatas(where: $whereHour, orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit) @include(if: $fetchHour) {
+    items {
+      id
+      periodStartTimestamp
+      licenseAddress
+      sqrtPriceX96PeriodStart
+      highPrice
+      lowPrice
+      avgPrice
+      growthPercent
+      retailPercent
+      totalInteractions
+      totalSales
+    }
+  }
+  campaignDayDatas(where: $whereDay, orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit) @include(if: $fetchDay) {
+    items {
+      id
+      periodStartTimestamp
+      licenseAddress
+      sqrtPriceX96PeriodStart
+      highPrice
+      lowPrice
+      avgPrice
+      growthPercent
+      retailPercent
+      totalInteractions
+      totalSales
+    }
+  }
+  campaignWeekDatas(where: $whereWeek, orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit) @include(if: $fetchWeek) {
+    items {
+      id
+      periodStartTimestamp
+      licenseAddress
+      sqrtPriceX96PeriodStart
+      highPrice
+      lowPrice
+      avgPrice
+      growthPercent
+      retailPercent
+      totalInteractions
+      totalSales
+    }
+  }
+  campaignMonthDatas(where: $whereMonth, orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit) @include(if: $fetchMonth) {
+    items {
+      id
+      periodStartTimestamp
+      licenseAddress
+      sqrtPriceX96PeriodStart
+      highPrice
+      lowPrice
+      avgPrice
+      growthPercent
+      retailPercent
+      totalInteractions
+      totalSales
+    }
+  }
+}
+
+query CampaignPeriodAvgPriceDatas(
+  $whereHour: campaignHourDataFilter,
+  $whereDay: campaignDayDataFilter,
+  $whereWeek: campaignWeekDataFilter,
+  $whereMonth: campaignMonthDataFilter,
+  $orderBy: String,
+  $orderDirection: String,
+  $limit: Int,
+  $fetchHour: Boolean!,
+  $fetchDay: Boolean!,
+  $fetchWeek: Boolean!,
+  $fetchMonth: Boolean!
+) {
+  campaignHourDatas(where: $whereHour, orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit) @include(if: $fetchHour) {
+    items {
+      timestamp: periodStartTimestamp
+      avgPrice
+    }
+  }
+  campaignDayDatas(where: $whereDay, orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit) @include(if: $fetchDay) {
+    items {
+      timestamp: periodStartTimestamp
+      avgPrice
+    }
+  }
+  campaignWeekDatas(where: $whereWeek, orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit) @include(if: $fetchWeek) {
+    items {
+      timestamp: periodStartTimestamp
+      avgPrice
+    }
+  }
+  campaignMonthDatas(where: $whereMonth, orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit) @include(if: $fetchMonth) {
+    items {
+      timestamp: periodStartTimestamp
+      avgPrice
+    }
+  }
+}
+
+query PatentDetail($tokenId: BigInt!) {
+  ip(tokenId: $tokenId) {
+    name
+    image
+    description
+    industry
+    categoryId
+    accountAddress
+    inventorNames
+    status
+    statusUpdateTimestamp
+    statusUpdateExplanation
+    patentNumber
+    jurisdiction
+    registrationAuthority
+    filingDate
+    grantDate
+    patentClassification
+    creationTimestamp
+    campaigns {
+      items {
+        licenseAddress
+        licenseSymbol
+        numeraireAddress
+        numeraireSymbol
+        licenseType
+        usageRightsDefinition
+        transferrabilityFlag
+        licenseDuration
+        denominationUnit
+        denominationAmount
+        currentPrice
+        totalSupply
+        totalEmittedLicensesValueUSD
+        totalTradingVolumeUSD
+        campaignDayDatas(orderBy: "periodStartTimestamp", orderDirection: "desc", limit: 1) {
+          items {
+            growthPercent
+          }
+        }
+        campaignHourDatas(orderBy: "periodStartTimestamp", orderDirection: "desc", limit: 12) {
+          items {
+            periodStartTimestamp
+            avgPrice
+            retailPercent
+          }
+        }
+      }
+    }
+  }
+}
+
+query TreasuryLicenseBalances($where: treasuryLicenseBalanceFilter, $limit: Int) {
+  treasuryLicenseBalances(where: $where, limit: $limit) {
+    items {
+      licenseSymbol
+      licenseAddress
+      balance
+      numeraireSymbol
+      totalValueNumeraire
+      periodTotalValueNumeraireGrowth1h
+      periodTotalValueNumeraireGrowth24h
+      periodTotalValueNumeraireGrowth1w
+      periodTotalValueNumeraireGrowth1m
+    }
+  }
+}
+
+query OwnerIpsWithCampaigns($orderBy: String, $orderDirection: String, $limit: Int, $where: ipFilter) {
+  ips(orderBy: $orderBy, orderDirection: $orderDirection, limit: $limit, where: $where) {
+    items {
+      tokenId
+      categoryId
+      image
+      name
+      description
+      growthPercent
+      totalEmittedLicensesValueUSD
+      campaigns {
+        items {
+          licenseAddress
+          licenseSymbol
+          numeraireSymbol
+          poolId
+          denominationUnit
+          denominationAmount
+          currentPrice
+          totalSupply
+          totalEmittedLicensesValueUSD
+        }
+      }
+    }
+  }
+}
+
+query MainStats {
+  mainStats(id: "global") {
+    id
+    uniquePatents
+    totalEmittedLicensesValueUSD
+    totalTradingVolumeUSD
+    uniquePatentOwners
+    totalInteractions
+    totalSales
+    campaignAmount
+    retailPercent
+    growthPercent
+  }
+}
+
+query Categories($limit: Int, $offset: Int) {
+  categorys(limit: $limit, offset: $offset) {
+    items {
+      id
+      totalEmittedLicensesValueUSD
+      totalTradingVolumeUSD
+      topGrowth24hCampaignLicenseAddress
+      topGrowth24hCampaign {
+        licenseAddress
+        licenseSymbol
+        numeraireAddress
+        numeraireSymbol
+        poolId
+        licenseType
+        denominationUnit
+        denominationAmount
+        licenseDuration
+        territoryRestriction
+        usageRightsDefinition
+        transferrabilityFlag
+        currentPrice
+        totalSupply
+        totalEmittedLicensesValueUSD
+        totalTradingVolumeUSD
+      }
+      totalInteractions
+      totalSales
+      retailPercent
+      growthPercent
+      ips {
+        totalCount
+      }
+    }
+  }
+}
+
+query LatestIps($limit: Int!) {
+  ips(orderBy: "creationTimestamp", orderDirection: "desc", limit: $limit) {
+    items {
+      tokenId
+      categoryId
+      image
+      name
+      description
+      growthPercent
+      totalEmittedLicensesValueUSD
+      campaigns {
+        items {
+          licenseAddress
+          licenseSymbol
+          numeraireSymbol
+          poolId
+          denominationUnit
+          denominationAmount
+          currentPrice
+          totalSupply
+          totalEmittedLicensesValueUSD
+        }
+      }
+    }
+  }
+}
+
+query AllCampaigns24hVolume($limit: Int) {
+  campaigns(limit: $limit) {
+    items {
+      licenseAddress
+      campaignDayDatas(orderBy: "periodStartTimestamp", orderDirection: "desc", limit: 1) {
+        items {
+          totalTradingVolumeUSD
+        }
+      }
+    }
+  }
+}
