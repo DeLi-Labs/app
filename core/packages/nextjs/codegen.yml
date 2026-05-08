@@ -1,0 +1,8 @@
+schema: ${PONDER_GRAPHQL_URL}
+documents: graphql/**/*.graphql
+generates:
+  generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request

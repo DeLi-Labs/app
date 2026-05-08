@@ -5,6 +5,8 @@
   "scripts": {
     "build": "next build",
     "check-types": "tsc --noEmit --incremental",
+    "codegen": "PONDER_GRAPHQL_URL=${PONDER_GRAPHQL_URL:-${NEXT_PUBLIC_PONDER_URL:-http://localhost:42069}/graphql} graphql-codegen --config codegen.yml",
+    "codegen:watch": "PONDER_GRAPHQL_URL=${PONDER_GRAPHQL_URL:-${NEXT_PUBLIC_PONDER_URL:-http://localhost:42069}/graphql} graphql-codegen --config codegen.yml --watch",
     "dev": "next dev",
     "format": "prettier --write . '!(node_modules|.next|contracts)/**/*'",
     "ipfs": "NEXT_PUBLIC_IPFS_BUILD=true yarn build && yarn bgipfs upload config init -u https://upload.bgipfs.com && CID=$(yarn bgipfs upload out | grep -o 'CID: [^ ]*' | cut -d' ' -f2) && [ ! -z \"$CID\" ] && echo '🚀 Upload complete! Your site is now available at: https://community.bgipfs.com/ipfs/'$CID || echo '❌ Upload failed'",
@@ -51,6 +53,10 @@
     "zustand": "~5.0.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^7.0.0",
+    "@graphql-codegen/typescript": "^6.0.0",
+    "@graphql-codegen/typescript-graphql-request": "^7.0.1",
+    "@graphql-codegen/typescript-operations": "^6.0.0",
     "@tailwindcss/postcss": "4.0.15",
     "@trivago/prettier-plugin-sort-imports": "~4.3.0",
     "@types/node": "~18.19.50",
@@ -62,6 +68,7 @@
     "eslint-config-next": "~15.2.3",
     "eslint-config-prettier": "~10.1.1",
     "eslint-plugin-prettier": "~5.2.4",
+    "graphql-tag": "^2.12.6",
     "postcss": "~8.4.45",
     "prettier": "~3.5.3",
     "tailwindcss": "4.1.3",

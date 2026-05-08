@@ -1,0 +1,11 @@
+query Greetings {
+  greetings(orderBy: "timestamp", orderDirection: "desc") {
+    items {
+      id
+      text
+      setterId
+      premium
+      value
+    }
+  }
+}
