@@ -3,16 +3,11 @@
  * (The Graph, Ponder, custom indexers, etc.)
  */
 import type {
-  Campaign,
   CampaignPeriodAvgPriceDataItem,
-  CampaignPeriodDataItem,
   CampaignPeriodName,
   DiscoverIP,
-  IPDetails,
-  IPList,
   OwnerIPWithCampaigns,
   PatentDetail,
-  TreasuryTokenView,
 } from "~~/types";
 
 /**
@@ -40,51 +35,12 @@ export interface IIndexerGateway {
   ): Promise<{ items: DiscoverIP[]; totalCount: number }>;
 
   /**
-   * Get list of IPs from the indexer
-   *
-   * @returns Promise resolving to an array of IPs
-   */
-  getIpListMCP(page: number, pageSize: number): Promise<IPList>;
-
-  /**
-   * Get IP details by token ID from the indexer
-   *
-   * @param tokenId - The token ID of the IP to retrieve
-   * @returns Promise resolving to IP details
-   */
-  getIpDetailsMCP(tokenId: number): Promise<IPDetails>;
-
-  /**
    * Get all IPs owned by a specific address with their campaigns.
    *
    * @param ownerAddress - The owner address to filter IPs by
    * @returns Promise resolving to owner IPs with campaign aggregates
    */
   getOwnerIpsWithCampaigns(ownerAddress: string): Promise<OwnerIPWithCampaigns[]>;
-
-  /**
-   * Get campaign details by token ID and license address
-   *
-   * @param tokenId - The token ID of the IP
-   * @param licenseAddress - The license (campaign) contract address
-   * @returns Promise resolving to campaign details, or null if not found
-   */
-  getCampaignDetailsMCP(licenseAddress: string): Promise<Campaign | null>;
-
-  /**
-   * Get campaign period data (time-series aggregates) for a license address.
-   *
-   * @param licenseAddress - The campaign license contract address
-   * @param period - The period granularity: "hour", "day", "week", or "month"
-   * @param fromTimestamp - Only return periods with periodStartTimestamp >= this value
-   * @returns Promise resolving to an array of period data items
-   */
-  getCampaignPeriodDataMCP(
-    licenseAddress: string,
-    period: CampaignPeriodName,
-    fromTimestamp: bigint,
-    toTimestamp?: bigint,
-  ): Promise<CampaignPeriodDataItem[]>;
 
   /**
    * Get campaign period avg-price points (timestamp + avgPrice only) for charting.
@@ -112,8 +68,6 @@ export interface IIndexerGateway {
    * @returns Promise resolving to patent detail with campaign trading data
    */
   getPatentDetail(tokenId: number): Promise<PatentDetail>;
-
-  getTreasuryLicenseBalancesMCP(treasuryAddress: string): Promise<TreasuryTokenView[]>;
 
   /**
    * Get main platform statistics

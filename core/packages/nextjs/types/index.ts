@@ -1,5 +1,6 @@
 import formidable from "formidable";
 import type { Address } from "viem";
+
 export type IP = {
   tokenId: number;
   name: string;
@@ -190,11 +191,6 @@ export type TreasuryTokenView = {
   growth24h: number | null;
   growth1w: number | null;
   growth1m: number | null;
-};
-
-export type TreasuryView = {
-  safeAddress: string;
-  tokens: TreasuryTokenView[];
 };
 
 export type UploadFormData = {

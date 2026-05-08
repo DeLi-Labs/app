@@ -2,20 +2,13 @@ import { IIndexerGateway } from "../indexer";
 import { GraphQLClient } from "graphql-request";
 import { formatUnits, zeroAddress } from "viem";
 import { getSdk } from "~~/generated/graphql";
-import type { CampaignLicenseType, CampaignPeriodName } from "~~/types";
+import type { CampaignPeriodName } from "~~/types";
 import {
-  Attachment,
-  Campaign,
   CampaignPeriodAvgPriceDataItem,
-  CampaignPeriodDataItem,
   DiscoverIP,
-  IP,
-  IPDetails,
-  IPList,
   OwnerIPWithCampaigns,
   PatentDetail,
   PatentDetailCampaign,
-  TreasuryTokenView,
 } from "~~/types";
 
 export class PonderIndexerGateway implements IIndexerGateway {
@@ -25,21 +18,6 @@ export class PonderIndexerGateway implements IIndexerGateway {
     const ponderUrl = process.env.PONDER_URL || "http://localhost:42069/graphql";
     const graphQLClient = new GraphQLClient(ponderUrl);
     this.client = getSdk(graphQLClient);
-  }
-
-  async getIpListMCP(page: number, pageSize: number): Promise<IPList> {
-    try {
-      const offset = page * pageSize;
-      const result = await this.client.Ips({
-        limit: pageSize,
-        offset,
-      });
-
-      return result.ips.items.map(ip => this.mapIpToIP(ip));
-    } catch (error) {
-      console.error("Error fetching IP list from Ponder:", error);
-      throw new Error(`Failed to fetch IP list: ${error instanceof Error ? error.message : "Unknown error"}`);
-    }
   }
 
   async getIpList(
@@ -75,27 +53,6 @@ export class PonderIndexerGateway implements IIndexerGateway {
     } catch (error) {
       console.error("Error fetching filtered IP list from Ponder:", error);
       throw new Error(`Failed to fetch IP list: ${error instanceof Error ? error.message : "Unknown error"}`);
-    }
-  }
-
-  async getIpDetailsMCP(tokenId: number): Promise<IPDetails> {
-    try {
-      const result = await this.client.IpsDetails({
-        where: {
-          tokenId: tokenId.toString(),
-        },
-        limit: 1,
-      });
-
-      if (!result.ips.items || result.ips.items.length === 0) {
-        throw new Error(`IP with tokenId ${tokenId} not found`);
-      }
-
-      const ip = result.ips.items[0];
-      return this.mapIpToIPDetails(ip);
-    } catch (error) {
-      console.error(`Error fetching IP details for tokenId ${tokenId} from Ponder:`, error);
-      throw new Error(`Failed to fetch IP details: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
   }
 
@@ -135,96 +92,6 @@ export class PonderIndexerGateway implements IIndexerGateway {
       console.error(`Error fetching owner IPs with campaigns for ${ownerAddress}:`, error);
       throw new Error(
         `Failed to fetch owner IPs with campaigns: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
-    }
-  }
-
-  async getCampaignDetailsMCP(licenseAddress: string): Promise<Campaign | null> {
-    try {
-      const result = await this.client.Campaigns({
-        where: {
-          licenseAddress: licenseAddress.toLowerCase(),
-        },
-        limit: 100, // Reasonable limit to find matching campaign
-      });
-
-      if (!result.campaigns.items || result.campaigns.items.length === 0) {
-        return null;
-      }
-
-      const campaign = result.campaigns.items[0];
-
-      const licenseType = (campaign as { licenseType?: string }).licenseType as CampaignLicenseType | undefined;
-      return {
-        licenseAddress: campaign.licenseAddress,
-        numeraireAddress: campaign.numeraireAddress,
-        poolId: campaign.poolId,
-        licenseType: licenseType === "DYNAMIC" || licenseType === "FIXED" ? licenseType : "FIXED",
-        denomination: {
-          unit: campaign.denominationUnit as Campaign["denomination"]["unit"],
-          amount: parseFloat(formatUnits(BigInt(campaign.denominationAmount), 18)),
-        },
-        licenseDuration: campaign.licenseDuration ? Number(campaign.licenseDuration) : 0,
-        territoryRestriction: campaign.territoryRestriction || [],
-        usageRightsDefinition: campaign.usageRightsDefinition || "",
-        transferrabilityFlag: (campaign.transferrabilityFlag as Campaign["transferrabilityFlag"]) || "Transferrable",
-      };
-    } catch (error) {
-      console.error(`Error fetching campaign for license ${licenseAddress}:`, error);
-      return null;
-    }
-  }
-
-  async getCampaignPeriodDataMCP(
-    licenseAddress: string,
-    period: CampaignPeriodName,
-    fromTimestamp: bigint,
-    toTimestamp?: bigint,
-  ): Promise<CampaignPeriodDataItem[]> {
-    try {
-      const where: Record<string, string> = {
-        licenseAddress: licenseAddress.toLowerCase(),
-        periodStartTimestamp_gte: fromTimestamp.toString(),
-      };
-      if (toTimestamp !== undefined) {
-        where.periodStartTimestamp_lte = toTimestamp.toString();
-      }
-      const result = await this.client.CampaignPeriodDatas({
-        whereHour: where,
-        whereDay: where,
-        whereWeek: where,
-        whereMonth: where,
-        orderBy: "periodStartTimestamp",
-        orderDirection: "asc",
-        limit: 1000,
-        fetchHour: period === "hour",
-        fetchDay: period === "day",
-        fetchWeek: period === "week",
-        fetchMonth: period === "month",
-      });
-
-      const data =
-        result.campaignHourDatas ?? result.campaignDayDatas ?? result.campaignWeekDatas ?? result.campaignMonthDatas;
-      if (!data?.items) {
-        return [];
-      }
-      return data.items.map(item => ({
-        id: item.id,
-        periodStartTimestamp: this.toStringValue(item.periodStartTimestamp),
-        licenseAddress: item.licenseAddress,
-        sqrtPriceX96PeriodStart: this.toStringValue(item.sqrtPriceX96PeriodStart),
-        highPrice: String(item.highPrice),
-        lowPrice: String(item.lowPrice),
-        avgPrice: String(item.avgPrice),
-        growthPercent: item.growthPercent,
-        retailPercent: item.retailPercent,
-        totalInteractions: this.toStringValue(item.totalInteractions),
-        totalSales: this.toStringValue(item.totalSales),
-      }));
-    } catch (error) {
-      console.error(`Error fetching campaign ${period} data for ${licenseAddress}:`, error);
-      throw new Error(
-        `Failed to fetch campaign period data: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
   }
@@ -341,34 +208,6 @@ export class PonderIndexerGateway implements IIndexerGateway {
     }
   }
 
-  async getTreasuryLicenseBalancesMCP(treasuryAddress: string): Promise<TreasuryTokenView[]> {
-    try {
-      const result = await this.client.TreasuryLicenseBalances({
-        where: {
-          treasuryAddress: treasuryAddress.toLowerCase(),
-        },
-        limit: 100,
-      });
-
-      return result.treasuryLicenseBalances.items.map(item => ({
-        licenseSymbol: item.licenseSymbol,
-        licenseAddress: item.licenseAddress,
-        balance: String(item.balance),
-        numeraireSymbol: item.numeraireSymbol,
-        totalValueNumeraire: String(item.totalValueNumeraire),
-        growth1h: item.periodTotalValueNumeraireGrowth1h ?? null,
-        growth24h: item.periodTotalValueNumeraireGrowth24h ?? null,
-        growth1w: item.periodTotalValueNumeraireGrowth1w ?? null,
-        growth1m: item.periodTotalValueNumeraireGrowth1m ?? null,
-      }));
-    } catch (error) {
-      console.error(`Error fetching treasury balances for ${treasuryAddress}:`, error);
-      throw new Error(
-        `Failed to fetch treasury license balances: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
-    }
-  }
-
   async getLatestIPs(limit: number): Promise<OwnerIPWithCampaigns[]> {
     try {
       const result = await this.client.LatestIps({
@@ -482,55 +321,6 @@ export class PonderIndexerGateway implements IIndexerGateway {
     }
   }
 
-  /**
-   * Maps Ponder IP list item to IP type (for list view). Shape matches Ips query.
-   */
-  private mapIpToIP(ip: any): IP & { campaigns: Campaign[] } {
-    const campaigns =
-      ip.campaigns?.items.map((campaign: any) => {
-        const lt = campaign.licenseType as CampaignLicenseType | undefined;
-        const amountRaw =
-          typeof campaign.denominationAmount === "string"
-            ? campaign.denominationAmount
-            : String(campaign.denominationAmount);
-        return {
-          licenseAddress: campaign.licenseAddress,
-          numeraireAddress: campaign.numeraireAddress,
-          poolId: campaign.poolId,
-          licenseType: lt === "DYNAMIC" || lt === "FIXED" ? lt : "FIXED",
-          denomination: {
-            unit: campaign.denominationUnit as Campaign["denomination"]["unit"],
-            amount: parseFloat(formatUnits(BigInt(amountRaw), 18)),
-          },
-          territoryRestriction: campaign.territoryRestriction || [],
-          usageRightsDefinition: campaign.usageRightsDefinition || "",
-          transferrabilityFlag: (campaign.transferrabilityFlag as Campaign["transferrabilityFlag"]) || "Transferrable",
-          licenseDuration: campaign.licenseDuration ? Number(campaign.licenseDuration) : 0,
-        };
-      }) || [];
-
-    return {
-      tokenId: this.toNumber(ip.tokenId),
-      name: ip.name,
-      description: ip.description,
-      image: ip.image,
-      creationTimestamp: this.toStringValue(ip.creationTimestamp),
-      categoryId: ip.categoryId ?? null,
-      totalEmittedLicensesValueUSD: ip.totalEmittedLicensesValueUSD,
-      campaigns,
-    };
-  }
-
-  private toNumber(value: unknown): number {
-    if (typeof value === "number") return value;
-    if (typeof value === "bigint") return Number(value);
-    if (typeof value === "string") {
-      const parsed = Number(value);
-      return Number.isFinite(parsed) ? parsed : 0;
-    }
-    return 0;
-  }
-
   private toStringValue(value: unknown): string {
     if (typeof value === "string") return value;
     if (typeof value === "number" || typeof value === "bigint") return String(value);
@@ -579,37 +369,6 @@ export class PonderIndexerGateway implements IIndexerGateway {
       totalTradingVolumeUSD: ip.totalTradingVolumeUSD,
       topGrowth24hCampaignLicenseAddress: ip.topGrowth24hCampaignLicenseAddress ?? null,
       topCampaign,
-    };
-  }
-
-  /**
-   * Maps Ponder IP to IPDetails type (for detail view)
-   */
-  private mapIpToIPDetails(ip: any): IPDetails {
-    return {
-      tokenId: Number(ip.tokenId),
-      owner: (ip.accountAddress ?? zeroAddress) as `0x${string}`,
-      name: ip.name,
-      description: ip.description,
-      patentNumber: ip.patentNumber,
-      inventorNames: ip.inventorNames,
-      jurisdiction: ip.jurisdiction,
-      registrationAuthority: ip.registrationAuthority,
-      patentClassification: ip.patentClassification,
-      filingDate: ip.filingDate,
-      grantDate: ip.grantDate,
-      industry: ip.industry || [],
-      categoryId: ip.categoryId ?? null,
-      image: ip.image,
-      attachments:
-        ip.attachments?.items.map((att: any) => ({
-          name: att.name,
-          type: att.type as Attachment["type"],
-          description: att.description,
-          fileType: att.fileType,
-          fileSizeBytes: Number(att.fileSizeBytes),
-          uri: att.uri,
-        })) || [],
     };
   }
 }
