@@ -5,14 +5,17 @@
   "scripts": {
     "codegen": "ponder codegen",
     "db": "ponder db",
+    "seed:demo-periods": "node ./scripts/seed-demo-period-data.mjs",
     "dev": "ponder dev",
     "lint": "eslint .",
-    "serve": "ponder serve",
-    "start": "ponder start",
+    "serve": "ponder serve --schema public",
+    "start": "ponder start --schema public",
     "typecheck": "tsc"
   },
   "dependencies": {
+    "dotenv": "^17.2.4",
     "drizzle-kit": "0.22.8",
+    "drizzle-orm": "^0.41.0",
     "hono": "^4.5.0",
     "ponder": "^0.15.17",
     "viem": "^2.21.3"

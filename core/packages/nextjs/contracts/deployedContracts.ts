@@ -6,8 +6,8 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
-    YourContract: {
-      address: "0x700b6a60ce7eaaea56f065753d8dcb9653dbad35",
+    IPERC721: {
+      address: "0x943129016d6d3d72c101f20079f341e11acd49f1",
       abi: [
         {
           type: "constructor",
@@ -21,12 +21,201 @@ const deployedContracts = {
           stateMutability: "nonpayable",
         },
         {
-          type: "receive",
-          stateMutability: "payable",
+          type: "function",
+          name: "_nextTokenId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
         },
         {
           type: "function",
-          name: "greeting",
+          name: "addApprovedAsset",
+          inputs: [
+            {
+              name: "_underlyingAsset",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "approve",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "balanceOf",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getApproved",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "isApprovedAsset",
+          inputs: [
+            {
+              name: "underlyingAsset",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "isApprovedForAll",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "operator",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "metadata",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "status",
+              type: "uint8",
+              internalType: "enum IPStatus",
+            },
+            {
+              name: "statusUpdateTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "statusUpdateExplanation",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "reasonCode",
+              type: "uint8",
+              internalType: "enum ReasonCode",
+            },
+            {
+              name: "caseReference",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "mint",
+          inputs: [
+            {
+              name: "_uri",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "_underlyingAsset",
+              type: "address",
+              internalType: "contract IERC721",
+            },
+            {
+              name: "_underlyingAssetId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "name",
           inputs: [],
           outputs: [
             {
@@ -52,93 +241,331 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "premium",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "bool",
-              internalType: "bool",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "setGreeting",
+          name: "ownerOf",
           inputs: [
             {
-              name: "_newGreeting",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          outputs: [],
-          stateMutability: "payable",
-        },
-        {
-          type: "function",
-          name: "totalCounter",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
+              name: "tokenId",
               type: "uint256",
               internalType: "uint256",
             },
           ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "userGreetingCounter",
-          inputs: [
+          outputs: [
             {
               name: "",
               type: "address",
               internalType: "address",
             },
           ],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
           stateMutability: "view",
         },
         {
           type: "function",
-          name: "withdraw",
+          name: "renounceOwnership",
           inputs: [],
           outputs: [],
           stateMutability: "nonpayable",
         },
         {
-          type: "event",
-          name: "GreetingChange",
+          type: "function",
+          name: "safeTransferFrom",
           inputs: [
             {
-              name: "greetingSetter",
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "safeTransferFrom",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "data",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setApprovalForAll",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "approved",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "supportsInterface",
+          inputs: [
+            {
+              name: "interfaceId",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "symbol",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "tokenURI",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transferFrom",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "underlyingAssetIds",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "underlyingAssetId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "underlyingAssets",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "underlyingAsset",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "updateMetadata",
+          inputs: [
+            {
+              name: "_tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "_newMetadata",
+              type: "tuple",
+              internalType: "struct Metadata",
+              components: [
+                {
+                  name: "status",
+                  type: "uint8",
+                  internalType: "enum IPStatus",
+                },
+                {
+                  name: "statusUpdateTimestamp",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "statusUpdateExplanation",
+                  type: "string",
+                  internalType: "string",
+                },
+                {
+                  name: "reasonCode",
+                  type: "uint8",
+                  internalType: "enum ReasonCode",
+                },
+                {
+                  name: "caseReference",
+                  type: "string",
+                  internalType: "string",
+                },
+              ],
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "Approval",
+          inputs: [
+            {
+              name: "owner",
               type: "address",
               indexed: true,
               internalType: "address",
             },
             {
-              name: "newGreeting",
-              type: "string",
-              indexed: false,
-              internalType: "string",
+              name: "approved",
+              type: "address",
+              indexed: true,
+              internalType: "address",
             },
             {
-              name: "premium",
+              name: "tokenId",
+              type: "uint256",
+              indexed: true,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "ApprovalForAll",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "operator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "approved",
               type: "bool",
               indexed: false,
               internalType: "bool",
             },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "BatchMetadataUpdate",
+          inputs: [
             {
-              name: "value",
+              name: "_fromTokenId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "_toTokenId",
               type: "uint256",
               indexed: false,
               internalType: "uint256",
@@ -146,9 +573,6907 @@ const deployedContracts = {
           ],
           anonymous: false,
         },
+        {
+          type: "event",
+          name: "MetadataUpdate",
+          inputs: [
+            {
+              name: "_tokenId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "MetadataUpdated",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              indexed: true,
+              internalType: "uint256",
+            },
+            {
+              name: "metadata",
+              type: "tuple",
+              indexed: false,
+              internalType: "struct Metadata",
+              components: [
+                {
+                  name: "status",
+                  type: "uint8",
+                  internalType: "enum IPStatus",
+                },
+                {
+                  name: "statusUpdateTimestamp",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "statusUpdateExplanation",
+                  type: "string",
+                  internalType: "string",
+                },
+                {
+                  name: "reasonCode",
+                  type: "uint8",
+                  internalType: "enum ReasonCode",
+                },
+                {
+                  name: "caseReference",
+                  type: "string",
+                  internalType: "string",
+                },
+              ],
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "previousOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Transfer",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "tokenId",
+              type: "uint256",
+              indexed: true,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AssetNotApproved",
+          inputs: [
+            {
+              name: "underlyingAsset",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC721IncorrectOwner",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC721InsufficientApproval",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC721InvalidApprover",
+          inputs: [
+            {
+              name: "approver",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC721InvalidOperator",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC721InvalidOwner",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC721InvalidReceiver",
+          inputs: [
+            {
+              name: "receiver",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC721InvalidSender",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC721NonexistentToken",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "NotTheOwnerOfIP",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requester",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "NotTheOwnerOfUnderlyingAsset",
+          inputs: [
+            {
+              name: "underlyingAsset",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "underlyingAssetId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requester",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OwnableInvalidOwner",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OwnableUnauthorizedAccount",
+          inputs: [
+            {
+              name: "account",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 1,
+      deployedOnBlock: 25048863,
+    },
+    FixedPriceLicenseHook: {
+      address: "0x1ccbed0313a2a3c1f3de7f3fb4acab1d7a13ea88",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "_poolManager",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+            {
+              name: "_owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_patentErc721",
+              type: "address",
+              internalType: "contract IERC721",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "addLiquidity",
+          inputs: [
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct BaseCustomAccounting.AddLiquidityParams",
+              components: [
+                {
+                  name: "key",
+                  type: "tuple",
+                  internalType: "struct PoolKey",
+                  components: [
+                    {
+                      name: "currency0",
+                      type: "address",
+                      internalType: "Currency",
+                    },
+                    {
+                      name: "currency1",
+                      type: "address",
+                      internalType: "Currency",
+                    },
+                    {
+                      name: "fee",
+                      type: "uint24",
+                      internalType: "uint24",
+                    },
+                    {
+                      name: "tickSpacing",
+                      type: "int24",
+                      internalType: "int24",
+                    },
+                    {
+                      name: "hooks",
+                      type: "address",
+                      internalType: "contract IHooks",
+                    },
+                  ],
+                },
+                {
+                  name: "amount0Desired",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "amount1Desired",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "amount0Min",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "amount1Min",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "deadline",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "userInputSalt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+          ],
+          outputs: [
+            {
+              name: "delta",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+          ],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "afterAddLiquidity",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct ModifyLiquidityParams",
+              components: [
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "liquidityDelta",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "salt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+            {
+              name: "delta0",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "delta1",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+            {
+              name: "",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "afterDonate",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "amount0",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "amount1",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "afterInitialize",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "sqrtPriceX96",
+              type: "uint160",
+              internalType: "uint160",
+            },
+            {
+              name: "tick",
+              type: "int24",
+              internalType: "int24",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "afterRemoveLiquidity",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct ModifyLiquidityParams",
+              components: [
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "liquidityDelta",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "salt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+            {
+              name: "delta0",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "delta1",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+            {
+              name: "",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "afterSwap",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct SwapParams",
+              components: [
+                {
+                  name: "zeroForOne",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "amountSpecified",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "sqrtPriceLimitX96",
+                  type: "uint160",
+                  internalType: "uint160",
+                },
+              ],
+            },
+            {
+              name: "delta",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+            {
+              name: "",
+              type: "int128",
+              internalType: "int128",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeAddLiquidity",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct ModifyLiquidityParams",
+              components: [
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "liquidityDelta",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "salt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeDonate",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "amount0",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "amount1",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeInitialize",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "sqrtPriceX96",
+              type: "uint160",
+              internalType: "uint160",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeRemoveLiquidity",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct ModifyLiquidityParams",
+              components: [
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "liquidityDelta",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "salt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeSwap",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct SwapParams",
+              components: [
+                {
+                  name: "zeroForOne",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "amountSpecified",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "sqrtPriceLimitX96",
+                  type: "uint160",
+                  internalType: "uint160",
+                },
+              ],
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+            {
+              name: "",
+              type: "int256",
+              internalType: "BeforeSwapDelta",
+            },
+            {
+              name: "",
+              type: "uint24",
+              internalType: "uint24",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "deposit",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              internalType: "Currency",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "getHookPermissions",
+          inputs: [],
+          outputs: [
+            {
+              name: "permissions",
+              type: "tuple",
+              internalType: "struct Hooks.Permissions",
+              components: [
+                {
+                  name: "beforeInitialize",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterInitialize",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeAddLiquidity",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterAddLiquidity",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeRemoveLiquidity",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterRemoveLiquidity",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeSwap",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterSwap",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeDonate",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterDonate",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeSwapReturnDelta",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterSwapReturnDelta",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterAddLiquidityReturnDelta",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterRemoveLiquidityReturnDelta",
+                  type: "bool",
+                  internalType: "bool",
+                },
+              ],
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "initializeCampaign",
+          inputs: [
+            {
+              name: "params",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "isPoolInitialized",
+          inputs: [
+            {
+              name: "id",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "isStopped",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "stopped",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "manager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "patentErc721",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IERC721",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "patentIds",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "patentId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "poolKey",
+          inputs: [
+            {
+              name: "id",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "poolManager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "prices",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "price",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "quote",
+          inputs: [
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct SwapParams",
+              components: [
+                {
+                  name: "zeroForOne",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "amountSpecified",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "sqrtPriceLimitX96",
+                  type: "uint160",
+                  internalType: "uint160",
+                },
+              ],
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "removeLiquidity",
+          inputs: [
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct BaseCustomAccounting.RemoveLiquidityParams",
+              components: [
+                {
+                  name: "key",
+                  type: "tuple",
+                  internalType: "struct PoolKey",
+                  components: [
+                    {
+                      name: "currency0",
+                      type: "address",
+                      internalType: "Currency",
+                    },
+                    {
+                      name: "currency1",
+                      type: "address",
+                      internalType: "Currency",
+                    },
+                    {
+                      name: "fee",
+                      type: "uint24",
+                      internalType: "uint24",
+                    },
+                    {
+                      name: "tickSpacing",
+                      type: "int24",
+                      internalType: "int24",
+                    },
+                    {
+                      name: "hooks",
+                      type: "address",
+                      internalType: "contract IHooks",
+                    },
+                  ],
+                },
+                {
+                  name: "liquidity",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "amount0Min",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "amount1Min",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "deadline",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "userInputSalt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+          ],
+          outputs: [
+            {
+              name: "delta",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setStopped",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+            {
+              name: "_stopped",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "unlockCallback",
+          inputs: [
+            {
+              name: "rawData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "withdraw",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              internalType: "Currency",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "recipient",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "CampaignInitialized",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              indexed: true,
+              internalType: "PoolId",
+            },
+            {
+              name: "patentId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "price",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Deposited",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              indexed: true,
+              internalType: "Currency",
+            },
+            {
+              name: "depositor",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "HookBonus",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "amount0",
+              type: "uint128",
+              indexed: false,
+              internalType: "uint128",
+            },
+            {
+              name: "amount1",
+              type: "uint128",
+              indexed: false,
+              internalType: "uint128",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "HookFee",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "sender",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "feeAmount0",
+              type: "uint128",
+              indexed: false,
+              internalType: "uint128",
+            },
+            {
+              name: "feeAmount1",
+              type: "uint128",
+              indexed: false,
+              internalType: "uint128",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "HookModifyLiquidity",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "sender",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount0",
+              type: "int128",
+              indexed: false,
+              internalType: "int128",
+            },
+            {
+              name: "amount1",
+              type: "int128",
+              indexed: false,
+              internalType: "int128",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "HookSwap",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "sender",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount0",
+              type: "int128",
+              indexed: false,
+              internalType: "int128",
+            },
+            {
+              name: "amount1",
+              type: "int128",
+              indexed: false,
+              internalType: "int128",
+            },
+            {
+              name: "hookLPfeeAmount0",
+              type: "uint128",
+              indexed: false,
+              internalType: "uint128",
+            },
+            {
+              name: "hookLPfeeAmount1",
+              type: "uint128",
+              indexed: false,
+              internalType: "uint128",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "previousOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PriceUpdated",
+          inputs: [
+            {
+              name: "id",
+              type: "bytes32",
+              indexed: true,
+              internalType: "PoolId",
+            },
+            {
+              name: "oldPrice",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "newPrice",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Withdrawn",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              indexed: true,
+              internalType: "Currency",
+            },
+            {
+              name: "recipient",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "CampaignAlreadyInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CampaignNotInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CampaignStopped",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DonatingNotAllowed",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ExpiredPastDeadline",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "HookNotImplemented",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidCallbackType",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidNativeValue",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidPrice",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "LiquidityOnlyViaHook",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ModifyingLiquidityNotAllowed",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotImplemented",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotPoolManager",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "OwnableInvalidOwner",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OwnableUnauthorizedAccount",
+          inputs: [
+            {
+              name: "account",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "PatentNotDelegated",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "PoolNotInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "RedeemNotAllowed",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SafeERC20FailedOperation",
+          inputs: [
+            {
+              name: "token",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TooMuchSlippage",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 25048863,
+    },
+    DynamicPriceLicenseHook: {
+      address: "0x192f072ab455c30626c1fb2d81ab8c091e427aa0",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "_poolManager",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+            {
+              name: "_owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_patentErc721",
+              type: "address",
+              internalType: "contract IERC721",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "SEED_SALT",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "afterAddLiquidity",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct ModifyLiquidityParams",
+              components: [
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "liquidityDelta",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "salt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+            {
+              name: "delta0",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "delta1",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+            {
+              name: "",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "afterDonate",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "amount0",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "amount1",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "afterInitialize",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "sqrtPriceX96",
+              type: "uint160",
+              internalType: "uint160",
+            },
+            {
+              name: "tick",
+              type: "int24",
+              internalType: "int24",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "afterRemoveLiquidity",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct ModifyLiquidityParams",
+              components: [
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "liquidityDelta",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "salt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+            {
+              name: "delta0",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "delta1",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+            {
+              name: "",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "afterSwap",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct SwapParams",
+              components: [
+                {
+                  name: "zeroForOne",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "amountSpecified",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "sqrtPriceLimitX96",
+                  type: "uint160",
+                  internalType: "uint160",
+                },
+              ],
+            },
+            {
+              name: "delta",
+              type: "int256",
+              internalType: "BalanceDelta",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+            {
+              name: "",
+              type: "int128",
+              internalType: "int128",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeAddLiquidity",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct ModifyLiquidityParams",
+              components: [
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "liquidityDelta",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "salt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeDonate",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "amount0",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "amount1",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeInitialize",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "sqrtPriceX96",
+              type: "uint160",
+              internalType: "uint160",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeRemoveLiquidity",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct ModifyLiquidityParams",
+              components: [
+                {
+                  name: "tickLower",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "tickUpper",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "liquidityDelta",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "salt",
+                  type: "bytes32",
+                  internalType: "bytes32",
+                },
+              ],
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "beforeSwap",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct SwapParams",
+              components: [
+                {
+                  name: "zeroForOne",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "amountSpecified",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "sqrtPriceLimitX96",
+                  type: "uint160",
+                  internalType: "uint160",
+                },
+              ],
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+            {
+              name: "",
+              type: "int256",
+              internalType: "BeforeSwapDelta",
+            },
+            {
+              name: "",
+              type: "uint24",
+              internalType: "uint24",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "deposit",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              internalType: "Currency",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "getHookPermissions",
+          inputs: [],
+          outputs: [
+            {
+              name: "permissions",
+              type: "tuple",
+              internalType: "struct Hooks.Permissions",
+              components: [
+                {
+                  name: "beforeInitialize",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterInitialize",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeAddLiquidity",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterAddLiquidity",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeRemoveLiquidity",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterRemoveLiquidity",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeSwap",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterSwap",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeDonate",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterDonate",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "beforeSwapReturnDelta",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterSwapReturnDelta",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterAddLiquidityReturnDelta",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "afterRemoveLiquidityReturnDelta",
+                  type: "bool",
+                  internalType: "bool",
+                },
+              ],
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "initializeCampaign",
+          inputs: [
+            {
+              name: "params",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "isStopped",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "stopped",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "manager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "patentErc721",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IERC721",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "patentIds",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "patentId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "poolManager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "quote",
+          inputs: [
+            {
+              name: "key",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "params",
+              type: "tuple",
+              internalType: "struct SwapParams",
+              components: [
+                {
+                  name: "zeroForOne",
+                  type: "bool",
+                  internalType: "bool",
+                },
+                {
+                  name: "amountSpecified",
+                  type: "int256",
+                  internalType: "int256",
+                },
+                {
+                  name: "sqrtPriceLimitX96",
+                  type: "uint160",
+                  internalType: "uint160",
+                },
+              ],
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setStopped",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+            {
+              name: "_stopped",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "tickLower",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "int24",
+              internalType: "int24",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "tickUpper",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              internalType: "PoolId",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "int24",
+              internalType: "int24",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "unlockCallback",
+          inputs: [
+            {
+              name: "rawData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "withdraw",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              internalType: "Currency",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "recipient",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "CampaignInitialized",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              indexed: true,
+              internalType: "PoolId",
+            },
+            {
+              name: "patentId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "tickLower",
+              type: "int24",
+              indexed: false,
+              internalType: "int24",
+            },
+            {
+              name: "tickUpper",
+              type: "int24",
+              indexed: false,
+              internalType: "int24",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Deposited",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              indexed: true,
+              internalType: "Currency",
+            },
+            {
+              name: "depositor",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "LiquiditySeeded",
+          inputs: [
+            {
+              name: "poolId",
+              type: "bytes32",
+              indexed: true,
+              internalType: "PoolId",
+            },
+            {
+              name: "amount0",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "liquidity",
+              type: "uint128",
+              indexed: false,
+              internalType: "uint128",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "previousOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Withdrawn",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              indexed: true,
+              internalType: "Currency",
+            },
+            {
+              name: "recipient",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "CampaignAlreadyInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CampaignNotInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CampaignStopped",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DonatingNotAllowed",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "HookNotImplemented",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientLicenseBalance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidCallbackType",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidTickRange",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ModifyingLiquidityNotAllowed",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotPoolManager",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "OnlyPoolManager",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "OwnableInvalidOwner",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OwnableUnauthorizedAccount",
+          inputs: [
+            {
+              name: "account",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "PatentNotDelegated",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SafeERC20FailedOperation",
+          inputs: [
+            {
+              name: "token",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 25048864,
+    },
+    LicenseSwapRouter: {
+      address: "0xccc58f3abe26395fd65f339be33d6d0885d70430",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "_poolManager",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+            {
+              name: "_permit2",
+              type: "address",
+              internalType: "contract IAllowanceTransfer",
+            },
+            {
+              name: "_authorizedRelayer",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "authorizedRelayer",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "msgSender",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "permit",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "permitSingle",
+              type: "tuple",
+              internalType: "struct IAllowanceTransfer.PermitSingle",
+              components: [
+                {
+                  name: "details",
+                  type: "tuple",
+                  internalType: "struct IAllowanceTransfer.PermitDetails",
+                  components: [
+                    {
+                      name: "token",
+                      type: "address",
+                      internalType: "address",
+                    },
+                    {
+                      name: "amount",
+                      type: "uint160",
+                      internalType: "uint160",
+                    },
+                    {
+                      name: "expiration",
+                      type: "uint48",
+                      internalType: "uint48",
+                    },
+                    {
+                      name: "nonce",
+                      type: "uint48",
+                      internalType: "uint48",
+                    },
+                  ],
+                },
+                {
+                  name: "spender",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "sigDeadline",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "signature",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "err",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "permit2",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IAllowanceTransfer",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "permitBatch",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_permitBatch",
+              type: "tuple",
+              internalType: "struct IAllowanceTransfer.PermitBatch",
+              components: [
+                {
+                  name: "details",
+                  type: "tuple[]",
+                  internalType: "struct IAllowanceTransfer.PermitDetails[]",
+                  components: [
+                    {
+                      name: "token",
+                      type: "address",
+                      internalType: "address",
+                    },
+                    {
+                      name: "amount",
+                      type: "uint160",
+                      internalType: "uint160",
+                    },
+                    {
+                      name: "expiration",
+                      type: "uint48",
+                      internalType: "uint48",
+                    },
+                    {
+                      name: "nonce",
+                      type: "uint48",
+                      internalType: "uint48",
+                    },
+                  ],
+                },
+                {
+                  name: "spender",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "sigDeadline",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "signature",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "err",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "poolManager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "swapExactOutputSingleFor",
+          inputs: [
+            {
+              name: "poolKey",
+              type: "tuple",
+              internalType: "struct PoolKey",
+              components: [
+                {
+                  name: "currency0",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "currency1",
+                  type: "address",
+                  internalType: "Currency",
+                },
+                {
+                  name: "fee",
+                  type: "uint24",
+                  internalType: "uint24",
+                },
+                {
+                  name: "tickSpacing",
+                  type: "int24",
+                  internalType: "int24",
+                },
+                {
+                  name: "hooks",
+                  type: "address",
+                  internalType: "contract IHooks",
+                },
+              ],
+            },
+            {
+              name: "amountOut",
+              type: "uint128",
+              internalType: "uint128",
+            },
+            {
+              name: "amountInMaximum",
+              type: "uint128",
+              internalType: "uint128",
+            },
+            {
+              name: "zeroForOne",
+              type: "bool",
+              internalType: "bool",
+            },
+            {
+              name: "hookData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+            {
+              name: "permitOwner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "permitSingle",
+              type: "tuple",
+              internalType: "struct IAllowanceTransfer.PermitSingle",
+              components: [
+                {
+                  name: "details",
+                  type: "tuple",
+                  internalType: "struct IAllowanceTransfer.PermitDetails",
+                  components: [
+                    {
+                      name: "token",
+                      type: "address",
+                      internalType: "address",
+                    },
+                    {
+                      name: "amount",
+                      type: "uint160",
+                      internalType: "uint160",
+                    },
+                    {
+                      name: "expiration",
+                      type: "uint48",
+                      internalType: "uint48",
+                    },
+                    {
+                      name: "nonce",
+                      type: "uint48",
+                      internalType: "uint48",
+                    },
+                  ],
+                },
+                {
+                  name: "spender",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "sigDeadline",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "permitSignature",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "unlockCallback",
+          inputs: [
+            {
+              name: "data",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "error",
+          name: "ContractLocked",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DeltaNotNegative",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              internalType: "Currency",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "DeltaNotPositive",
+          inputs: [
+            {
+              name: "currency",
+              type: "address",
+              internalType: "Currency",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InputLengthMismatch",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientBalance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidBips",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidPermitOwner",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidPermitSpender",
+          inputs: [
+            {
+              name: "expected",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "actual",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "NotPoolManager",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "Permit2NotApproved",
+          inputs: [
+            {
+              name: "payer",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "token",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "approvedAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "PoolHookMismatch",
+          inputs: [
+            {
+              name: "expected",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "actual",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "UnauthorizedRelayer",
+          inputs: [
+            {
+              name: "caller",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "UnsupportedAction",
+          inputs: [
+            {
+              name: "action",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "V4TooLittleReceived",
+          inputs: [
+            {
+              name: "minAmountOutReceived",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "amountReceived",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "V4TooMuchRequested",
+          inputs: [
+            {
+              name: "maxAmountInRequested",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "amountRequested",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 25048864,
+    },
+    CampaignManager: {
+      address: "0x27e66bb812bffc4ce3daf475717d10ccc2b03fba",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "_owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_manager",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+            {
+              name: "_patentErc721",
+              type: "address",
+              internalType: "contract IERC721",
+            },
+            {
+              name: "_allowedNumeraires",
+              type: "address[]",
+              internalType: "contract IERC20[]",
+            },
+            {
+              name: "_fixedPriceLicenseHook",
+              type: "address",
+              internalType: "contract ILicenseHook",
+            },
+            {
+              name: "_dynamicPriceLicenseHook",
+              type: "address",
+              internalType: "contract ILicenseHook",
+            },
+            {
+              name: "_authCaptureEscrow",
+              type: "address",
+              internalType: "contract IAuthCaptureEscrow",
+            },
+            {
+              name: "_permit2TokenCollector",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "AUTHORIZATION_EXPIRY",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "PRE_APPROVAL_EXPIRY",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "REFUND_EXPIRY",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "TICK_SPACING",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "int24",
+              internalType: "int24",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "allowedNumeraires",
+          inputs: [
+            {
+              name: "numeraire",
+              type: "address",
+              internalType: "contract IERC20",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "authCaptureEscrow",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IAuthCaptureEscrow",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "authorize",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct IAuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "collectorData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "capture",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct IAuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "initialize",
+          inputs: [
+            {
+              name: "patentId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "assetMetadataUri",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "licenseSalt",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "numeraire",
+              type: "address",
+              internalType: "contract IERC20",
+            },
+            {
+              name: "licenseType",
+              type: "uint8",
+              internalType: "enum LicenseType",
+            },
+            {
+              name: "totalTokensToSell",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "_params",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "licenseHooks",
+          inputs: [
+            {
+              name: "licenseType",
+              type: "uint8",
+              internalType: "enum LicenseType",
+            },
+          ],
+          outputs: [
+            {
+              name: "licenseHook",
+              type: "address",
+              internalType: "contract ILicenseHook",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "numeraires",
+          inputs: [
+            {
+              name: "license",
+              type: "address",
+              internalType: "contract LicenseERC20",
+            },
+          ],
+          outputs: [
+            {
+              name: "numeraire",
+              type: "address",
+              internalType: "contract IERC20",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "onERC721Received",
+          inputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes4",
+              internalType: "bytes4",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "patentErc721",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IERC721",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "permit2TokenCollector",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "poolManager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IPoolManager",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "redeem",
+          inputs: [
+            {
+              name: "patentId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "stakedPatents",
+          inputs: [
+            {
+              name: "patentId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "staker",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "validateAssetOrder",
+          inputs: [
+            {
+              name: "numeraire",
+              type: "address",
+              internalType: "contract IERC20",
+            },
+            {
+              name: "salt",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "assetMetadataUri",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "patentId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "licenseType",
+              type: "uint8",
+              internalType: "enum LicenseType",
+            },
+            {
+              name: "patentRegistry",
+              type: "address",
+              internalType: "contract IERC721",
+            },
+            {
+              name: "deployer",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "pure",
+        },
+        {
+          type: "event",
+          name: "CampaignInitialized",
+          inputs: [
+            {
+              name: "patentId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "license",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+            {
+              name: "numeraire",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+            {
+              name: "poolId",
+              type: "bytes32",
+              indexed: false,
+              internalType: "PoolId",
+            },
+            {
+              name: "licenseType",
+              type: "uint8",
+              indexed: false,
+              internalType: "enum LicenseType",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "previousOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PatentRedeemed",
+          inputs: [
+            {
+              name: "patentId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "staker",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PatentStaked",
+          inputs: [
+            {
+              name: "patentId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "staker",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PoolPriceSnapshot",
+          inputs: [
+            {
+              name: "license",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "numeraire",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "sqrtPriceX96",
+              type: "uint160",
+              indexed: false,
+              internalType: "uint160",
+            },
+            {
+              name: "tick",
+              type: "int24",
+              indexed: false,
+              internalType: "int24",
+            },
+            {
+              name: "timestamp",
+              type: "uint48",
+              indexed: false,
+              internalType: "uint48",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "UserSafeCreated",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "safe",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "CampaignAlreadyInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidAssetNumeraireOrder",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidLicenseContract",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidOperator",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidReceiver",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotStaker",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NumeraireNotAllowed",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "OwnableInvalidOwner",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OwnableUnauthorizedAccount",
+          inputs: [
+            {
+              name: "account",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "PatentAlreadyStaked",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "PatentNotOwned",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "PatentNotStaked",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 25048865,
+    },
+    Permit2PaymentCollector: {
+      address: "0x42fc1eA2463bbb61C6C1C89D02a432162dF1Ca46",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "authCaptureEscrow_",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "permit2_",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "multicall3_",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "authCaptureEscrow",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract AuthCaptureEscrow",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "collectTokens",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "tokenStore",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "collectorData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "collectorType",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "enum TokenCollector.CollectorType",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "multicall3",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IMulticall3",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "permit2",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract ISignatureTransfer",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "error",
+          name: "OnlyAuthCaptureEscrow",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+    },
+    ERC3009PaymentCollector: {
+      address: "0x9Eca295fBD10eC78f43209a68197791772e3FeD9",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "authCaptureEscrow_",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "multicall3_",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "authCaptureEscrow",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract AuthCaptureEscrow",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "collectTokens",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "tokenStore",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "collectorData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "collectorType",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "enum TokenCollector.CollectorType",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "multicall3",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract IMulticall3",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "error",
+          name: "OnlyAuthCaptureEscrow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SafeERC20FailedOperation",
+          inputs: [
+            {
+              name: "token",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+    },
+    PreApprovalPaymentCollector: {
+      address: "0xA965C3FbF0dc87367858F791FADAE2d6FdE9f0F7",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "authCaptureEscrow_",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "authCaptureEscrow",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract AuthCaptureEscrow",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "collectTokens",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "tokenStore",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "collectorData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "collectorType",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "enum TokenCollector.CollectorType",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "isPreApproved",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          outputs: [
+            {
+              name: "approved",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "preApprove",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "PaymentPreApproved",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AfterPreApprovalExpiry",
+          inputs: [
+            {
+              name: "timestamp",
+              type: "uint48",
+              internalType: "uint48",
+            },
+            {
+              name: "expiry",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidSender",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "expected",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OnlyAuthCaptureEscrow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "PaymentAlreadyCollected",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "PaymentAlreadyPreApproved",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "PaymentNotPreApproved",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "SafeERC20FailedOperation",
+          inputs: [
+            {
+              name: "token",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+    },
+    OperatorRefundCollector: {
+      address: "0xd7D5f4A79c5042161324376F37Dd3Db7bd3E5C2F",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "authCaptureEscrow_",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "authCaptureEscrow",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract AuthCaptureEscrow",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "collectTokens",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "tokenStore",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "collectorData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "collectorType",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "enum TokenCollector.CollectorType",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "error",
+          name: "OnlyAuthCaptureEscrow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SafeERC20FailedOperation",
+          inputs: [
+            {
+              name: "token",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+    },
+    AuthCaptureEscrow: {
+      address: "0xeE99593Bf469CD98769E8e18926B126C8B2e4f2B",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "PAYMENT_INFO_TYPEHASH",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "authorize",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "tokenCollector",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "collectorData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "capture",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "feeBps",
+              type: "uint16",
+              internalType: "uint16",
+            },
+            {
+              name: "feeReceiver",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "charge",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "tokenCollector",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "collectorData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+            {
+              name: "feeBps",
+              type: "uint16",
+              internalType: "uint16",
+            },
+            {
+              name: "feeReceiver",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "getHash",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getTokenStore",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "paymentState",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          outputs: [
+            {
+              name: "hasCollectedPayment",
+              type: "bool",
+              internalType: "bool",
+            },
+            {
+              name: "capturableAmount",
+              type: "uint120",
+              internalType: "uint120",
+            },
+            {
+              name: "refundableAmount",
+              type: "uint120",
+              internalType: "uint120",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "reclaim",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "refund",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "tokenCollector",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "collectorData",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "tokenStoreImplementation",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "void",
+          inputs: [
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "PaymentAuthorized",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              indexed: false,
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "tokenCollector",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PaymentCaptured",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "feeBps",
+              type: "uint16",
+              indexed: false,
+              internalType: "uint16",
+            },
+            {
+              name: "feeReceiver",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PaymentCharged",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "paymentInfo",
+              type: "tuple",
+              indexed: false,
+              internalType: "struct AuthCaptureEscrow.PaymentInfo",
+              components: [
+                {
+                  name: "operator",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "payer",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "receiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "token",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maxAmount",
+                  type: "uint120",
+                  internalType: "uint120",
+                },
+                {
+                  name: "preApprovalExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "authorizationExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "refundExpiry",
+                  type: "uint48",
+                  internalType: "uint48",
+                },
+                {
+                  name: "minFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "maxFeeBps",
+                  type: "uint16",
+                  internalType: "uint16",
+                },
+                {
+                  name: "feeReceiver",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "salt",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "tokenCollector",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+            {
+              name: "feeBps",
+              type: "uint16",
+              indexed: false,
+              internalType: "uint16",
+            },
+            {
+              name: "feeReceiver",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PaymentReclaimed",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PaymentRefunded",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "tokenCollector",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "PaymentVoided",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              indexed: true,
+              internalType: "bytes32",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "TokenStoreCreated",
+          inputs: [
+            {
+              name: "operator",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "tokenStore",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AfterAuthorizationExpiry",
+          inputs: [
+            {
+              name: "timestamp",
+              type: "uint48",
+              internalType: "uint48",
+            },
+            {
+              name: "expiry",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "AfterPreApprovalExpiry",
+          inputs: [
+            {
+              name: "timestamp",
+              type: "uint48",
+              internalType: "uint48",
+            },
+            {
+              name: "expiry",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "AfterRefundExpiry",
+          inputs: [
+            {
+              name: "timestamp",
+              type: "uint48",
+              internalType: "uint48",
+            },
+            {
+              name: "expiry",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "AmountOverflow",
+          inputs: [
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "limit",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "BeforeAuthorizationExpiry",
+          inputs: [
+            {
+              name: "timestamp",
+              type: "uint48",
+              internalType: "uint48",
+            },
+            {
+              name: "expiry",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ExceedsMaxAmount",
+          inputs: [
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "maxAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "FeeBpsOutOfRange",
+          inputs: [
+            {
+              name: "feeBps",
+              type: "uint16",
+              internalType: "uint16",
+            },
+            {
+              name: "minFeeBps",
+              type: "uint16",
+              internalType: "uint16",
+            },
+            {
+              name: "maxFeeBps",
+              type: "uint16",
+              internalType: "uint16",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "FeeBpsOverflow",
+          inputs: [
+            {
+              name: "feeBps",
+              type: "uint16",
+              internalType: "uint16",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InsufficientAuthorization",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "authorizedAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requestedAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidCollectorForOperation",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidExpiries",
+          inputs: [
+            {
+              name: "preApproval",
+              type: "uint48",
+              internalType: "uint48",
+            },
+            {
+              name: "authorization",
+              type: "uint48",
+              internalType: "uint48",
+            },
+            {
+              name: "refund",
+              type: "uint48",
+              internalType: "uint48",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidFeeBpsRange",
+          inputs: [
+            {
+              name: "minFeeBps",
+              type: "uint16",
+              internalType: "uint16",
+            },
+            {
+              name: "maxFeeBps",
+              type: "uint16",
+              internalType: "uint16",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidFeeReceiver",
+          inputs: [
+            {
+              name: "attempted",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "expected",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidSender",
+          inputs: [
+            {
+              name: "sender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "expected",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "PaymentAlreadyCollected",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "Reentrancy",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "RefundExceedsCapture",
+          inputs: [
+            {
+              name: "refund",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "captured",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TokenCollectionFailed",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ZeroAmount",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ZeroAuthorization",
+          inputs: [
+            {
+              name: "paymentInfoHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ZeroFeeReceiver",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
     },
   },
 } as const;
