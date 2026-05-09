@@ -261,6 +261,13 @@ html {
   line-height: 1.3em;
 }
 
+.text-body-1 {
+  font-family: var(--font-urbanist), "Urbanist", sans-serif;
+  font-weight: 300;
+  font-size: 19px;
+  line-height: 1.3em;
+}
+
 .text-body-1-caps {
   font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   font-weight: 300;

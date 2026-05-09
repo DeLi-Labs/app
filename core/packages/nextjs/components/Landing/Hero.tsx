@@ -1,82 +1,61 @@
 "use client";
 
 import Image from "next/image";
+import { LandingState } from "../LandingPage";
+import { HeroPopularTokens } from "./HeroPopularTokens";
 import { StatsSection } from "./StatsSection";
 import { LaunchAppButton, ViewOnGitHubButton } from "~~/components/ui/Buttons";
-import { LandingState } from "../LandingPage";
 
-export const Hero = ({
-  landingState
-}: {
-  landingState: LandingState;
-}) => {
+const HERO_BG_SRC = "/1ebc2ecddac10f1215f1374e9fb172e8666b439f.jpg";
+const HERO_BG_WIDTH = 3840;
+const HERO_BG_HEIGHT = 2160;
+
+export const Hero = ({ landingState }: { landingState: LandingState }) => {
   return (
-    <section className="relative flex flex-col items-center justify-center text-center pt-32 pb-20 px-5 overflow-hidden min-h-[90vh] bg-deli-main">
-      {/* Background Glow */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 95%)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 95%)",
-        }}
-      >
-        <Image src="/assets/bg-light.svg" alt="Background Light" fill className="object-cover opacity-50" priority />
-      </div>
+    <section className="relative bg-deli-main overflow-x-hidden">
+      <div className="flex flex-col gap-20 pt-14 pb-24">
+        <div className="relative mx-auto w-full max-w-[1290px]">
+          <div className="relative grid w-full">
+            <Image
+              src={HERO_BG_SRC}
+              alt=""
+              width={HERO_BG_WIDTH}
+              height={HERO_BG_HEIGHT}
+              className="col-span-full row-span-full w-full h-auto pointer-events-none select-none mix-blend-color-dodge"
+              priority
+            />
+            <div className="col-span-full row-span-full z-10 flex h-full min-h-0 w-full items-center py-12">
+              <div className="flex w-full items-stretch justify-between gap-[70px]">
+                <div className="flex min-w-0 max-w-4xl flex-1 flex-col items-start justify-start text-left">
+                  <h1 className="text-h1 text-deli-white mb-6">
+                    <span className="whitespace-nowrap">Turn your ideas into</span> <br />{" "}
+                    <span className="text-deli-accent">liquid capital</span>
+                  </h1>
+                  <p className="text-h6 text-deli-white mb-10 max-w-2xl">
+                    Building Liquid IP for AI, data, and digital innovation. DeLi Labs is building decentralized
+                    licensing infrastructure for digital assets, data, and intellectual property.
+                  </p>
+                  <div className="flex w-full max-w-2xl flex-row items-center gap-4">
+                    <div className="flex min-h-0 min-w-0 flex-1 [&_a]:flex [&_a]:min-h-14 [&_a]:w-full [&_a]:flex-1 [&_button]:min-h-14 [&_button]:w-full [&_button]:flex-1">
+                      <LaunchAppButton className="min-h-14 w-full min-w-0 flex-1" />
+                    </div>
+                    <div className="flex min-h-0 min-w-0 flex-1">
+                      <ViewOnGitHubButton
+                        href="https://github.com/DeLi-Labs"
+                        className="!flex min-h-14 w-full min-w-0 flex-1 items-center justify-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <HeroPopularTokens />
+              </div>
+            </div>
+          </div>
+        </div>
 
-      {/* Background Masked Images from Figma */}
-      <div
-        className="absolute inset-0 overflow-hidden pointer-events-none z-0 select-none"
-        style={{
-          maskImage:
-            "radial-gradient(circle at center, black 15%, transparent 55%), linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 95%)",
-          WebkitMaskImage:
-            "radial-gradient(circle at center, black 15%, transparent 55%), linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 95%)",
-          WebkitMaskComposite: "source-in",
-          maskComposite: "intersect",
-        }}
-      >
-        {/* Top Texture at y=0 */}
-        <div className="absolute top-0 left-0 w-full h-[776px] opacity-[0.48] mix-blend-plus-lighter">
-          <Image src="/assets/Rectangle.png" alt="Hero Mask Top" fill className="object-cover" />
+        <div className="w-full relative z-20">
+          <StatsSection landingState={landingState} />
         </div>
-        {/* Bottom Texture at y=742px - Flipped for seamless transition */}
-        <div className="absolute top-[742px] left-0 w-full h-[776px] opacity-[0.48] mix-blend-plus-lighter transform scale-y-[-1]">
-          <Image src="/assets/Rectangle.png" alt="Hero Mask Bottom" fill className="object-cover" />
-        </div>
-      </div>
-
-      <div className="max-w-4xl z-10">
-        {/* Header-1: Urbanist 400, 80px, 1.1em line-height */}
-        <h1 className="text-h1 text-deli-white mb-6">
-          Turn your ideas into <br /> <span className="text-deli-accent">liquid capital</span>
-        </h1>
-        {/* Header-6: Urbanist 400, 21px, 1.3em line-height */}
-        <p className="text-h6 text-deli-white mb-10 max-w-2xl mx-auto">
-          Building Liquid IP for AI, data, and digital innovation. DeLi Labs is building decentralized licensing
-          infrastructure for digital assets, data, and intellectual property.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <LaunchAppButton />
-          <ViewOnGitHubButton href="https://github.com/DeLi-Labs" />
-        </div>
-      </div>
-      <div className="mt-20 relative flex items-center justify-center">
-        {/* Background image around the sphere from Figma */}
-        <div className="absolute w-[623px] h-[623px] -z-10">
-          <Image src="/assets/sphere-bg.svg" alt="Sphere Background" fill className="object-contain opacity-80" />
-        </div>
-        <Image
-          src="/assets/logo-sphere.svg"
-          alt="Logo Sphere"
-          width={340}
-          height={340}
-          className="rounded-full shadow-[0_0_100px_rgba(167,209,254,0.3)] relative z-10"
-        />
-      </div>
-
-      {/* Render the StatsSection inside Hero to inherit the background styling */}
-      <div className="mt-12 w-full relative z-20">
-        <StatsSection landingState={landingState}/>
       </div>
     </section>
   );

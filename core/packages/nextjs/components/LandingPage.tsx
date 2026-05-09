@@ -145,10 +145,6 @@ export const LandingPage = () => {
         <AboutUs />
       </div>
 
-      <div id="ip-tokens" className={`w-full relative z-10 ${sectionAnchorClass}`}>
-        <DiscoverAllTokens />
-      </div>
-
       <div className="w-full relative z-10 overflow-hidden">
         <TheInfrastructureLayer />
       </div>

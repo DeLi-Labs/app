@@ -222,7 +222,7 @@ export const WhyDeliLabs = () => {
           </div>
 
           {/* Card 3: Banner / Turn your ideas */}
-          <div className={`relative rounded-[20px] overflow-hidden group w-full lg:w-[312px] h-[455px] ${cardShell}`}>
+          <div className={`relative rounded-[20px] overflow-hidden pb-1 group w-full lg:w-[312px] h-[455px] ${cardShell}`}>
             {/* Ellipse (White) */}
             <div
               className="absolute pointer-events-none z-0"
@@ -333,22 +333,22 @@ export const WhyDeliLabs = () => {
               </Link>
             </div>
 
-            {/* text container */}
             <div
-              className="absolute z-20 flex flex-col items-start p-0 gap-[10px]"
+              className="absolute z-20 flex max-h-[210px] min-h-0 flex-col items-start gap-[10px] p-0"
               style={{
                 width: "calc(100% - 40px)",
-                height: "178px",
                 left: "20px",
-                top: "256px",
+                right: "20px",
+                bottom: "12px",
+                top: "auto",
               }}
             >
-              <h3 className="font-urbanist font-normal text-[35px] leading-[120%] text-white m-0 self-stretch">
+              <h3 className="font-urbanist shrink-0 font-normal text-[35px] leading-[120%] text-white m-0 self-stretch">
                 Turn your ideas
                 <br />
                 into liquid capital.
               </h3>
-              <p className="font-urbanist font-normal text-[16px] leading-[130%] text-[#9FA1A1] m-0 self-stretch">
+              <p className="font-urbanist min-h-0 shrink font-normal text-[16px] leading-[130%] text-[#9FA1A1] m-0 min-w-0 self-stretch pb-1">
                 The first Web 3.0 platform for tokenization and instant monetization of patents. Enable an influx of
                 investment in your technology through IP-Fi.
               </p>
