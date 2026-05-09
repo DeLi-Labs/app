@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
 import toast from "react-hot-toast";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits, parseUnits, type Address } from "viem";
 import { useAccount, usePublicClient, useReadContract, useSignTypedData, useWalletClient } from "wagmi";
 import { PlusIcon, WalletIcon } from "@heroicons/react/24/outline";
 import { arrowsSwapSvg } from "~~/components/assets/common";
@@ -72,6 +72,7 @@ const TOKEN_CARD_CLASS =
 
 const numberInputPattern = /^\d*\.?\d*$/;
 const TICK_SPACING = 30;
+const LICENSE_DECIMALS = 18;
 const MIN_SQRT_PRICE_X96_PLUS_ONE = 4295128740n;
 const MAX_SQRT_PRICE_X96_MINUS_ONE = 1461446703485210103287273052203988822378723970341n;
 const ERC20_BALANCE_ABI = [
@@ -263,6 +264,10 @@ const CampaignSwapper = ({
     const ext = (externalContracts as Record<number, Record<string, { address: string }>>)[chainId];
     return ext?.Permit2?.address as `0x${string}` | undefined;
   }, [chainId]);
+  const permit2Abi = useMemo(() => {
+    const ext = (externalContracts as Record<number, Record<string, { abi?: readonly unknown[] }>>)[chainId];
+    return ext?.Permit2?.abi;
+  }, [chainId]);
 
   const selectedHookContract = useMemo(() => {
     const chainContracts = (
@@ -270,6 +275,12 @@ const CampaignSwapper = ({
     )[chainId];
     return licenseType === "DYNAMIC" ? chainContracts?.DynamicPriceLicenseHook : chainContracts?.FixedPriceLicenseHook;
   }, [chainId, licenseType]);
+  const swapRouterAddress = useMemo(() => {
+    const chainContracts = (
+      deployedContracts as Record<number, Record<string, { address: string; abi: readonly unknown[] }>>
+    )[chainId];
+    return chainContracts?.LicenseSwapRouter?.address as `0x${string}` | undefined;
+  }, [chainId]);
 
   const balanceQueryEnabled = Boolean(address && licenseAddress && numeraireAddress);
 
@@ -448,6 +459,10 @@ const CampaignSwapper = ({
       toast.error("Swap is not available on this network.");
       return;
     }
+    if (!permit2Abi || !swapRouterAddress || !selectedHookContract) {
+      toast.error("Swap contracts are not configured for this network.");
+      return;
+    }
     if (!firstAmount || Number(firstAmount) <= 0) {
       toast.error("Enter an amount to swap.");
       return;
@@ -457,29 +472,69 @@ const CampaignSwapper = ({
       setSwapPhase("submitting");
 
       const buy = firstLabel === "Buy";
-      const tokenId = 0;
       const campaignId = licenseAddress;
-      const quoteUrl = `/api/mcp/ip/${tokenId}/${campaignId}/quote`;
-      const quoteReq = await fetch(quoteUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: firstAmount.trim(),
-          userAddress: connectedAddress,
-          buy,
-        }),
-      });
-      const quoteJson = await quoteReq.json();
-      if (!quoteReq.ok) {
-        throw new Error(quoteJson?.error ?? quoteJson?.details ?? "Failed to prepare swap quote.");
-      }
+      const amountLicenseRaw = parseUnits(firstAmount.trim(), LICENSE_DECIMALS);
+      const quotedAmountInRaw = buy
+        ? ((await publicClient.readContract({
+            address: selectedHookContract.address as `0x${string}`,
+            abi: [...selectedHookContract.abi],
+            functionName: "quote",
+            args: [
+              {
+                currency0: licenseAddress as `0x${string}`,
+                currency1: numeraireAddress as `0x${string}`,
+                fee: 0,
+                tickSpacing: TICK_SPACING,
+                hooks: selectedHookContract.address as `0x${string}`,
+              },
+              {
+                zeroForOne: false,
+                amountSpecified: amountLicenseRaw,
+                sqrtPriceLimitX96: MAX_SQRT_PRICE_X96_MINUS_ONE,
+              },
+            ],
+          })) as bigint)
+        : amountLicenseRaw;
+      const amountInRaw = quotedAmountInRaw < 0n ? -quotedAmountInRaw : quotedAmountInRaw;
+      const inputTokenAddress = (buy ? numeraireAddress : licenseAddress) as `0x${string}`;
+      const permitNonceResult = (await publicClient.readContract({
+        address: permit2Address,
+        abi: [...permit2Abi],
+        functionName: "allowance",
+        args: [connectedAddress as Address, inputTokenAddress as Address, swapRouterAddress as Address],
+      })) as readonly [bigint, bigint, bigint];
 
-      const rawPermit = quoteJson?.permitMessage as PermitMessage | undefined;
-      if (!rawPermit) {
-        throw new Error("Quote API did not return a permit message.");
-      }
-
-      const permitMessage = normalizePermitMessageForWallet(rawPermit);
+      const permitMessage = normalizePermitMessageForWallet({
+        domain: {
+          name: "Permit2",
+          chainId,
+          verifyingContract: permit2Address,
+        },
+        types: {
+          PermitSingle: [
+            { name: "details", type: "PermitDetails" },
+            { name: "spender", type: "address" },
+            { name: "sigDeadline", type: "uint256" },
+          ],
+          PermitDetails: [
+            { name: "token", type: "address" },
+            { name: "amount", type: "uint160" },
+            { name: "expiration", type: "uint48" },
+            { name: "nonce", type: "uint48" },
+          ],
+        },
+        primaryType: "PermitSingle",
+        message: {
+          details: {
+            token: inputTokenAddress,
+            amount: amountInRaw.toString(),
+            expiration: Math.floor(Date.now() / 1000 + 30 * 24 * 60 * 60).toString(),
+            nonce: permitNonceResult[2].toString(),
+          },
+          spender: swapRouterAddress,
+          sigDeadline: Math.floor(Date.now() / 1000 + 30 * 60).toString(),
+        },
+      } as PermitMessage);
 
       const inputToken = permitMessage.message.details.token as `0x${string}`;
       const requiredAmount = BigInt(permitMessage.message.details.amount as string);
@@ -545,10 +600,15 @@ const CampaignSwapper = ({
     firstAmount,
     firstLabel,
     licenseAddress,
+    licenseType,
+    numeraireAddress,
     permit2Address,
+    permit2Abi,
     publicClient,
     refetchTokenBalances,
+    selectedHookContract,
     signTypedDataAsync,
+    swapRouterAddress,
     writeScaffoldContractAsync,
   ]);
 

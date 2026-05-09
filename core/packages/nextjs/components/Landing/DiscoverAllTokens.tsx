@@ -73,6 +73,7 @@ export const DiscoverAllTokens = () => {
 
         if (data && data.items) {
           const mappedTokens: TokenData[] = data.items.map((ip: DiscoverIP) => {
+            const resolvedGrowth = ip.topCampaign?.growth24h ?? ip.growthPercent ?? 0;
             const raw = ip.image?.trim() ?? "";
             const icon =
               !raw || raw.includes("picsum.photos")
@@ -89,8 +90,8 @@ export const DiscoverAllTokens = () => {
               marketCap: `$${ip.totalEmittedLicensesValueUSD?.toLocaleString() ?? "0"}`,
               totalTradingVolume: `$${ip.totalTradingVolumeUSD?.toLocaleString() ?? "0"}`,
               totalInteractions: ip.totalInteractions?.toLocaleString() ?? "0",
-              growthPercent: `${(ip.growthPercent ?? 0).toFixed(2)}%`,
-              growthValue: ip.growthPercent ?? 0,
+              growthPercent: `${resolvedGrowth.toFixed(2)}%`,
+              growthValue: resolvedGrowth,
             };
           });
           setTokens(mappedTokens);

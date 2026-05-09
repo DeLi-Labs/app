@@ -12,7 +12,7 @@ import { PATENT_CATEGORY_COLORS } from "~~/utils/patentCategoryColors";
 import type { PatentDetail } from "~~/types";
 
 const getPatentDetail = async (id: string, signal?: AbortSignal): Promise<PatentDetail> => {
-  const response = await fetch(`/api/ip/${id}/detail?tokenId=${id}`, { signal });
+  const response = await fetch(`/api/ip/${id}`, { signal });
   if (response.status === 404) {
     throw new Error("PATENT_NOT_FOUND");
   }

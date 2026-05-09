@@ -2573,7 +2573,7 @@ const externalContracts = {
     },
     /** Local mock USDC (MockNumeraire from DeployRouter). */
     MockNumeraire: {
-      address: "0xA965C3FbF0dc87367858F791FADAE2d6FdE9f0F7",
+      address: "0x545FEe85C38DC3369B21430FDFB086F51834BFa7",
       abi: [
         {
           type: "function",

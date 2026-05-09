@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
   webpack: config => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.externals.push("pino-pretty", "lokijs", "encoding");
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings ?? []),
+      warning =>
+        warning.message?.includes("Critical dependency: the request of a dependency is an expression") &&
+        warning.module?.resource?.includes("/node_modules/ox/_esm/tempo/internal/virtualMasterPool.js"),
+    ];
     return config;
   },
 };
