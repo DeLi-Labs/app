@@ -64,7 +64,7 @@ export const SubscribeWelcomeEmail = ({ siteUrl = "http://localhost:3000" }: Sub
         <Heading style={headingStyle}>Thanks for joining the early list.</Heading>
 
         <Text style={leadStyle}>
-          We genuinely appreciate your interest in DeLi. We&apos;re currently in private beta — building, polishing, and
+          We genuinely appreciate your interest in DeLi. We&apos;re currently in private beta on devnet — building, polishing, and
           onboarding our first cohort.
         </Text>
 
