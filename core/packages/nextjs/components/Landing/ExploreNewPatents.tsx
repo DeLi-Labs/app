@@ -96,21 +96,21 @@ export const ExploreNewPatents = ({ landingState }: { landingState: LandingState
 
   return (
     <section className="py-[120px] flex flex-col gap-[55px] relative overflow-hidden">
-      <div className="max-w-[1290px] mx-auto w-full px-5 lg:px-0">
+      <div className="max-w-[1440px] mx-auto w-full px-5 lg:px-[75px]">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="max-w-[400px]">
-            <h2 className="text-h2 text-deli-white mb-0">Explore new patents</h2>
+            <h2 className="text-h2 text-deli-white mb-0">Explore new cases</h2>
           </div>
           <div className="max-w-[413px]">
             <p className="text-body-2 text-deli-white m-0 opacity-80">
-              Be the first to learn about the latest developments. This section contains the most recent patents that
-              have just been tokenized and are now available for interaction.
+              Be the first to spot new opportunities. This section contains the most recently opened patent cases
+              that are now available for collective funding.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-[1290px] mx-auto w-full px-5 lg:px-0">
+      <div className="max-w-[1440px] mx-auto w-full px-5 lg:px-[75px]">
         <div
           ref={scrollRef}
           onScroll={onScroll}
@@ -136,7 +136,7 @@ export const ExploreNewPatents = ({ landingState }: { landingState: LandingState
         </div>
       </div>
 
-      <div className="max-w-[1290px] mx-auto w-full px-5 lg:px-0 mt-4">
+      <div className="max-w-[1440px] mx-auto w-full px-5 lg:px-[75px] mt-4">
         <div className="flex justify-between items-center w-full mx-auto">
           <button
             onClick={() => scroll("left")}

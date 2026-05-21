@@ -118,14 +118,14 @@ export const CategoriesSection = ({ landingState }: { landingState: LandingState
 
   return (
     <section className="py-20">
-      <div className="mb-14 max-w-[1290px] mx-auto px-5 lg:px-0 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
+      <div className="mb-14 max-w-[1440px] mx-auto px-5 lg:px-[75px] flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
         <h2 className="text-h2 text-deli-white leading-none m-0">Explore all categories</h2>
         <p className="text-h6 text-deli-grey-light max-w-xl m-0">
-          From biotechnology to AI, explore patents grouped by key technology areas. Find the niche that will change
-          tomorrow&apos;s world.
+          From biotechnology to AI, explore active patent cases grouped by key technology areas. Back the disputes
+          that will shape tomorrow&apos;s industries.
         </p>
       </div>
-      <div className="max-w-[1290px] mx-auto w-full px-5 lg:px-0 relative overflow-hidden">
+      <div className="max-w-[1440px] mx-auto w-full px-5 lg:px-[75px] relative overflow-hidden">
         <div className="flex w-max animate-marquee hover:[animation-play-state:paused] pb-10 pt-8 items-center">
           {[...Array(2)].map((_, i) => (
             <div key={i} className="flex gap-6 xl:gap-10 pr-6 xl:pr-10 shrink-0 items-center">

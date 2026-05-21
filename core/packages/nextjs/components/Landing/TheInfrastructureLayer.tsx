@@ -2,8 +2,8 @@ import React from "react";
 
 export const TheInfrastructureLayer = () => {
   return (
-    <section className="w-full flex justify-center py-20 overflow-hidden relative px-5">
-      <div className="relative w-full max-w-[1290px] min-h-[499px] flex flex-col">
+    <section className="relative w-full flex justify-center overflow-hidden py-20">
+      <div className="relative mx-auto w-full max-w-[1440px] min-h-[499px] flex flex-col">
         {/* bg - left half */}
         <div
           className="absolute overflow-hidden pointer-events-none rounded-l-[20px]"
@@ -114,7 +114,7 @@ export const TheInfrastructureLayer = () => {
         </div>
 
         {/* Content Section */}
-        <div className="relative z-10 flex flex-col gap-12 lg:gap-[67px]">
+        <div className="relative z-10 flex flex-col gap-12 px-5 lg:gap-[67px] lg:px-[75px]">
           {/* Top Header Section */}
           <div className="flex flex-col lg:flex-row justify-between items-start w-full gap-6">
             <h2
@@ -137,8 +137,8 @@ export const TheInfrastructureLayer = () => {
                 lineHeight: "130%",
               }}
             >
-              Behind every patent lies a complex system of legal and software solutions. DeLi&apos;s infrastructure
-              represents a new generation of standards for protecting and monetizing ideas on a global scale.
+              Patent disputes span legal, financial, and procedural complexity. DeLi unifies funding and
+              resolution on one platform.
             </p>
           </div>
 
@@ -147,24 +147,24 @@ export const TheInfrastructureLayer = () => {
             {/* Left Column */}
             <div className="flex flex-col gap-[10px] w-full lg:w-1/2">
               <Card
-                title="On-Chain IP Representation"
-                description="We transform IP into programmable on-chain primitives. Assets embed ownership rights and execution logic directly into their code."
+                title="Per-Case DAOs"
+                description="Each accepted case spins up its own DAO with a dedicated treasury, funder set, and legal wrapper. No cross-case exposure, no commingled capital."
               />
               <Card
-                title="Programmable Licensing"
-                description="We replace static contracts with automated smart mechanisms. Royalties flow in real-time based on usage, bypassing intermediaries."
+                title="Milestone-Gated Capital"
+                description="We replace upfront capital calls with milestone-driven release. Funds unlock as the case reaches predefined checkpoints — all the way to settlement or judgment."
               />
             </div>
 
             {/* Right Column */}
             <div className="flex flex-col gap-[10px] w-full lg:w-1/2">
               <Card
-                title="Decentralized Governance"
-                description="We build frameworks for community-led pricing and access. This ensures the infrastructure remains neutral and controlled by its builders."
+                title="Funder Exit Checkpoints"
+                description="Funders can crystallize a position at known lifecycle points — after due diligence, before filing, or after an adverse ruling. Lock-in is never the only option."
               />
               <Card
-                title="Cryptographic Provenance"
-                description="We provide an immutable ledger for AI and data lineage. This guarantees verifiable attribution across digital supply chains."
+                title="AI-Assisted Case Dashboard"
+                description="Every case is surfaced through a unified, AI-synthesized dashboard with patent strength, infringement read, damages range, and recoverability — before a single dollar is committed."
               />
             </div>
           </div>

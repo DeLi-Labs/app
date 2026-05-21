@@ -110,7 +110,7 @@ export const DiscoverAllTokens = () => {
   return (
     <section className="min-h-[1550px] pt-[120px] pb-[160px] flex flex-col relative overflow-hidden bg-[#070A0D]">
       {/* Background image */}
-      <div className="absolute top-0 inset-x-0 h-[459px] w-full max-w-[1290px] mx-auto overflow-hidden pointer-events-none rounded-[20px] left-1/2 -translate-x-1/2">
+      <div className="absolute top-0 inset-x-0 h-[459px] w-full max-w-[1440px] mx-auto overflow-hidden pointer-events-none rounded-[20px] left-1/2 -translate-x-1/2">
         <Image
           src="/assets/bg.png"
           alt="background waves"
@@ -119,7 +119,7 @@ export const DiscoverAllTokens = () => {
         />
       </div>
 
-      <div className="w-full max-w-[1290px] px-5 mx-auto z-10 flex flex-col gap-[60px]">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col gap-[60px] px-5 lg:px-[75px]">
         {/* Header Section (top) gap 535px */}
         <div className="flex flex-col lg:flex-row justify-between items-start gap-8 lg:gap-[535px] w-full">
           <div className="w-full lg:w-[357px]">

@@ -24,34 +24,33 @@ export const Accordion = ({ items, initialOpenIndex = 0 }: AccordionProps) => {
       {items.map((item, index) => {
         const isOpen = openIndex === index;
         return (
-          <div
-            key={index}
-            className="flex items-start gap-[15px] cursor-pointer group"
-            onClick={() => toggleOpen(index)}
-          >
+          <div key={index} className="flex flex-col group">
             <div
-              className={`w-[32px] h-[32px] rounded-full border border-white flex-shrink-0 flex items-center justify-center relative transition-transform duration-300 mt-[2px] ${
-                isOpen ? "rotate-45" : ""
-              }`}
+              className="flex items-center gap-[15px] cursor-pointer"
+              onClick={() => toggleOpen(index)}
             >
-              <div className="w-[12px] h-[1px] bg-white absolute"></div>
-              <div className="w-[1px] h-[12px] bg-white absolute"></div>
-            </div>
-            <div className="flex flex-col flex-1">
-              <h3 className="text-[21px] text-white leading-[130%] font-urbanist">
-                {item.question}
-              </h3>
               <div
-                className={`grid transition-all duration-300 ease-in-out ${
-                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                className={`w-[32px] h-[32px] rounded-full border border-white flex-shrink-0 flex items-center justify-center relative transition-transform duration-300 ${
+                  isOpen ? "rotate-45" : ""
                 }`}
               >
-                <div className="overflow-hidden">
-                  <div className="pt-[15px]">
-                    <p className="text-[16px] text-[#9FA1A1] leading-[130%] pb-2 font-urbanist">
-                      {item.answer}
-                    </p>
-                  </div>
+                <div className="w-[12px] h-[1px] bg-white absolute"></div>
+                <div className="w-[1px] h-[12px] bg-white absolute"></div>
+              </div>
+              <h3 className="text-[21px] text-white leading-[130%] font-urbanist flex-1 m-0">
+                {item.question}
+              </h3>
+            </div>
+            <div
+              className={`grid transition-all duration-300 ease-in-out ml-[47px] ${
+                isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="pt-[15px]">
+                  <p className="text-[16px] text-[#9FA1A1] leading-[130%] pb-2 font-urbanist m-0">
+                    {item.answer}
+                  </p>
                 </div>
               </div>
             </div>

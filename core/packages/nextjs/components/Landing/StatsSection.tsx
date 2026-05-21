@@ -36,15 +36,15 @@ export const StatsSection = ({ landingState }: { landingState?: LandingState }) 
   const isError = !!error;
 
   const stats = [
-    { title: "IP NFT MARKET CAP", value: formatDollar(statsData?.totalEmittedLicensesValueUSD), icon: MARKET_CAP_ICON },
+    { title: "CASES MARKET CAP", value: formatDollar(statsData?.totalEmittedLicensesValueUSD), icon: MARKET_CAP_ICON },
     {
       title: "24H TRADING VOLUME",
       value: formatDollar(statsData?.totalTradingVolume24hUSD),
       icon: _24H_TRADING_VOLUME_ICON,
     },
-    { title: "UNIQUE IP NFTs", value: formatNumber(statsData?.uniquePatents), icon: UNIQUE_IP_NFTS_ICON },
+    { title: "UNIQUE IP CASES", value: formatNumber(statsData?.uniquePatents), icon: UNIQUE_IP_NFTS_ICON },
     {
-      title: "UNIQUE CREATOR WALLETS",
+      title: "UNIQUE IP OWNERS",
       value: formatNumber(statsData?.uniquePatentOwners),
       icon: UNIQUE_CREATORS_WALLETS_ICON,
     },
@@ -57,8 +57,8 @@ export const StatsSection = ({ landingState }: { landingState?: LandingState }) 
   ];
 
   return (
-    <section className="relative pt-0 pb-24 px-10 overflow-hidden flex justify-center bg-transparent">
-      <div className="relative max-w-[1290px] mx-auto w-full pt-[25px]">
+    <section className="relative pt-0 pb-24 overflow-hidden flex justify-center bg-transparent">
+      <div className="relative mx-auto w-full max-w-[1440px] px-5 pt-[25px] lg:px-[75px]">
         {/* Physical light sources rendered directly behind the 3x2 grid */}
         <div className="hidden lg:block">
           <BackgroundLights />

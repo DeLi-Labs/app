@@ -2,11 +2,11 @@ import React from "react";
 
 export const DigitalEconomySection = () => {
   const textContent =
-    "The digital economy moves at the speed of light—running on data, code, AI models, and forked repositories. Yet, licensing remains stuck in the era of paper: slow, opaque, centralized, and disconnected from execution.";
+    "Patent infringement is routine in the digital economy, but enforcement stays out of reach for most - locked behind high costs, opaque underwriting, and funders chasing only multi-million dollar cases.";
 
   return (
-    <section className="relative px-5 py-32 flex justify-center items-center overflow-hidden">
-      <div className="relative w-full max-w-[1290px]">
+    <section className="relative py-32 flex justify-center items-center overflow-hidden">
+      <div className="relative mx-auto w-full max-w-[1440px]">
         {/* Greyed out base text */}
         <p className="font-urbanist font-light text-[24px] lg:text-[45px] leading-[130%] text-center text-white/20 m-0">
           {textContent}

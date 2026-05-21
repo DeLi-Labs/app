@@ -8,7 +8,7 @@ export const Banner: FC = () => {
       <div className="relative w-full min-h-[419px] overflow-hidden">
         {/* deli labs background text */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 bottom-[125px] w-full max-w-[1383px] h-[321px] px-4"
+          className="absolute inset-x-0 bottom-[125px] h-[321px] w-full"
           style={{
             background: "linear-gradient(180deg, #04305C 0%, rgba(14, 46, 82, 0) 100%)",
             WebkitMaskImage: "url('/assets/deli%20labs.png')",
@@ -25,10 +25,9 @@ export const Banner: FC = () => {
         {/* The horizontal divider line */}
         <div className="absolute w-full h-[0px] left-0 bottom-[96px] border-t-[2px] border-[#0F1314]" />
 
-        {/* Footer content container constrained to 1440px */}
-        <div className="absolute inset-0 w-full max-w-[1440px] mx-auto pointer-events-none z-10">
-          {/* Right text labels */}
-          <div className="absolute right-4 lg:right-[44px] bottom-[27px] flex flex-col gap-[5px] text-right pointer-events-auto w-fit">
+        {/* Footer aligned with page content grid */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-[27px] z-10 mx-auto w-full max-w-[1440px] px-5 lg:px-[75px]">
+          <div className="pointer-events-auto flex w-full flex-col items-end gap-[5px] text-right">
             <span className="font-urbanist font-light text-[12px] lg:text-[16px] leading-[140%] text-white">
               Designed by Tihon Belenkiy
             </span>

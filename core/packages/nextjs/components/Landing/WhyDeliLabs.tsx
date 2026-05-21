@@ -4,21 +4,21 @@ import { ArrowRightIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 const traditionalItems = [
-  "Static PDF files",
-  "Manual audit trail",
-  "Delayed royalty payments",
-  "High legal friction",
-  "Court-dependent enforcement",
-  "Isolated paper assets",
+  "Six-figure due diligence",
+  "Multi-million profit threshold",
+  "Only 3–5% of cases funded",
+  "Years of capital lock-in",
+  "Closed to retail funders",
+  "Opaque underwriting",
 ];
 
 const deliWayItems = [
-  "Living programmable code",
-  "Real-time verification",
-  "Instant automated splits",
-  "Seamless API integration",
-  "Enforced by design",
-  "Liquid on-chain primitives",
+  "AI-assisted case dashboard",
+  "Per-case DAO treasuries",
+  "Milestone-gated capital",
+  "Funder exit checkpoints",
+  "Open to collective funders",
+  "Transparent on-chain rails",
 ];
 
 /** Matches PatentHeader / StatCard: solid fill + var(--deli-stroke-grey) rim */
@@ -30,16 +30,16 @@ const listIconShell =
 
 export const WhyDeliLabs = () => {
   return (
-    <section className="relative py-24 px-5 overflow-hidden flex flex-col justify-center items-center bg-transparent">
-      <div className="relative w-full max-w-[1290px] mx-auto">
+    <section className="relative py-24 overflow-hidden flex flex-col justify-center items-center bg-transparent">
+      <div className="relative mx-auto w-full max-w-[1440px] px-5 lg:px-[75px]">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-8">
           <h2 className="font-urbanist font-light text-[35px] lg:text-[50px] leading-[110%] text-deli-white m-0">
             Why DeLi labs?
           </h2>
           <p className="font-urbanist font-light text-[16px] lg:text-[18px] leading-[150%] text-deli-white max-w-[500px] m-0">
-            Forget about months of paperwork and hidden fees. We compared the traditional approach to licensing with
-            DeLi&apos;s transparent model. Spoiler alert: the future lies in speed and blockchain.
+            Forget six-figure due diligence and gated underwriting. We compared traditional litigation finance with
+            DeLi&apos;s collective model. Spoiler alert: the future lies in transparency on blockchain rails.
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export const WhyDeliLabs = () => {
               }}
             />
 
-            <h3 className="font-urbanist text-[25px] leading-[1.4em] text-deli-white z-10">Traditional Licensing</h3>
+            <h3 className="font-urbanist text-[25px] leading-[1.4em] text-deli-white z-10">Traditional Litigation Finance</h3>
             <div className="flex flex-col gap-7 z-10">
               {traditionalItems.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-5">
@@ -334,23 +334,16 @@ export const WhyDeliLabs = () => {
             </div>
 
             <div
-              className="absolute z-20 flex max-h-[210px] min-h-0 flex-col items-start gap-[10px] p-0"
-              style={{
-                width: "calc(100% - 40px)",
-                left: "20px",
-                right: "20px",
-                bottom: "12px",
-                top: "auto",
-              }}
+              className="absolute z-20 bottom-6 left-5 right-5 flex max-h-[210px] min-h-0 flex-col items-start gap-[10px] p-0"
             >
               <h3 className="font-urbanist shrink-0 font-normal text-[35px] leading-[120%] text-white m-0 self-stretch">
-                Turn your ideas
+                Turn patent disputes
                 <br />
                 into liquid capital.
               </h3>
-              <p className="font-urbanist min-h-0 shrink font-normal text-[16px] leading-[130%] text-[#9FA1A1] m-0 min-w-0 self-stretch pb-1">
-                The first Web 3.0 platform for tokenization and instant monetization of patents. Enable an influx of
-                investment in your technology through IP-Fi.
+              <p className="font-urbanist min-h-0 shrink font-normal text-[16px] leading-[130%] text-[#9FA1A1] m-0 min-w-0 self-stretch">
+                The first Web 3.0 platform for collective patent enforcement funding. Open every case to a global
+                pool of funders through per-case DAOs.
               </p>
             </div>
           </div>

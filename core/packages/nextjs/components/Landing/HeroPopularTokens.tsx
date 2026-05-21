@@ -143,7 +143,7 @@ export const HeroPopularTokens = ({ className = "" }: HeroPopularTokensProps) =>
 
   return (
     <div
-      className={`mb-[65px] box-border flex h-[300px] w-[510px] min-h-0 min-w-0 shrink-0 flex-col overflow-hidden rounded-[30px] border-2 border-transparent bg-deli-main px-8 py-5 [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-main)_border-box] ${className}`}
+      className={`mb-0 box-border flex h-[300px] w-full min-h-0 min-w-0 shrink-0 flex-col overflow-hidden rounded-[30px] border-2 border-transparent bg-deli-main px-8 py-5 [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-main)_border-box] lg:mb-[65px] lg:w-[510px] ${className}`}
     >
       <div className="mb-[20px] flex shrink-0 items-center justify-between gap-4">
         <h2 className="text-h6 text-deli-white m-0">Popular</h2>
