@@ -5,39 +5,10 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-enum IPStatus {
-    Green,
-    Yellow,
-    Red
-}
-
-enum ReasonCode {
-    None,
-    OppositionFiled,
-    LitigationPending,
-    RevokedByOffice,
-    RenewalFeeNotPaid,
-    Expired,
-    Settled,
-    InjunctionIssued
-}
-
-/// @title Metadata
-/// @notice Dynamic metadata of the IP NFT. It can and should be updated by the IP owner.
-struct Metadata {
-    IPStatus status;
-    uint256 statusUpdateTimestamp;
-    string statusUpdateExplanation;
-    ReasonCode reasonCode;
-    string caseReference;
-}
-
 /// @title PatentERC721
 /// @dev Current architecture of a protocol assumes that metadata is stored in EigenDA
 contract IPERC721 is ERC721URIStorage, Ownable {
-    event MetadataUpdated(uint256 indexed tokenId, Metadata metadata);
     error NotTheOwnerOfUnderlyingAsset(address underlyingAsset, uint256 underlyingAssetId, address requester);
-    error NotTheOwnerOfIP(uint256 tokenId, address requester);
     error AssetNotApproved(address underlyingAsset);
 
     uint256 public _nextTokenId;
@@ -45,7 +16,6 @@ contract IPERC721 is ERC721URIStorage, Ownable {
     mapping(uint256 tokenId => address underlyingAsset) public underlyingAssets;
     mapping(uint256 tokenId => uint256 underlyingAssetId)
         public underlyingAssetIds;
-    mapping(uint256 tokenId => Metadata metadata) public metadata;
     mapping(address underlyingAsset => bool) public isApprovedAsset;
 
     /// @notice Deploys the Patent ERC721.
@@ -90,21 +60,6 @@ contract IPERC721 is ERC721URIStorage, Ownable {
 
         _nextTokenId++;
         return _nextTokenId - 1;
-    }
-
-    /// @notice Updates the metadata of the IP NFT.
-    /// @dev Should accept and validate proof that msg.sender completed KYC and ownership of IP is verified. TODO: add proof validation
-    /// @param _tokenId The token ID to update.
-    /// @param _newMetadata The new metadata to set.
-    function updateMetadata(
-        uint256 _tokenId,
-        Metadata memory _newMetadata
-    ) public {
-        if (ownerOf(_tokenId) != msg.sender) {
-            revert NotTheOwnerOfIP(_tokenId, msg.sender);
-        }
-        metadata[_tokenId] = _newMetadata;
-        emit MetadataUpdated(_tokenId, _newMetadata);
     }
 
     /// @notice Adds an approved underlying asset to the contract.

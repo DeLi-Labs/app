@@ -10,6 +10,7 @@ import {Currency} from "@v4-core/types/Currency.sol";
 import {StateLibrary} from "@v4-core/libraries/StateLibrary.sol";
 import {IHooks} from "@v4-core/interfaces/IHooks.sol";
 import {LicenseERC20} from "./LicenseERC20.sol";
+import {Metadata} from "./CaseMetadata.sol";
 import {TickMath} from "@v4-core/libraries/TickMath.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Create2} from "@openzeppelin/contracts/utils/Create2.sol";
@@ -106,6 +107,7 @@ contract CampaignManager is Ownable, IERC721Receiver {
         IERC20 numeraire,
         LicenseType licenseType,
         uint256 totalTokensToSell,
+        Metadata memory initialMetadata,
         bytes calldata _params
     ) external {
         _validateGeneral(
@@ -122,6 +124,8 @@ contract CampaignManager is Ownable, IERC721Receiver {
             assetMetadataUri,
             licenseType
         );
+
+        license.updateMetadata(initialMetadata);
 
         ILicenseHook licenseHook = licenseHooks[licenseType];
 
@@ -341,5 +345,19 @@ contract CampaignManager is Ownable, IERC721Receiver {
         patentErc721.safeTransferFrom(address(this), staker, patentId);
 
         emit PatentRedeemed(patentId, staker);
+    }
+
+    /// @notice Updates case metadata on a license token. Only the patent staker may call.
+    function updateLicenseMetadata(
+        LicenseERC20 license,
+        Metadata memory newMetadata
+    ) external {
+        uint256 patentId = license.patentId();
+        require(stakedPatents[patentId] == msg.sender, PatentNotOwned());
+        require(
+            patentErc721.ownerOf(patentId) == address(this),
+            PatentNotStaked()
+        );
+        license.updateMetadata(newMetadata);
     }
 }
