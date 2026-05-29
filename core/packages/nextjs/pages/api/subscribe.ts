@@ -10,15 +10,14 @@ type SubscribeResponse = { ok: true } | { error: string };
 
 const getSiteUrl = () => {
   const url = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (url) return url.replace(/\/$/, "");
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "https://deli.xyz";
+  if (url) {
+    return url.replace(/\/$/, "");
+  } else {
+    throw new Error("NEXT_PUBLIC_SITE_URL is not set");
+  }
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<SubscribeResponse>,
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<SubscribeResponse>) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
