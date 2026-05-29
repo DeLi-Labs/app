@@ -12,6 +12,9 @@ import type {
   CampaignUploadFormData,
   PermitMessage,
 } from "~~/types";
+import { generateDefendantRecoverability, generatePatentStrength } from "~~/utils/generateCampaignDdVerdict";
+import { generateEstimatedDamages } from "~~/utils/generateEstimatedDamages";
+import { generateTimelineProjection } from "~~/utils/generateTimelineProjection";
 import { getRpcHttpUrl } from "~~/utils/scaffold-eth/networks";
 
 const TICK_SPACING = 30;
@@ -238,6 +241,13 @@ export class CampaignProvider {
       licenseDuration: formData.licenseDuration,
       territoryRestriction: formData.territoryRestriction,
       usageRightsDefinition: formData.usageRightsDefinition,
+      caseDescription: formData.caseDescription,
+      estimatedDamages: generateEstimatedDamages(),
+      patentStrength: generatePatentStrength(),
+      defendantRecoverability: generateDefendantRecoverability(),
+      timelineProjection: generateTimelineProjection(),
+      defendant: formData.defendant,
+      defendantOpenCorporatesPage: formData.defendantOpenCorporatesPage,
       transferrabilityFlag: formData.transferrabilityFlag,
     };
 

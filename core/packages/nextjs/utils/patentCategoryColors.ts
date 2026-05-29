@@ -28,3 +28,11 @@ export const PATENT_CATEGORY_COLORS = {
     end: "var(--deli-cat-creative-to)",
   },
 } satisfies Record<PatentCategory, { start: string; end: string }>;
+
+export function getPatentCategoryColors(category: PatentCategory) {
+  return PATENT_CATEGORY_COLORS[category] ?? PATENT_CATEGORY_COLORS.Technology;
+}
+
+export function getPatentCategoryStroke(category: PatentCategory): string {
+  return `var(--deli-cat-stroke-${category.toLowerCase()})`;
+}

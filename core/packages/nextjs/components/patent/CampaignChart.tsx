@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useState } fro
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import type { CampaignPeriodName, PatentDetailCampaign } from "~~/types";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth";
+import { formatChartPrice } from "~~/utils/formatting";
 
 type CampaignChartProps = {
   licenseAddress?: string;
@@ -26,13 +27,6 @@ const PERIOD_OPTIONS = [
 type PeriodOption = CampaignPeriodName;
 
 type ChartPoint = { timestamp: number; avgPrice: number | null };
-
-function formatChartPrice(value: number): string {
-  if (!Number.isFinite(value)) return "—";
-  const abs = Math.abs(value);
-  const maxFractionDigits = abs >= 1 ? 4 : abs >= 0.01 ? 6 : 8;
-  return new Intl.NumberFormat(undefined, { maximumFractionDigits: maxFractionDigits }).format(value);
-}
 
 function ChartHoverSync({
   active,

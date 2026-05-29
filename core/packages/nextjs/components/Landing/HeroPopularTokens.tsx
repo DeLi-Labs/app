@@ -8,6 +8,10 @@ import { DECLINE_ICON, GROWTH_ICON } from "~~/components/assets/common";
 import { type DiscoverIP } from "~~/types";
 import { storageUriToProxiedImageUrl } from "~~/utils/storageMediaUrl";
 
+/** Panel stops shrinking below this on lg+ (icon + columns + padding). */
+export const HERO_POPULAR_TOKENS_MIN_WIDTH_PX = 320;
+export const HERO_POPULAR_TOKENS_MAX_WIDTH_PX = 510;
+
 const formatCompactValue = (value?: number | string | null, suffix = "") => {
   if (value === undefined || value === null || value === "") return "-";
   if (typeof value === "number") {
@@ -66,7 +70,8 @@ const mapDiscoverItem = (ip: DiscoverIP): Row => {
 };
 
 const skeletonClassName = "animate-pulse rounded-md bg-deli-background";
-const tokenRowClassName = "grid w-full grid-cols-[32px_minmax(0,150px)_90px_90px] items-center justify-between py-1";
+const tokenRowClassName =
+  "grid w-full min-w-0 grid-cols-[32px_minmax(0,1fr)_minmax(0,4.5rem)_minmax(0,3.75rem)] items-center gap-x-1.5 py-1 lg:gap-x-2.5";
 
 const PopularTokensTableSkeleton = () => (
   <ul className="m-0 flex list-none flex-col divide-y divide-white/10 p-0" aria-busy="true" aria-label="Loading tokens">
@@ -75,8 +80,8 @@ const PopularTokensTableSkeleton = () => (
         <div className={tokenRowClassName} aria-hidden>
           <div className={`${skeletonClassName} size-8 shrink-0 rounded-full`} />
           <div className={`${skeletonClassName} h-5 w-28 max-w-full`} />
-          <div className={`${skeletonClassName} h-5 w-[4.5rem] max-w-full justify-self-center`} />
-          <div className={`${skeletonClassName} h-8 w-16 max-w-full justify-self-end`} />
+          <div className={`${skeletonClassName} h-5 w-[4.5rem] max-w-full`} />
+          <div className={`${skeletonClassName} h-8 w-[3.75rem] max-w-full justify-self-end`} />
         </div>
       </li>
     ))}
@@ -143,16 +148,16 @@ export const HeroPopularTokens = ({ className = "" }: HeroPopularTokensProps) =>
 
   return (
     <div
-      className={`mb-0 box-border flex h-[300px] w-full min-h-0 min-w-0 shrink-0 flex-col overflow-hidden rounded-[30px] border-2 border-transparent bg-deli-main px-8 py-5 [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-main)_border-box] lg:mb-[65px] lg:w-[510px] ${className}`}
+      className={`mb-0 box-border flex h-[300px] w-full min-h-0 min-w-0 max-w-none shrink-0 flex-col overflow-hidden rounded-[30px] border-2 border-transparent bg-deli-main px-8 py-5 [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-main)_border-box] max-lg:min-w-0 lg:mb-[65px] lg:min-w-[320px] lg:max-w-[510px] ${className}`}
     >
-      <div className="mb-[20px] flex shrink-0 items-center justify-between gap-4">
-        <h2 className="text-h6 text-deli-white m-0">Popular</h2>
+      <div className="mb-[20px] flex min-w-0 shrink-0 items-center justify-between gap-3">
+        <h2 className="text-h6 text-deli-white m-0 shrink-0">Popular</h2>
         <Link
-          href="/discover"
-          className="group inline-flex items-center gap-1 text-deli-grey-light text-body-2 no-underline"
+          href="/explore"
+          className="group inline-flex min-w-0 shrink items-center gap-1 text-deli-grey-light text-body-2 no-underline"
         >
-          <span className="relative inline-block after:pointer-events-none after:absolute after:left-0 after:top-[calc(100%+3px)] after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-[300ms] after:ease-out after:content-[''] group-hover:after:scale-x-100">
-            Discover all tokens
+          <span className="relative inline-block min-w-0 truncate after:pointer-events-none after:absolute after:left-0 after:top-[calc(100%+3px)] after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-[300ms] after:ease-out after:content-[''] group-hover:after:scale-x-100">
+            Discover all cases
           </span>
           <ChevronRightIcon className="shrink-0 text-deli-grey-light" />
         </Link>
@@ -162,7 +167,7 @@ export const HeroPopularTokens = ({ className = "" }: HeroPopularTokensProps) =>
         {isLoading ? (
           <PopularTokensTableSkeleton />
         ) : rows.length === 0 ? (
-          <p className="text-deli-grey-light text-body-2 m-0 py-4">No tokens yet.</p>
+          <p className="text-deli-grey-light text-body-2 m-0 w-full py-4 text-center">No cases available.</p>
         ) : (
           <ul className="m-0 flex list-none flex-col divide-y divide-white/10 p-0">
             {rows.map(row => (
@@ -178,10 +183,10 @@ export const HeroPopularTokens = ({ className = "" }: HeroPopularTokensProps) =>
                   <span className="min-w-0 overflow-hidden truncate text-deli-white text-body-2">
                     {formatPatentName(row.name)}
                   </span>
-                  <span className="min-w-0 justify-self-center overflow-hidden truncate whitespace-nowrap text-deli-white text-body-2 tabular-nums">
+                  <span className="min-w-0 overflow-hidden truncate whitespace-nowrap text-deli-white text-body-2 tabular-nums">
                     {row.priceLabel}
                   </span>
-                  <span className="flex min-w-0 max-w-full items-center justify-self-end overflow-hidden">
+                  <span className="flex min-w-0 items-center justify-self-end overflow-hidden">
                     {row.growth !== null && Number.isFinite(row.growth) ? (
                       <GrowthBadge growth={row.growth} />
                     ) : (

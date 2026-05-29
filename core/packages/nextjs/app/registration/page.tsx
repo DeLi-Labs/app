@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { usePrivy } from "@privy-io/react-auth";
+import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { useAccount } from "wagmi";
 import { CrumbsNavigation } from "~~/components/CrumbsNavigation";
 import { DELI_LOGO } from "~~/components/assets/common";
@@ -11,20 +11,39 @@ const BG_IMAGE_PATH = "/1ebc2ecddac10f1215f1374e9fb172e8666b439f.jpg";
 
 export default function RegistrationPage() {
   const router = useRouter();
-  const { status } = useAccount();
-  const { login } = usePrivy();
+  const { address, status } = useAccount();
+  const { ready, authenticated } = usePrivy();
   const hasRedirectedRef = useRef(false);
 
-  useEffect(() => {
-    if (status !== "connected" || hasRedirectedRef.current) return;
+  const redirectToProfile = useCallback(() => {
+    if (hasRedirectedRef.current) return;
     hasRedirectedRef.current = true;
     router.push("/profile");
-  }, [status, router]);
+  }, [router]);
+
+  const { login } = useLogin({
+    onComplete: redirectToProfile,
+  });
+
+  const isFullyConnected = ready && authenticated && status === "connected" && !!address;
+
+  useEffect(() => {
+    if (!isFullyConnected || hasRedirectedRef.current) return;
+    redirectToProfile();
+  }, [isFullyConnected, redirectToProfile]);
+
+  const handleSignIn = () => {
+    if (isFullyConnected) {
+      redirectToProfile();
+      return;
+    }
+    login();
+  };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-deli-main px-[10px] pb-8 pt-34 lg:px-[75px]">
+    <div className="relative min-h-screen overflow-x-hidden bg-deli-main pb-8 pt-34">
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45vh] min-h-[240px] max-h-[520px] lg:h-1/2 lg:min-h-0 lg:max-h-none"
+        className="pointer-events-none absolute bottom-0 left-1/2 z-0 h-[45vh] min-h-[240px] w-full max-w-[1440px] -translate-x-1/2 max-h-[520px] overflow-hidden rounded-t-[20px] lg:h-1/2 lg:min-h-0 lg:max-h-none"
         aria-hidden="true"
       >
         <div
@@ -44,7 +63,7 @@ export default function RegistrationPage() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[calc(100vh-72px)] flex-col gap-4">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-72px)] w-full max-w-[1440px] flex-col gap-4 px-5 lg:px-[75px]">
         <CrumbsNavigation />
 
         <section className="flex w-full flex-col gap-[60px] lg:flex-row lg:items-start lg:justify-between lg:gap-12">
@@ -58,7 +77,7 @@ export default function RegistrationPage() {
 
             <button
               type="button"
-              onClick={login}
+              onClick={handleSignIn}
               className="box-border flex h-[65px] w-full cursor-pointer items-center justify-center rounded-xl border border-transparent bg-deli-main text-h6 text-deli-white"
               style={{
                 border: "1px solid transparent",
@@ -78,6 +97,6 @@ export default function RegistrationPage() {
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

@@ -20,7 +20,7 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/#hero",
   },
   {
-    label: "IP Category",
+    label: "Categories",
     href: "/#ip-category",
   },
   {
@@ -28,8 +28,8 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/#about-us",
   },
   {
-    label: "IP Tokens",
-    href: "/#ip-tokens",
+    label: "All Cases",
+    href: "/explore",
   },
   {
     label: "FAQ",
@@ -245,9 +245,9 @@ export const Header = () => {
                         setIsMobileMenuOpen(false);
                         profileHeaderMenuConfig.onRegisterIp();
                       }}
-                      onStartLicensing={() => {
+                      onStartFunding={() => {
                         setIsMobileMenuOpen(false);
-                        profileHeaderMenuConfig.onStartLicensing();
+                        profileHeaderMenuConfig.onStartFunding();
                       }}
                       onExit={() => {
                         setIsMobileMenuOpen(false);

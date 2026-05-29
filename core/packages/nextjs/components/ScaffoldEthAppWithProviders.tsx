@@ -56,7 +56,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
             createOnLogin: "users-without-wallets",
           },
         },
-        loginMethods: ["wallet", "email"],
+        loginMethods: ["wallet", "email", "google", "github", "linkedin"],
       }}
     >
       <QueryClientProvider client={queryClient}>

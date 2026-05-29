@@ -45,8 +45,8 @@ const SortingIcons = ({ active, order }: { active?: boolean; order?: "asc" | "de
 
 const HEADER_MAP: Record<string, string> = {
   "№": "tokenId",
-  "IP NFT": "name",
-  "Market Cap": "totalEmittedLicensesValueUSD",
+  Patent: "name",
+  "Funding Target": "totalEmittedLicensesValueUSD",
   "Top Campaign Price": "topCampaign_currentPrice",
   "Trading Volume": "totalTradingVolumeUSD",
   Interactions: "totalInteractions",
@@ -57,9 +57,10 @@ export const TokenTable = ({ tokens, onRowClick, sortBy, sortOrder, onSort }: To
   return (
     <div className="flex flex-col gap-[10px] w-full max-w-[1210px] mx-auto">
       {/* Desktop Table View */}
-      <div className="hidden lg:flex flex-col gap-[10px] w-full overflow-x-auto xl:overflow-x-hidden">
-        {/* Table Headers */}
-        <div className="min-w-[1050px] w-full h-[46px] bg-[#0F1314] rounded-[8px] flex flex-row items-center px-[20px] box-border">
+      <div className="hidden lg:block w-full overflow-x-auto xl:overflow-x-hidden">
+        <div className="min-w-[1050px] w-full overflow-hidden rounded-xl border border-white/[0.05] bg-[#0F1314]">
+          {/* Table Headers */}
+          <div className="w-full h-[46px] flex flex-row items-center px-[20px] box-border border-b border-white/[0.05]">
           {/* Left */}
           <div className="w-[60px] h-[18px] flex flex-row items-center shrink-0">
             <div
@@ -78,14 +79,14 @@ export const TokenTable = ({ tokens, onRowClick, sortBy, sortOrder, onSort }: To
               className="flex flex-row justify-center items-center gap-[8px] h-[18px] cursor-pointer group hover:bg-white/[0.04] p-1 rounded transition-colors"
               onClick={() => onSort?.("name")}
             >
-              <span className="font-urbanist font-normal text-[14px] leading-[130%] text-white">IP NFT</span>
+              <span className="font-urbanist font-normal text-[14px] leading-[130%] text-white">Patent</span>
               <SortingIcons active={sortBy === "name"} order={sortOrder} />
             </div>
           </div>
 
           {/* Right - Header Columns */}
           <div className="flex-1 h-[46px] flex flex-row items-center">
-            {["Top Campaign Price", "Market Cap", "Growth", "Trading Volume", "Interactions"].map((label, i) => {
+            {["Top Campaign Price", "Funding Target", "Growth", "Trading Volume", "Interactions"].map((label, i) => {
               const field = HEADER_MAP[label];
               const isSortable = !!field;
 
@@ -105,14 +106,16 @@ export const TokenTable = ({ tokens, onRowClick, sortBy, sortOrder, onSort }: To
               );
             })}
           </div>
-        </div>
+          </div>
 
-        {/* Table Body */}
-        <div className="flex flex-col gap-[19px] mt-[10px]">
-          {tokens.map((token, index) => (
-            <div key={token.no} className="flex flex-col gap-[19px]" onClick={() => onRowClick?.(token)}>
-              {/* Table Row */}
-              <div className="min-w-[1050px] w-full h-[60px] rounded-[8px] flex flex-row items-center px-[20px] box-border hover:bg-white/[0.04] transition-colors cursor-pointer relative">
+          {/* Table Body */}
+          <div className="flex flex-col divide-y divide-white/[0.05]">
+            {tokens.map(token => (
+              <div
+                key={token.no}
+                className="w-full h-[60px] flex flex-row items-center px-[20px] box-border hover:bg-white/[0.04] transition-colors cursor-pointer"
+                onClick={() => onRowClick?.(token)}
+              >
                 {/* Left Group (No & Icon/Name) */}
                 <div className="w-[60px] h-[32px] flex flex-row items-center justify-start shrink-0">
                   <span className="font-urbanist font-normal text-[16px] leading-[130%] uppercase text-white">
@@ -170,10 +173,8 @@ export const TokenTable = ({ tokens, onRowClick, sortBy, sortOrder, onSort }: To
                   </div>
                 </div>
               </div>
-              {/* Row Divider */}
-              {index < tokens.length - 1 && <div className="w-full h-0 border-t border-[#0F1314] mx-auto box-border" />}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
@@ -250,7 +251,7 @@ export const TokenTable = ({ tokens, onRowClick, sortBy, sortOrder, onSort }: To
               <div className="relative z-10 flex flex-col gap-4 border-t border-white/[0.1] pt-6">
                 {[
                   { label: "TOP CAMPAIGN PRICE", value: token.topCampaignPrice },
-                  { label: "MARKET CAP", value: token.marketCap },
+                  { label: "FUNDING TARGET", value: token.marketCap },
                   { label: "TRADING VOLUME", value: token.totalTradingVolume },
                   { label: "INTERACTIONS", value: token.totalInteractions },
                   {

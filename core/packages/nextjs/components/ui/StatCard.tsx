@@ -11,10 +11,9 @@ export interface StatCardProps {
 }
 
 export const StatCard = ({ title, value, icon, isLoading, isError }: StatCardProps) => (
-  <div className="relative overflow-hidden rounded-[10px] border border-transparent w-full max-w-[425px] h-[95px] [background:linear-gradient(color-mix(in_srgb,var(--deli-main)_80%,transparent),color-mix(in_srgb,var(--deli-main)_80%,transparent))_padding-box,var(--deli-stroke-grey)_border-box]">
-    {/* Content */}
-    <div className="relative z-30 w-full h-full flex items-center gap-[10px] px-[25px]">
-      <div className="relative shrink-0 w-[40px] h-[40px] flex items-center justify-center">
+  <div className="deli-stat-card relative h-full min-h-[124px] w-full max-w-[425px] overflow-hidden rounded-[10px] lg:h-[95px] lg:min-h-0">
+    <div className="relative z-10 flex h-full w-full flex-col items-start gap-[10px] px-[15px] py-[13px] lg:flex-row lg:items-center lg:gap-[10px] lg:px-[25px] lg:py-0">
+      <div className="relative flex h-[40px] w-[40px] shrink-0 items-center justify-center">
         {typeof icon === "string" ? (
           <Image src={icon} alt="" width={40} height={40} className="opacity-100" />
         ) : (
@@ -24,14 +23,20 @@ export const StatCard = ({ title, value, icon, isLoading, isError }: StatCardPro
         )}
       </div>
 
-      <div className="flex flex-col gap-0.5 text-left items-start">
-        <span className="text-h5 font-normal text-deli-white leading-none">{title}</span>
+      <div className="flex min-w-0 w-full flex-col items-start gap-[2px] text-left lg:gap-0.5">
+        <span className="line-clamp-2 min-h-[2.6em] w-full text-body-2-caps leading-[1.3] text-deli-white lg:line-clamp-none lg:min-h-0 lg:text-h5 lg:leading-none">
+          {title}
+        </span>
         {isLoading ? (
-          <span className="h-[20px] w-24 bg-white/20 animate-pulse rounded mt-1"></span>
+          <span className="mt-1 h-[20px] w-24 animate-pulse rounded bg-white/20"></span>
         ) : isError ? (
-          <span className="text-body-1-caps font-light text-red-400 leading-tight">Could not find data</span>
+          <span className="w-full truncate text-body-3-caps leading-tight text-red-400 lg:text-body-1-caps">
+            Could not find data
+          </span>
         ) : (
-          <span className="text-body-1-caps font-light text-deli-grey-light leading-tight">{value}</span>
+          <span className="w-full truncate text-body-3-caps leading-tight text-deli-grey-light lg:text-body-1-caps">
+            {value}
+          </span>
         )}
       </div>
     </div>

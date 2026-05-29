@@ -1,116 +1,107 @@
 import React from "react";
+import { BackgroundEdgeBlend } from "./BackgroundEdgeBlend";
+
+const INFRA_BG_HEIGHT_PX = 500;
+const INFRA_BG_TOP_PX = 20;
 
 export const TheInfrastructureLayer = () => {
   return (
     <section className="relative w-full flex justify-center overflow-hidden py-20">
-      <div className="relative mx-auto w-full max-w-[1440px] min-h-[499px] flex flex-col">
-        {/* bg - left half */}
+      <div
+        className="relative mx-auto flex w-full max-w-[1440px] flex-col"
+        style={{ minHeight: INFRA_BG_HEIGHT_PX + INFRA_BG_TOP_PX + 40 }}
+      >
+        {/* Background image + glows (clipped to image bounds, square corners) */}
         <div
-          className="absolute overflow-hidden pointer-events-none rounded-l-[20px]"
-          style={{
-            width: "50%",
-            height: "459px",
-            left: "0",
-            top: "20px",
-            background: "url(/assets/infra-bg.png) no-repeat",
-            backgroundSize: "200% 100%", // Stretch horizontally to fill its half
-            backgroundPosition: "left center",
-            mixBlendMode: "color-dodge",
-          }}
-        />
-
-        {/* bg - right half (mirrored) */}
-        <div
-          className="absolute overflow-hidden pointer-events-none rounded-r-[20px]"
-          style={{
-            width: "50%",
-            height: "459px",
-            right: "0",
-            top: "20px",
-            background: "url(/assets/infra-bg.png) no-repeat",
-            backgroundSize: "200% 100%", // Stretch horizontally to fill its half
-            backgroundPosition: "left center",
-            mixBlendMode: "color-dodge",
-            transform: "scaleX(-1)",
-          }}
-        />
-
-        {/* Glow Layers (Background) */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Glow Layer 1 - Huge subtle blue */}
+          className="pointer-events-none absolute inset-x-0 z-0 overflow-hidden rounded-none"
+          style={{ top: INFRA_BG_TOP_PX, height: INFRA_BG_HEIGHT_PX }}
+        >
           <div
-            className="absolute"
+            className="absolute inset-y-0 left-0 w-1/2 rounded-none"
             style={{
-              width: "444px",
-              height: "444px",
-              left: "calc(50% + 217px)",
-              transform: "translateX(-50%)",
-              top: "100px",
-              background: "rgba(6, 68, 130, 0.15)",
-              filter: "blur(60px)",
-              borderRadius: "16.5px",
+              background: "url(/assets/infra-bg.png) no-repeat",
+              backgroundSize: "200% 100%",
+              backgroundPosition: "left center",
+              mixBlendMode: "color-dodge",
+            }}
+          />
+          <div
+            className="absolute inset-y-0 right-0 w-1/2 rounded-none"
+            style={{
+              background: "url(/assets/infra-bg.png) no-repeat",
+              backgroundSize: "200% 100%",
+              backgroundPosition: "left center",
+              mixBlendMode: "color-dodge",
+              transform: "scaleX(-1)",
             }}
           />
 
-          {/* Glow Layer 2 - Base plus lighter blue */}
-          <div
-            className="absolute"
-            style={{
-              width: "336.71px",
-              height: "336.71px",
-              left: "calc(50% + 165px)",
-              transform: "translateX(-50%)",
-              top: "153.64px",
-              background: "rgba(6, 68, 130, 0.18)",
-              mixBlendMode: "plus-lighter",
-              filter: "blur(60px)",
-              borderRadius: "16.5px",
-            }}
-          />
+          <div className="absolute inset-0 overflow-hidden rounded-none">
+            <div
+              className="absolute"
+              style={{
+                width: "444px",
+                height: "444px",
+                left: "calc(50% + 217px)",
+                transform: "translateX(-50%)",
+                top: "100px",
+                background: "rgba(6, 68, 130, 0.15)",
+                filter: "blur(60px)",
+              }}
+            />
+            <div
+              className="absolute"
+              style={{
+                width: "336.71px",
+                height: "336.71px",
+                left: "calc(50% + 165px)",
+                transform: "translateX(-50%)",
+                top: "153.64px",
+                background: "rgba(6, 68, 130, 0.18)",
+                mixBlendMode: "plus-lighter",
+                filter: "blur(60px)",
+              }}
+            />
+            <div
+              className="absolute"
+              style={{
+                width: "211.27px",
+                height: "211.27px",
+                left: "calc(50% + 102px)",
+                transform: "translateX(-50%)",
+                top: "218.01px",
+                background: "rgba(95, 165, 247, 0.10)",
+                filter: "blur(90px)",
+              }}
+            />
+            <div
+              className="absolute"
+              style={{
+                width: "170.01px",
+                height: "170.01px",
+                left: "calc(50% + 81px)",
+                transform: "translateX(-50%)",
+                top: "238.65px",
+                background: "rgba(95, 165, 247, 0.15)",
+                filter: "blur(65px)",
+              }}
+            />
+            <div
+              className="absolute rounded-full"
+              style={{
+                width: "102.33px",
+                height: "102.33px",
+                left: "calc(50% + 48px)",
+                transform: "translateX(-50%)",
+                top: "273.31px",
+                background: "rgba(180, 210, 255, 0.12)",
+                mixBlendMode: "plus-lighter",
+                filter: "blur(40px)",
+              }}
+            />
+          </div>
 
-          {/* Glow Layer 3 - Core wide blue */}
-          <div
-            className="absolute"
-            style={{
-              width: "211.27px",
-              height: "211.27px",
-              left: "calc(50% + 102px)",
-              transform: "translateX(-50%)",
-              top: "218.01px",
-              background: "rgba(95, 165, 247, 0.10)",
-              filter: "blur(90px)",
-            }}
-          />
-
-          {/* Glow Layer 4 - Intense core blue */}
-          <div
-            className="absolute"
-            style={{
-              width: "170.01px",
-              height: "170.01px",
-              left: "calc(50% + 81px)",
-              transform: "translateX(-50%)",
-              top: "238.65px",
-              background: "rgba(95, 165, 247, 0.15)",
-              filter: "blur(65px)",
-            }}
-          />
-
-          {/* Glow Layer 5 - Core shining white */}
-          <div
-            className="absolute"
-            style={{
-              width: "102.33px",
-              height: "102.33px",
-              left: "calc(50% + 48px)",
-              transform: "translateX(-50%)",
-              top: "273.31px",
-              background: "rgba(180, 210, 255, 0.12)",
-              mixBlendMode: "plus-lighter",
-              filter: "blur(40px)",
-              borderRadius: "50%",
-            }}
-          />
+          <BackgroundEdgeBlend />
         </div>
 
         {/* Content Section */}
@@ -152,7 +143,7 @@ export const TheInfrastructureLayer = () => {
               />
               <Card
                 title="Milestone-Gated Capital"
-                description="We replace upfront capital calls with milestone-driven release. Funds unlock as the case reaches predefined checkpoints — all the way to settlement or judgment."
+                description="We replace upfront capital calls with milestone-driven release. Funds unlock as the case reaches predefined checkpoints - all the way to settlement or judgment."
               />
             </div>
 
@@ -160,11 +151,11 @@ export const TheInfrastructureLayer = () => {
             <div className="flex flex-col gap-[10px] w-full lg:w-1/2">
               <Card
                 title="Funder Exit Checkpoints"
-                description="Funders can crystallize a position at known lifecycle points — after due diligence, before filing, or after an adverse ruling. Lock-in is never the only option."
+                description="Funders can crystallize a position at known lifecycle points - after due diligence, before filing, or after an adverse ruling. Lock-in is never the only option."
               />
               <Card
                 title="AI-Assisted Case Dashboard"
-                description="Every case is surfaced through a unified, AI-synthesized dashboard with patent strength, infringement read, damages range, and recoverability — before a single dollar is committed."
+                description="Every case is surfaced through a unified, AI-synthesized dashboard with patent strength, infringement read, damages range, and recoverability - before a single dollar is committed."
               />
             </div>
           </div>

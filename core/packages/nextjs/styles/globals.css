@@ -337,6 +337,31 @@ html {
   opacity: 80%;
 }
 
+/* Stat card: semi-transparent fill + gradient border ring (no border bleed into fill) */
+.deli-stat-card {
+  position: relative;
+  background-color: rgba(7, 10, 13, 0.8);
+  isolation: isolate;
+}
+
+.deli-stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--deli-stroke-main);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
 /* Toasts (react-hot-toast) themed for Deli UI */
 .deli-toast {
   border: 1px solid transparent;

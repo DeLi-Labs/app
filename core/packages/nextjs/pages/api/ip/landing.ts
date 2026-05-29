@@ -9,7 +9,7 @@ class IpHandler {
     this.ipProvider = new IpProvider();
   }
 
-  @Get("/landing")
+  @Get()
   async getLandingPageData() {
     const stats = await this.ipProvider.getMainStats();
     const categories = await this.ipProvider.getCategoryData();

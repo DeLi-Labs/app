@@ -1,4 +1,5 @@
 import React from "react";
+import { BackgroundEdgeBlend } from "./BackgroundEdgeBlend";
 
 export const AboutUs = () => {
   return (
@@ -20,8 +21,8 @@ export const AboutUs = () => {
       </div>
 
       {/* Banner Section */}
-      <div className="relative w-full max-w-[1440px] mx-auto h-[525px] flex items-center justify-center overflow-hidden rounded-[20px]">
-        {/* Background Video/Image Container */}
+      <div className="relative mx-auto flex h-[525px] w-full max-w-[1440px] items-center justify-center overflow-hidden">
+        {/* Background Video */}
         <div className="absolute inset-0 w-full h-[809px] -top-[142px]">
           <video
             src="/assets/about.mov"
@@ -29,11 +30,11 @@ export const AboutUs = () => {
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-60"
+            className="absolute inset-0 h-full w-full object-cover opacity-60"
           />
-          {/* Subtle overlay to blend with the page theme */}
-          <div className="absolute inset-0 bg-gradient-to-b from-deli-main via-transparent to-deli-main opacity-80" />
         </div>
+
+        <BackgroundEdgeBlend />
 
         {/* Centered Goal Text */}
         <div className="relative z-10 max-w-[403px] text-center px-5">

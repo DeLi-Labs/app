@@ -45,7 +45,8 @@ export const CrumbsNavigationProvider = ({
   const removeCrumbLabel = useCallback((href: string) => {
     setLabelByHref(prev => {
       if (!(href in prev)) return prev;
-      const { [href]: _removed, ...rest } = prev;
+      const { [href]: removed, ...rest } = prev;
+      void removed;
       return rest;
     });
   }, []);

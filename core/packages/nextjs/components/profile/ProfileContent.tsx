@@ -18,7 +18,7 @@ type ProfileContentProps = {
   onRegisterIpSuccess: () => void;
   onCloseStartCampaign: () => void;
   onStartCampaignSuccess: () => void;
-  onRequestStartLicensing: (patentTokenId: number | null) => void;
+  onRequestStartFunding: (patentTokenId: number | null) => void;
 };
 
 export const ProfileContent = ({
@@ -33,7 +33,7 @@ export const ProfileContent = ({
   onRegisterIpSuccess,
   onCloseStartCampaign,
   onStartCampaignSuccess,
-  onRequestStartLicensing,
+  onRequestStartFunding,
 }: ProfileContentProps) => {
   if (registerIpOpen) {
     return (
@@ -57,7 +57,7 @@ export const ProfileContent = ({
   }
 
   const isIpTab = activeTab === "ips";
-  const header = isIpTab ? "Your IP NFTs" : "Your Licensing Campaigns";
+  const header = isIpTab ? "Your IP NFTs" : "Your Funding Campaigns";
   const count = isIpTab ? ipItems.length : campaigns.length;
   const isEmpty = count === 0;
 
@@ -78,7 +78,7 @@ export const ProfileContent = ({
                   <PatentCard
                     key={item.tokenId}
                     item={item}
-                    onStartLicensing={() => onRequestStartLicensing(item.tokenId)}
+                    onStartFunding={() => onRequestStartFunding(item.tokenId)}
                   />
                 ))
               : campaigns.map(item => <CampaignCard key={`${item.tokenId}-${item.licenseAddress}`} item={item} />)}

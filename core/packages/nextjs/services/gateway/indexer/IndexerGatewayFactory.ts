@@ -20,10 +20,7 @@ const registry: Record<IndexerGatewayType, () => IIndexerGateway> = {
  * @returns An instance of the requested indexer gateway
  */
 export function createIndexerGateway(): IIndexerGateway {
-  const type = process.env.INDEXER_GATEWAY_TYPE as IndexerGatewayType;
-  if (!type) {
-    throw new Error("INDEXER_GATEWAY_TYPE is not set");
-  }
+  const type = (process.env.INDEXER_GATEWAY_TYPE as IndexerGatewayType | undefined) ?? IndexerGatewayType.PONDER;
 
   const factory = registry[type];
   if (!factory) {

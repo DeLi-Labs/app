@@ -9,6 +9,7 @@ import PatentHeader, { PatentCategory, PatentHeaderProps } from "~~/components/p
 import SwapSection, { SwapSectionProps } from "~~/components/patent/SwapSection";
 import { PatentTermsDetails, PatentTermsDetailsProps } from "~~/components/patent/Terms";
 import { PATENT_CATEGORY_COLORS } from "~~/utils/patentCategoryColors";
+import { getIpStatusLabelWithCode } from "~~/utils/ipStatusData";
 import type { PatentDetail } from "~~/types";
 
 const getPatentDetail = async (id: string, signal?: AbortSignal): Promise<PatentDetail> => {
@@ -27,11 +28,6 @@ const mapToPatentHeaderProps = (
   selectedCampaignAddress?: string,
   onCampaignSelect?: (campaignAddress: string) => void,
 ): PatentHeaderProps => {
-  const statusLabelMap: Record<number, "valid" | "pending" | "invalid"> = {
-    0: "valid",
-    1: "pending",
-    2: "invalid",
-  };
   const selectedCampaign =
     patentDetail.campaigns.find(campaign => campaign.licenseAddress === selectedCampaignAddress) ??
     patentDetail.campaigns[0];
@@ -46,6 +42,8 @@ const mapToPatentHeaderProps = (
       campaigns: patentDetail.campaigns.map(campaign => ({
         licenseAddress: campaign.licenseAddress,
         licenseSymbol: campaign.licenseSymbol,
+        defendant: campaign.defendant,
+        defendantOpenCorporatesPage: campaign.defendantOpenCorporatesPage,
         denomination: {
           unit: campaign.denominationUnit,
           amount: campaign.denominationAmount,
@@ -63,12 +61,14 @@ const mapToPatentHeaderProps = (
       industries: patentDetail.industry,
     },
     patentHeaderMarketDataAndSocials: {
-      websiteUrl: "link",
-      telegramUrl: "link",
-      instagramUrl: "link",
-      XUrl: "link",
-      patentStatus: patentDetail.status !== null ? statusLabelMap[patentDetail.status] : "pending",
-      patentStatusUpdateTimestamp: patentDetail.statusUpdateTimestamp ?? undefined,
+      category: patentDetail.categoryId as PatentCategory,
+      espacenetUrl: patentDetail.espacenetUrl || undefined,
+      epoUrl: patentDetail.epoUrl || undefined,
+      ownerLinkedinUrl: patentDetail.ownerLinkedinUrl || undefined,
+      ownerWebsiteUrl: patentDetail.ownerWebsiteUrl || undefined,
+      patentStatus: getIpStatusLabelWithCode(selectedCampaign?.status),
+      patentStatusValue: selectedCampaign?.status,
+      patentStatusUpdateTimestamp: selectedCampaign?.statusUpdateTimestamp ?? undefined,
       tokenId: patentDetail.tokenId,
       totalLicensesValue: selectedCampaign?.totalEmittedLicensesValueUSD,
       currentPrice: selectedCampaign?.currentPrice,
@@ -102,20 +102,20 @@ const mapToPatentTermsDetailsProps = (
   patentDetail: PatentDetail,
   selectedCampaignAddress: string,
 ): PatentTermsDetailsProps => {
+  const selectedCampaign =
+    patentDetail.campaigns.find(campaign => campaign.licenseAddress === selectedCampaignAddress) ??
+    patentDetail.campaigns[0];
+
   return {
     category: patentDetail.categoryId as PatentCategory,
-    description: patentDetail.description,
+    caseDescription: selectedCampaign?.caseDescription ?? "",
+    estimatedDamages: selectedCampaign?.estimatedDamages ?? "",
+    patentStrength: selectedCampaign?.patentStrength ?? "",
+    defendantRecoverability: selectedCampaign?.defendantRecoverability ?? "",
+    timelineProjection: selectedCampaign?.timelineProjection ?? "",
     territoryRestrictions: patentDetail.jurisdiction,
-    usageRightsDefinition:
-      patentDetail.campaigns.find(campaign => campaign.licenseAddress === selectedCampaignAddress)
-        ?.usageRightsDefinition ??
-      patentDetail.campaigns[0]?.usageRightsDefinition ??
-      "",
-    transferabilityFlags:
-      patentDetail.campaigns.find(campaign => campaign.licenseAddress === selectedCampaignAddress)
-        ?.transferabilityFlags ??
-      patentDetail.campaigns[0]?.transferabilityFlags ??
-      "Transferable",
+    usageRightsDefinition: selectedCampaign?.usageRightsDefinition ?? "",
+    transferabilityFlags: selectedCampaign?.transferabilityFlags ?? "Transferable",
     inventorNames: patentDetail.inventorNames,
     patentNumber: patentDetail.patentNumber,
     jurisdiction: patentDetail.jurisdiction,
@@ -124,10 +124,7 @@ const mapToPatentTermsDetailsProps = (
     filingDate: patentDetail.filingDate,
     grantDate: patentDetail.grantDate,
     creationTimestamp: patentDetail.creationTimestamp,
-    licenseDuration:
-      patentDetail.campaigns.find(campaign => campaign.licenseAddress === selectedCampaignAddress)?.licenseDuration ??
-      patentDetail.campaigns[0]?.licenseDuration ??
-      "",
+    licenseDuration: selectedCampaign?.licenseDuration ?? "",
   };
 };
 
@@ -140,14 +137,15 @@ const fallbackPatentDetail: PatentDetail = {
   categoryId: "Technology",
   owner: "0x0000000000000000000000000000000000000000",
   inventorNames: "",
-  status: null,
-  statusUpdateTimestamp: null,
-  statusUpdateExplanation: null,
   patentNumber: "",
   jurisdiction: [],
   registrationAuthority: "",
   filingDate: "",
   grantDate: "",
+  espacenetUrl: "",
+  epoUrl: "",
+  ownerLinkedinUrl: "",
+  ownerWebsiteUrl: "",
   patentClassification: "",
   creationTimestamp: "",
   campaigns: [
@@ -158,6 +156,13 @@ const fallbackPatentDetail: PatentDetail = {
       numeraireSymbol: "",
       licenseType: "FIXED",
       usageRightsDefinition: "",
+      caseDescription: "",
+      estimatedDamages: "",
+      patentStrength: "",
+      defendantRecoverability: "",
+      timelineProjection: "",
+      defendant: "",
+      defendantOpenCorporatesPage: "",
       transferabilityFlags: "Transferable",
       licenseDuration: "",
       denominationUnit: "",
@@ -169,6 +174,9 @@ const fallbackPatentDetail: PatentDetail = {
       growth24h: null,
       retailPercent: null,
       hourlyPrices: [],
+      status: null,
+      statusUpdateTimestamp: null,
+      statusUpdateExplanation: null,
     },
   ],
 };
@@ -231,8 +239,8 @@ const PatentPage = () => {
   const patentHeaderProps = mapToPatentHeaderProps(safePatentDetail, activeCampaignAddress, setSelectedCampaignAddress);
 
   return (
-    <div className="bg-deli-main overflow-x-hidden">
-      <div className="flex grow flex-col px-[10px] pb-8 pt-10 lg:px-[75px]">
+    <div className="min-h-screen overflow-x-hidden bg-deli-main pb-8 pt-20 lg:pb-[75px]">
+      <div className="mx-auto flex w-full max-w-[1440px] grow flex-col px-5 pb-8 lg:px-[75px] lg:pt-[75px]">
         <div className="flex w-full flex-col gap-4">
           <CrumbsNavigation labelMap={{ patent: "Patents" }} />
           <div className="flex flex-col lg:gap-15">
@@ -278,7 +286,7 @@ const PatentPage = () => {
           </div>
         </div>
       </div>
-      <div className="relative z-10 mt-8 w-full px-[10px] pb-6 lg:px-[75px]">
+      <div className="relative z-10 mx-auto mt-8 w-full max-w-[1440px] px-5 pb-6 lg:px-[75px]">
         <div className="h-px w-full border-t-[2px] border-[#0F1314]" />
         <div className="mt-4 flex justify-end">
           <div className="flex flex-col gap-[5px] text-right">

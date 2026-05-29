@@ -9,7 +9,7 @@ export type ProfileHeaderMenuConfig = {
   hasPatents: boolean;
   address?: string;
   onRegisterIp: () => void;
-  onStartLicensing: () => void;
+  onStartFunding: () => void;
   onExit: () => void;
   onSelectTab: (tab: ProfileTab) => void;
 };

@@ -2,20 +2,21 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useSignTypedData, type SignTypedDataParams } from "@privy-io/react-auth";
 import toast from "react-hot-toast";
 import { formatUnits, parseUnits, type Address } from "viem";
-import { useAccount, usePublicClient, useReadContract, useSignTypedData, useWalletClient } from "wagmi";
+import { useAccount, usePublicClient, useReadContract, useWalletClient } from "wagmi";
 import { PlusIcon, WalletIcon } from "@heroicons/react/24/outline";
 import { arrowsSwapSvg } from "~~/components/assets/common";
 import { getNumeraireLogoUrl } from "~~/utils/numeraireImageMap";
 import { CAMPAIGN_DISPLAY_TOKEN } from "~~/components/profile/utils";
 import deployedContracts from "~~/contracts/deployedContracts";
 import externalContracts from "~~/contracts/externalContracts";
-import { useScaffoldWriteContract, useTargetNetwork } from "~~/hooks/scaffold-eth";
+import { useTargetNetwork } from "~~/hooks/scaffold-eth";
 import type { CampaignLicenseType, PermitMessage } from "~~/types";
 import { normalizePermitMessageForWallet } from "~~/utils/normalizePermitMessage";
 import { getUserFacingErrorMessage } from "~~/utils/userFacingError";
+import { formatAmountToChartPrecision } from "~~/utils/formatting";
 import { isAttachmentProxyImageSrc, storageUriToProxiedImageUrl } from "~~/utils/storageMediaUrl";
 
 type CampaignSwapperProps = {
@@ -118,6 +119,24 @@ const ERC20_APPROVE_ABI = [
   },
 ] as const;
 const MAX_UINT256 = 2n ** 256n - 1n;
+
+type PendingPermitSign = {
+  permitMessage: PermitMessage;
+  buy: boolean;
+  campaignId: string;
+  amount: string;
+  chainId: number;
+};
+
+/** Let Privy tx modal fully unmount before opening the sign modal (avoids post-approve UI crashes). */
+const waitForPrivyUiSettle = () =>
+  new Promise<void>(resolve => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(resolve, 250);
+      });
+    });
+  });
 
 const formatBalanceForDisplay = (raw: bigint, decimals: number) => {
   const full = formatUnits(raw, decimals);
@@ -234,11 +253,15 @@ const CampaignSwapper = ({
   colors,
 }: CampaignSwapperProps) => {
   const { address } = useAccount();
-  const { login } = usePrivy();
+  const { login, authenticated, ready } = usePrivy();
   const { targetNetwork } = useTargetNetwork();
   const publicClient = usePublicClient({ chainId: targetNetwork.id });
-  const { writeContractAsync: writeScaffoldContractAsync } = useScaffoldWriteContract("CampaignManager");
-  const { signTypedDataAsync } = useSignTypedData();
+  const { data: walletClient } = useWalletClient();
+  const { signTypedData: privySignTypedData } = useSignTypedData();
+  const privySignTypedDataRef = useRef(privySignTypedData);
+  privySignTypedDataRef.current = privySignTypedData;
+  const [permitSignJob, setPermitSignJob] = useState<PendingPermitSign | null>(null);
+  const permitSignInFlightRef = useRef(false);
   const [isDirectionFlipped, setIsDirectionFlipped] = useState(false);
   const [firstAmount, setFirstAmount] = useState("");
   const [secondAmount, setSecondAmount] = useState("");
@@ -305,6 +328,60 @@ const CampaignSwapper = ({
   const refetchTokenBalances = useCallback(async () => {
     await Promise.all([refetchLicenseBalance(), refetchNumeraireBalance()]);
   }, [refetchLicenseBalance, refetchNumeraireBalance]);
+  const refetchTokenBalancesRef = useRef(refetchTokenBalances);
+  refetchTokenBalancesRef.current = refetchTokenBalances;
+
+  useEffect(() => {
+    if (!permitSignJob || !address || permitSignInFlightRef.current) return;
+
+    const payload = permitSignJob;
+    setPermitSignJob(null);
+    permitSignInFlightRef.current = true;
+
+    const completePermitSign = async () => {
+      try {
+        setSwapPhase("signing");
+        await waitForPrivyUiSettle();
+        const { signature } = await privySignTypedDataRef.current(
+          {
+            domain: payload.permitMessage.domain,
+            types: payload.permitMessage.types,
+            primaryType: payload.permitMessage.primaryType,
+            message: payload.permitMessage.message,
+          } as unknown as SignTypedDataParams,
+          { address },
+        );
+
+        setSwapPhase("submitting");
+        const relayReq = await fetch(`/api/campaign/${payload.campaignId}?chainId=${payload.chainId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: payload.amount,
+            userAddress: address,
+            buy: payload.buy,
+            permit: {
+              message: payload.permitMessage,
+              signature,
+            },
+          }),
+        });
+        const relayJson = await relayReq.json();
+        if (!relayReq.ok) {
+          throw new Error(relayJson?.error ?? relayJson?.details ?? "Failed to submit relayed swap.");
+        }
+        await refetchTokenBalancesRef.current();
+      } catch (error) {
+        console.error(error instanceof Error ? error.message : "Swap failed.");
+        toast.error(getUserFacingErrorMessage(error, "Swap failed. Please try again."));
+      } finally {
+        permitSignInFlightRef.current = false;
+        setSwapPhase("idle");
+      }
+    };
+
+    void completePermitSign();
+  }, [address, permitSignJob]);
 
   const licenseBalanceLine = useMemo(() => {
     if (!address) return undefined;
@@ -408,7 +485,9 @@ const CampaignSwapper = ({
 
         if (requestId !== quoteRequestRef.current) return;
         const quotedRaw = BigInt(result as bigint);
-        const formatted = formatUnits(quotedRaw < 0n ? -quotedRaw : quotedRaw, targetDecimals);
+        const formatted = formatAmountToChartPrecision(
+          formatUnits(quotedRaw < 0n ? -quotedRaw : quotedRaw, targetDecimals),
+        );
 
         if (sourceField === "first") setSecondAmount(formatted);
         else setFirstAmount(formatted);
@@ -467,10 +546,14 @@ const CampaignSwapper = ({
       toast.error("Enter an amount to swap.");
       return;
     }
+    if (!walletClient) {
+      toast.error("Wallet client is not ready. Please reconnect your wallet.");
+      return;
+    }
+
+    let queuedPermitSign = false;
 
     try {
-      setSwapPhase("submitting");
-
       const buy = firstLabel === "Buy";
       const campaignId = licenseAddress;
       const amountLicenseRaw = parseUnits(firstAmount.trim(), LICENSE_DECIMALS);
@@ -548,51 +631,33 @@ const CampaignSwapper = ({
 
       if (allowance < requiredAmount) {
         setSwapPhase("approving");
-        const approveHash = await writeScaffoldContractAsync({
+        const approveHash = await walletClient.writeContract({
           address: inputToken,
           abi: ERC20_APPROVE_ABI,
           functionName: "approve",
           args: [permit2Address, MAX_UINT256],
-        } as any);
-        if (!approveHash) {
-          throw new Error("Approve transaction failed");
-        }
+          account: connectedAddress,
+          chain: targetNetwork,
+        });
         await publicClient.waitForTransactionReceipt({ hash: approveHash });
       }
 
-      setSwapPhase("signing");
-      const signature = await signTypedDataAsync({
-        account: connectedAddress,
-        domain: permitMessage.domain,
-        types: permitMessage.types,
-        primaryType: permitMessage.primaryType,
-        message: permitMessage.message,
+      setPermitSignJob({
+        permitMessage,
+        buy,
+        campaignId,
+        amount: firstAmount.trim(),
+        chainId,
       });
-
-      setSwapPhase("submitting");
-      const relayReq = await fetch(`/api/campaign/${campaignId}?chainId=${chainId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: firstAmount.trim(),
-          userAddress: connectedAddress,
-          buy,
-          permit: {
-            message: permitMessage,
-            signature,
-          },
-        }),
-      });
-      const relayJson = await relayReq.json();
-      if (!relayReq.ok) {
-        throw new Error(relayJson?.error ?? relayJson?.details ?? "Failed to submit relayed swap.");
-      }
-      await refetchTokenBalances();
+      queuedPermitSign = true;
+      setSwapPhase("idle");
     } catch (error) {
       console.error(error instanceof Error ? error.message : "Swap failed.");
       toast.error(getUserFacingErrorMessage(error, "Swap failed. Please try again."));
     } finally {
-      setSwapPhase("idle");
+      if (!queuedPermitSign) {
+        setSwapPhase("idle");
+      }
     }
   }, [
     address,
@@ -605,21 +670,26 @@ const CampaignSwapper = ({
     permit2Address,
     permit2Abi,
     publicClient,
-    refetchTokenBalances,
     selectedHookContract,
-    signTypedDataAsync,
     swapRouterAddress,
-    writeScaffoldContractAsync,
+    targetNetwork,
+    walletClient,
   ]);
 
   const handleSwapClick = useCallback(() => {
     if (!address) {
-      login();
+      if (authenticated) {
+        toast.error("Wallet is not connected yet. Please reconnect your wallet.");
+        return;
+      }
+      if (ready) {
+        login();
+      }
       return;
     }
 
     void executeSwap();
-  }, [address, executeSwap, login]);
+  }, [address, authenticated, executeSwap, login, ready]);
 
   return (
     <div className="flex h-full w-full flex-col gap-4">

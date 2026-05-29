@@ -21,6 +21,13 @@ query Ips($orderBy: String, $orderDirection: String, $limit: Int, $offset: Int, 
           licenseDuration
           territoryRestriction
           usageRightsDefinition
+          caseDescription
+          estimatedDamages
+          patentStrength
+          defendantRecoverability
+          timelineProjection
+          defendant
+          defendantOpenCorporatesPage
           transferrabilityFlag
         }
       }
@@ -44,11 +51,6 @@ query DiscoverIps($orderBy: String, $orderDirection: String, $limit: Int, $offse
       description
       image
       creationTimestamp
-      status
-      statusUpdateTimestamp
-      statusUpdateExplanation
-      reasonCode
-      caseReference
       industry
       categoryId
       retailPercent
@@ -70,7 +72,17 @@ query DiscoverIps($orderBy: String, $orderDirection: String, $limit: Int, $offse
         licenseDuration
         territoryRestriction
         usageRightsDefinition
+        caseDescription
+        estimatedDamages
+        patentStrength
+        defendantRecoverability
+        timelineProjection
+        defendant
+        defendantOpenCorporatesPage
         transferrabilityFlag
+        status
+        statusUpdateTimestamp
+        statusUpdateExplanation
         currentPrice
         totalSupply
         totalEmittedLicensesValueUSD
@@ -141,7 +153,17 @@ query Campaigns($orderBy: String, $orderDirection: String, $limit: Int, $offset:
       licenseDuration
       territoryRestriction
       usageRightsDefinition
+      caseDescription
+      estimatedDamages
+      patentStrength
+      defendantRecoverability
+      timelineProjection
+      defendant
+      defendantOpenCorporatesPage
       transferrabilityFlag
+      status
+      statusUpdateTimestamp
+      statusUpdateExplanation
     }
   }
 }
@@ -269,14 +291,15 @@ query PatentDetail($tokenId: BigInt!) {
     categoryId
     accountAddress
     inventorNames
-    status
-    statusUpdateTimestamp
-    statusUpdateExplanation
     patentNumber
     jurisdiction
     registrationAuthority
     filingDate
     grantDate
+    espacenetUrl
+    epoUrl
+    ownerLinkedinUrl
+    ownerWebsiteUrl
     patentClassification
     creationTimestamp
     campaigns {
@@ -287,7 +310,17 @@ query PatentDetail($tokenId: BigInt!) {
         numeraireSymbol
         licenseType
         usageRightsDefinition
+        caseDescription
+        estimatedDamages
+        patentStrength
+        defendantRecoverability
+        timelineProjection
+        defendant
+        defendantOpenCorporatesPage
         transferrabilityFlag
+        status
+        statusUpdateTimestamp
+        statusUpdateExplanation
         licenseDuration
         denominationUnit
         denominationAmount
@@ -389,7 +422,17 @@ query Categories($limit: Int, $offset: Int) {
         licenseDuration
         territoryRestriction
         usageRightsDefinition
+        caseDescription
+        estimatedDamages
+        patentStrength
+        defendantRecoverability
+        timelineProjection
+        defendant
+        defendantOpenCorporatesPage
         transferrabilityFlag
+        status
+        statusUpdateTimestamp
+        statusUpdateExplanation
         currentPrice
         totalSupply
         totalEmittedLicensesValueUSD

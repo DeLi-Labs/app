@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { type TokenData, TokenTable } from "~~/components/ui/TokenTable";
 import { DiscoverIP } from "~~/types";
+import { formatTokenTableDollar } from "~~/utils/formatting";
 import { storageUriToProxiedImageUrl } from "~~/utils/storageMediaUrl";
 
 export const DiscoverAllTokens = () => {
@@ -85,10 +85,10 @@ export const DiscoverAllTokens = () => {
               icon,
               category: ip.categoryId || "Creative",
               topCampaignPrice: ip.topCampaign?.currentPrice
-                ? `$${ip.topCampaign.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                ? formatTokenTableDollar(ip.topCampaign.currentPrice, { alwaysShowCents: true })
                 : "",
-              marketCap: `$${ip.totalEmittedLicensesValueUSD?.toLocaleString() ?? "0"}`,
-              totalTradingVolume: `$${ip.totalTradingVolumeUSD?.toLocaleString() ?? "0"}`,
+              marketCap: formatTokenTableDollar(ip.totalEmittedLicensesValueUSD),
+              totalTradingVolume: formatTokenTableDollar(ip.totalTradingVolumeUSD),
               totalInteractions: ip.totalInteractions?.toLocaleString() ?? "0",
               growthPercent: `${resolvedGrowth.toFixed(2)}%`,
               growthValue: resolvedGrowth,
@@ -108,36 +108,10 @@ export const DiscoverAllTokens = () => {
   }, [currentPage, debouncedSearchTerm, selectedCategory, sortBy, sortOrder]);
 
   return (
-    <section className="min-h-[1550px] pt-[120px] pb-[160px] flex flex-col relative overflow-hidden bg-[#070A0D]">
-      {/* Background image */}
-      <div className="absolute top-0 inset-x-0 h-[459px] w-full max-w-[1440px] mx-auto overflow-hidden pointer-events-none rounded-[20px] left-1/2 -translate-x-1/2">
-        <Image
-          src="/assets/bg.png"
-          alt="background waves"
-          fill
-          className="object-cover object-top mix-blend-screen opacity-100"
-        />
-      </div>
-
-      <div className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col gap-[60px] px-5 lg:px-[75px]">
-        {/* Header Section (top) gap 535px */}
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-8 lg:gap-[535px] w-full">
-          <div className="w-full lg:w-[357px]">
-            <h2 className="text-white m-0 font-urbanist font-light text-[35px] lg:text-[45px] leading-[130%]">
-              Discover all tokens
-            </h2>
-          </div>
-          <div className="w-full lg:w-[462px]">
-            <p className="text-white m-0 font-urbanist font-normal text-[16px] leading-[130%] opacity-80">
-              A comprehensive registry of tokenized patents with real-time data. Track trading volumes and price
-              dynamics, and select assets based on accurate figures rather than guesswork.
-            </p>
-          </div>
-        </div>
-
-        {/* Frame (Table Container) */}
+    <section className="relative flex w-full flex-col">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col px-5 lg:px-[75px]">
         <div
-          className="w-full min-h-[1200px] rounded-[20px] lg:rounded-[30px] p-[20px] lg:p-[30px_40px] flex flex-col gap-[20px] relative box-border mx-auto"
+          className="relative mx-auto box-border flex min-h-[1200px] w-full flex-col gap-[20px] overflow-hidden rounded-xl p-[20px] lg:p-[30px_40px]"
           style={{
             background:
               "linear-gradient(180deg, rgba(7, 10, 13, 0.95) 0%, rgba(9, 14, 18, 0.95) 100%) padding-box, linear-gradient(180deg, #A7D2FF 0%, #04305C 100%) border-box",

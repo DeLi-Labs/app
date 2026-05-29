@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { AboutUs } from "./Landing/AboutUs";
 import { Banner } from "./Landing/Banner";
+import { ConfidentialitySection } from "./Landing/ConfidentialitySection";
 import { CategoriesSection } from "./Landing/CategoriesSection";
 import { DigitalEconomySection } from "./Landing/DigitalEconomySection";
-import { DiscoverAllTokens } from "./Landing/DiscoverAllTokens";
 import { ExploreNewPatents } from "./Landing/ExploreNewPatents";
 import { FAQSection } from "./Landing/FAQSection";
+import { PickYourEntryPoint } from "./Landing/PickYourEntryPoint";
 import { Hero } from "./Landing/Hero";
 import { SubscribeSection } from "./Landing/SubscribeSection";
 import { TheInfrastructureLayer } from "./Landing/TheInfrastructureLayer";
@@ -145,11 +146,21 @@ export const LandingPage = () => {
         <AboutUs />
       </div>
 
+      <div className="w-full relative z-10">
+        <PickYourEntryPoint />
+      </div>
+
       <div className="w-full relative z-10 overflow-hidden">
         <TheInfrastructureLayer />
       </div>
 
-      <SubscribeSection />
+      <div className="w-full relative z-10">
+        <ConfidentialitySection />
+      </div>
+
+      <div id="subscribe" className={sectionAnchorClass}>
+        <SubscribeSection />
+      </div>
 
       <div id="faq" className={sectionAnchorClass}>
         <FAQSection />

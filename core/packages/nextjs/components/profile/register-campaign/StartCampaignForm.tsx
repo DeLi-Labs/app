@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
-import { erc20Abi, parseUnits } from "viem";
+import { erc20Abi, formatUnits, parseUnits } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
 import { DROPDOWN_ICON } from "~~/components/assets/common";
 import {
@@ -18,28 +18,23 @@ import { categoryIcons } from "~~/components/profile/utils";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useDeployedContractInfo, useScaffoldWriteContract, useTargetNetwork } from "~~/hooks/scaffold-eth";
 import { encodeCampaignParams } from "~~/utils/campaignParams";
+import { DEFAULT_IP_STATUS, IP_STATUSES } from "~~/utils/ipStatusData";
 import { JURISDICTIONS } from "~~/utils/jurisdictionData";
+import {
+  getOpenCorporatesFieldError,
+  validateOpenCorporatesCompanyUrl,
+} from "~~/utils/openCorporatesUrl";
 import { findValidSalt } from "~~/utils/findValidSalt";
 import { getUserFacingErrorMessage } from "~~/utils/userFacingError";
 
 type DenominationUnit = "PER_ITEM" | "PER_HOUR" | "PER_DAY" | "PER_BYTE" | "PER_1000_TOKEN";
 
-const DENOMINATION_OPTIONS: { value: DenominationUnit; label: string }[] = [
-  { value: "PER_ITEM", label: "Per Item" },
-  { value: "PER_HOUR", label: "Per Hour" },
-  { value: "PER_DAY", label: "Per Day" },
-  { value: "PER_BYTE", label: "Per Byte" },
-  { value: "PER_1000_TOKEN", label: "Per 1000 Token" },
-];
+const DEFAULT_LICENSE_DURATION_SECONDS = 31_536_000; // 1 year
+const DEFAULT_DENOMINATION_UNIT: DenominationUnit = "PER_ITEM";
+const DEFAULT_DENOMINATION_AMOUNT = "1";
+const DEFAULT_TRANSFERRABILITY_FLAG = "Transferrable" as const;
 
-const LICENSE_DURATION_OPTIONS = [
-  { label: "1 year", seconds: 31_536_000 },
-  { label: "2 years", seconds: 63_072_000 },
-  { label: "5 years", seconds: 157_680_000 },
-  { label: "10 years", seconds: 315_360_000 },
-] as const;
-
-const STEP_TITLES = ["Campaign Setup", "Economics & Supply", "License Terms & Restrictions"] as const;
+const STEP_TITLES = ["Campaign Setup", "Economics & Supply", "Funding Terms & Restrictions"] as const;
 
 /** Matches CampaignManager LicenseType: 0 = Dynamic, 1 = Fixed */
 const CAMPAIGN_TYPE_OPTIONS = [
@@ -63,6 +58,36 @@ const textareaClass =
   "box-border w-full min-h-[200px] rounded-xl bg-deli-background px-3 py-2.5 text-body-2 text-deli-white outline-none placeholder:text-deli-grey-light resize-none";
 
 const rowGapClass = "gap-x-[60px] gap-y-4";
+
+const fieldHintClass = "m-0 text-body-3 text-deli-grey-light";
+
+const fieldErrorClass = "m-0 text-body-3 text-error";
+
+const TOKEN_DECIMALS = 18;
+const TOKEN_SCALE = 10n ** BigInt(TOKEN_DECIMALS);
+
+/** totalSupplyWei = fundingTargetWei * 10^18 / pricePerTokenWei (both in 18-decimal currency units). */
+const computeTotalSupplyWei = (fundingTarget: string, pricePerToken: string): bigint | null => {
+  const targetTrimmed = fundingTarget.trim();
+  const priceTrimmed = pricePerToken.trim();
+  if (!targetTrimmed || !priceTrimmed) return null;
+
+  try {
+    const fundingTargetWei = parseUnits(targetTrimmed, TOKEN_DECIMALS);
+    const priceWei = parseUnits(priceTrimmed, TOKEN_DECIMALS);
+    if (priceWei === 0n) return null;
+    const totalSupplyWei = (fundingTargetWei * TOKEN_SCALE) / priceWei;
+    return totalSupplyWei > 0n ? totalSupplyWei : null;
+  } catch {
+    return null;
+  }
+};
+
+const formatTotalSupply = (fundingTarget: string, pricePerToken: string): string | null => {
+  const totalSupplyWei = computeTotalSupplyWei(fundingTarget, pricePerToken);
+  if (totalSupplyWei === null) return null;
+  return formatUnits(totalSupplyWei, TOKEN_DECIMALS);
+};
 
 const deliPickerShell = (open: boolean) => {
   const borderGradient = open ? "var(--deli-stroke-main)" : "var(--deli-stroke-grey)";
@@ -189,25 +214,33 @@ type CampaignFormState = {
   patentTokenId: string;
   numeraireAddress: string;
   pricePerToken: string;
-  totalTokensToSell: string;
+  fundingTarget: string;
   licenseDurationSeconds: string;
   territoryRestriction: string[];
   usageRightsDefinition: string;
+  caseDescription: string;
+  defendant: string;
+  defendantOpenCorporatesPage: string;
   transferrabilityFlag: "Transferrable" | "NonTransferrable";
+  status: string;
 };
 
 const initialForm = (): CampaignFormState => ({
-  denominationUnit: "PER_ITEM",
-  denominationAmount: "",
+  denominationUnit: DEFAULT_DENOMINATION_UNIT,
+  denominationAmount: DEFAULT_DENOMINATION_AMOUNT,
   campaignType: "1",
   patentTokenId: "",
   numeraireAddress: "",
   pricePerToken: "",
-  totalTokensToSell: "",
-  licenseDurationSeconds: String(LICENSE_DURATION_OPTIONS[0].seconds),
+  fundingTarget: "",
+  licenseDurationSeconds: String(DEFAULT_LICENSE_DURATION_SECONDS),
   territoryRestriction: [],
   usageRightsDefinition: "",
-  transferrabilityFlag: "Transferrable",
+  caseDescription: "",
+  defendant: "",
+  defendantOpenCorporatesPage: "",
+  transferrabilityFlag: DEFAULT_TRANSFERRABILITY_FLAG,
+  status: String(DEFAULT_IP_STATUS),
 });
 
 export type StartCampaignFormProps = {
@@ -226,6 +259,7 @@ export const StartCampaignForm = ({ ipItems, initialPatentTokenId, onCancel, onS
 
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<CampaignFormState>(initialForm);
+  const [openCorporatesUrlError, setOpenCorporatesUrlError] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialPatentTokenId !== null) {
@@ -242,11 +276,6 @@ export const StartCampaignForm = ({ ipItems, initialPatentTokenId, onCancel, onS
           toast.error("Please select a patent");
           return false;
         }
-        const amt = parseFloat(formData.denominationAmount);
-        if (!formData.denominationAmount.trim() || Number.isNaN(amt) || amt <= 0) {
-          toast.error("Enter a positive price per licensing unit");
-          return false;
-        }
         return true;
       }
       if (s === 1) {
@@ -259,31 +288,38 @@ export const StartCampaignForm = ({ ipItems, initialPatentTokenId, onCancel, onS
           toast.error("Enter a positive price per token");
           return false;
         }
-        if (!/^\d+$/.test(formData.totalTokensToSell.trim())) {
-          toast.error("Total tokens to sell must be a positive whole number");
+        const fundingTarget = parseFloat(formData.fundingTarget);
+        if (!formData.fundingTarget.trim() || Number.isNaN(fundingTarget) || fundingTarget <= 0) {
+          toast.error("Enter a positive funding target");
           return false;
         }
-        const n = parseInt(formData.totalTokensToSell, 10);
-        if (n <= 0) {
-          toast.error("Total tokens to sell must be a positive whole number");
+        if (computeTotalSupplyWei(formData.fundingTarget, formData.pricePerToken) === null) {
+          toast.error("Funding target and price per token must yield a positive total supply");
           return false;
         }
         return true;
       }
       if (s === 2) {
-        if (!formData.licenseDurationSeconds) {
-          toast.error("Please select license duration");
+        if (!formData.defendant.trim()) {
+          toast.error("Please enter the defendant");
+          return false;
+        }
+        const openCorporatesErr = getOpenCorporatesFieldError(formData.defendantOpenCorporatesPage, true);
+        setOpenCorporatesUrlError(openCorporatesErr);
+        if (openCorporatesErr) return false;
+        if (!formData.caseDescription.trim()) {
+          toast.error("Please enter the case description");
           return false;
         }
         if (!formData.usageRightsDefinition.trim()) {
-          toast.error("Please enter usage rights definitions");
+          toast.error("Please enter the litigation finance agreement");
           return false;
         }
         return true;
       }
       return true;
     },
-    [formData],
+    [formData, setOpenCorporatesUrlError],
   );
 
   const goNext = () => {
@@ -312,11 +348,20 @@ export const StartCampaignForm = ({ ipItems, initialPatentTokenId, onCancel, onS
     let currentStage: "campaign-upload" | "campaign-salt" | "campaign-init" = "campaign-upload";
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("denominationUnit", formData.denominationUnit);
-      formDataToSend.append("denominationAmount", formData.denominationAmount);
-      formDataToSend.append("licenseDuration", formData.licenseDurationSeconds);
+      formDataToSend.append("denominationUnit", DEFAULT_DENOMINATION_UNIT);
+      formDataToSend.append("denominationAmount", DEFAULT_DENOMINATION_AMOUNT);
+      formDataToSend.append("licenseDuration", String(DEFAULT_LICENSE_DURATION_SECONDS));
       formDataToSend.append("usageRightsDefinition", formData.usageRightsDefinition);
-      formDataToSend.append("transferrabilityFlag", formData.transferrabilityFlag);
+      formDataToSend.append("caseDescription", formData.caseDescription);
+      const openCorporatesValidation = validateOpenCorporatesCompanyUrl(formData.defendantOpenCorporatesPage);
+      if (!openCorporatesValidation.valid) {
+        setOpenCorporatesUrlError(openCorporatesValidation.error);
+        return;
+      }
+
+      formDataToSend.append("defendant", formData.defendant);
+      formDataToSend.append("defendantOpenCorporatesPage", openCorporatesValidation.normalized);
+      formDataToSend.append("transferrabilityFlag", DEFAULT_TRANSFERRABILITY_FLAG);
       formDataToSend.append("chainId", String(targetNetwork.id));
 
       const validJurisdictions = JURISDICTIONS.map(j => j.jurisdiction);
@@ -372,7 +417,10 @@ export const StartCampaignForm = ({ ipItems, initialPatentTokenId, onCancel, onS
 
       toast.success("Valid salt found", { id: "campaign-salt" });
 
-      const totalTokensWei = parseUnits(formData.totalTokensToSell, 18);
+      const totalTokensWei = computeTotalSupplyWei(formData.fundingTarget, formData.pricePerToken);
+      if (totalTokensWei === null) {
+        throw new Error("Could not calculate total supply from funding target and price per token");
+      }
       const priceWei = parseUnits(formData.pricePerToken, 18);
       const paramsBytes = encodeCampaignParams(licenseTypeNum, priceWei);
 
@@ -388,12 +436,18 @@ export const StartCampaignForm = ({ ipItems, initialPatentTokenId, onCancel, onS
           formData.numeraireAddress as `0x${string}`,
           licenseTypeNum,
           totalTokensWei,
+          {
+            status: Number(formData.status),
+            statusUpdateTimestamp: BigInt(Math.floor(Date.now() / 1000)),
+            statusUpdateExplanation: "",
+          },
           paramsBytes,
         ],
       });
 
       toast.success("Campaign initialized successfully!", { id: "campaign-init" });
       setFormData(initialForm());
+      setOpenCorporatesUrlError(null);
       onSuccess();
     } catch (error) {
       console.error("Error:", error);
@@ -413,19 +467,14 @@ export const StartCampaignForm = ({ ipItems, initialPatentTokenId, onCancel, onS
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <header className="mb-6 flex shrink-0 items-start justify-between gap-4">
-        <h4 className="m-0 text-h4 text-deli-white">Start Licensing Campaign</h4>
+        <h4 className="m-0 text-h4 text-deli-white">Start Funding Campaign</h4>
         <p className="m-0 text-body-3 text-deli-grey-light">{STEP_TITLES[step]}</p>
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <DeliCustomScrollArea flexFill contentClassName="pr-1">
           {step === 0 ? (
-            <StepCampaignSetup
-              formData={formData}
-              setFormData={setFormData}
-              ipItems={ipItems}
-              inputClass={inputClass}
-            />
+            <StepCampaignSetup formData={formData} setFormData={setFormData} ipItems={ipItems} />
           ) : null}
           {step === 1 ? (
             <StepEconomics
@@ -436,7 +485,15 @@ export const StartCampaignForm = ({ ipItems, initialPatentTokenId, onCancel, onS
             />
           ) : null}
           {step === 2 ? (
-            <StepLicenseTerms formData={formData} setFormData={setFormData} inputClass={inputClass} />
+            <StepLicenseTerms
+              formData={formData}
+              setFormData={setFormData}
+              openCorporatesUrlError={openCorporatesUrlError}
+              onDefendantOpenCorporatesPageChange={value => {
+                setFormData(p => ({ ...p, defendantOpenCorporatesPage: value }));
+                setOpenCorporatesUrlError(getOpenCorporatesFieldError(value, false));
+              }}
+            />
           ) : null}
         </DeliCustomScrollArea>
       </div>
@@ -489,60 +546,16 @@ function StepCampaignSetup({
   formData,
   setFormData,
   ipItems,
-  inputClass,
 }: {
   formData: CampaignFormState;
   setFormData: React.Dispatch<React.SetStateAction<CampaignFormState>>;
   ipItems: NormalizedIpItem[];
-  inputClass: string;
 }) {
-  const [unitOpen, setUnitOpen] = useState(false);
-  const unitAnchorRef = useRef<HTMLDivElement>(null);
-  const selectedUnitLabel = DENOMINATION_OPTIONS.find(o => o.value === formData.denominationUnit)?.label ?? "";
-
   return (
     <div className="flex flex-col gap-6">
-      <div className={`flex flex-col justify-start ${rowGapClass} lg:flex-row`}>
-        <div className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
-          <span className={labelClass}>Licensing Unit</span>
-          <CombinedChevronField open={unitOpen} onToggle={() => setUnitOpen(o => !o)} anchorRef={unitAnchorRef}>
-            <span className="text-body-2 text-deli-white">{selectedUnitLabel}</span>
-          </CombinedChevronField>
-          <FloatingPopoverList anchorRef={unitAnchorRef} open={unitOpen} onClose={() => setUnitOpen(false)}>
-            <DeliCustomScrollArea maxHeightPx={DROPDOWN_SCROLL_MAX_HEIGHT_PX}>
-              {DENOMINATION_OPTIONS.map(o => (
-                <button
-                  key={o.value}
-                  type="button"
-                  onClick={() => {
-                    setFormData(p => ({ ...p, denominationUnit: o.value }));
-                    setUnitOpen(false);
-                  }}
-                  className="w-full cursor-pointer rounded-lg px-2 py-2.5 text-left text-body-2 text-deli-white transition-colors hover:bg-deli-hover"
-                >
-                  {o.label}
-                </button>
-              ))}
-            </DeliCustomScrollArea>
-          </FloatingPopoverList>
-        </div>
-        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
-          <span className={labelClass}>Price Per Unit In Token</span>
-          <input
-            type="number"
-            step="any"
-            min={0}
-            className={inputClass}
-            style={fieldShell}
-            placeholder="e.g. 1.5"
-            value={formData.denominationAmount}
-            onChange={e => setFormData(p => ({ ...p, denominationAmount: e.target.value }))}
-          />
-        </label>
-      </div>
       <CampaignTypeAndPatentRow formData={formData} setFormData={setFormData} ipItems={ipItems} />
       <p className="m-0 text-body-3 text-deli-grey-light">
-        Fixed price campaigns sell every license at the same price. Dynamic campaigns raise the price as more licenses
+        Fixed price campaigns sell every DAO token at the same price. Dynamic campaigns raise the price as more tokens
         are sold.
       </p>
     </div>
@@ -666,8 +679,6 @@ function StepEconomics({
 }) {
   const [currencyOpen, setCurrencyOpen] = useState(false);
   const currencyAnchorRef = useRef<HTMLDivElement>(null);
-  const [transferOpen, setTransferOpen] = useState(false);
-  const transferAnchorRef = useRef<HTMLDivElement>(null);
 
   const numeraireContracts = useMemo(
     () =>
@@ -703,7 +714,10 @@ function StepEconomics({
   const selectedSymbol =
     formData.numeraireAddress && selectedInList ? symbolForAddress(formData.numeraireAddress) : null;
 
-  const transferOptions = ["Transferrable", "NonTransferrable"] as const;
+  const totalSupplyDisplay = useMemo(
+    () => formatTotalSupply(formData.fundingTarget, formData.pricePerToken),
+    [formData.fundingTarget, formData.pricePerToken],
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -763,6 +777,7 @@ function StepEconomics({
             </DeliCustomScrollArea>
           </FloatingPopoverList>
         </div>
+
         <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
           <span className={labelClass}>Price Per Token</span>
           <input
@@ -775,53 +790,30 @@ function StepEconomics({
             value={formData.pricePerToken}
             onChange={e => setFormData(p => ({ ...p, pricePerToken: e.target.value }))}
           />
+          <p className={fieldHintClass}>in currency</p>
         </label>
       </div>
 
       <label className="flex max-w-md flex-col gap-2">
-        <span className={labelClass}>Total Tokens To Sell</span>
+        <span className={labelClass}>Funding Target</span>
         <input
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
+          type="number"
+          step="any"
+          min={0}
           className={inputClass}
           style={fieldShell}
-          placeholder="Whole number"
-          value={formData.totalTokensToSell}
-          onChange={e => setFormData(p => ({ ...p, totalTokensToSell: e.target.value.replace(/\D/g, "") }))}
+          placeholder="e.g. 10000"
+          value={formData.fundingTarget}
+          onChange={e => setFormData(p => ({ ...p, fundingTarget: e.target.value }))}
         />
+        <p className={fieldHintClass}>in currency</p>
       </label>
 
-      <div className="flex flex-col gap-2">
-        <span className={labelClass}>Transferability</span>
-        <CombinedChevronField
-          open={transferOpen}
-          onToggle={() => setTransferOpen(o => !o)}
-          anchorRef={transferAnchorRef}
-        >
-          <span className="text-body-2 text-deli-white">{formData.transferrabilityFlag}</span>
-        </CombinedChevronField>
-        <FloatingPopoverList anchorRef={transferAnchorRef} open={transferOpen} onClose={() => setTransferOpen(false)}>
-          <DeliCustomScrollArea maxHeightPx={DROPDOWN_SCROLL_MAX_HEIGHT_PX}>
-            {transferOptions.map(opt => (
-              <button
-                key={opt}
-                type="button"
-                onClick={() => {
-                  setFormData(p => ({ ...p, transferrabilityFlag: opt }));
-                  setTransferOpen(false);
-                }}
-                className="w-full cursor-pointer rounded-lg px-2 py-2.5 text-left text-body-2 text-deli-white transition-colors hover:bg-deli-hover"
-              >
-                {opt}
-              </button>
-            ))}
-          </DeliCustomScrollArea>
-        </FloatingPopoverList>
-        <p className="m-0 text-body-3 text-deli-grey-light">
-          Select whether the license tokens are legally allowed to be transferred or not
+      {totalSupplyDisplay ? (
+        <p className="m-0 text-body-2 text-deli-grey-light">
+          Total supply: <span className="text-deli-white">{totalSupplyDisplay}</span> tokens
         </p>
-      </div>
+      ) : null}
     </div>
   );
 }
@@ -829,19 +821,16 @@ function StepEconomics({
 function StepLicenseTerms({
   formData,
   setFormData,
-  inputClass,
+  openCorporatesUrlError,
+  onDefendantOpenCorporatesPageChange,
 }: {
   formData: CampaignFormState;
   setFormData: React.Dispatch<React.SetStateAction<CampaignFormState>>;
-  inputClass: string;
+  openCorporatesUrlError: string | null;
+  onDefendantOpenCorporatesPageChange: (value: string) => void;
 }) {
-  const [durationOpen, setDurationOpen] = useState(false);
-  const durationAnchorRef = useRef<HTMLDivElement>(null);
   const [territoryOpen, setTerritoryOpen] = useState(false);
   const territoryAnchorRef = useRef<HTMLDivElement>(null);
-
-  const durationLabel =
-    LICENSE_DURATION_OPTIONS.find(o => String(o.seconds) === formData.licenseDurationSeconds)?.label ?? "";
 
   const removeTerritory = (t: string) => {
     setFormData(p => ({ ...p, territoryRestriction: p.territoryRestriction.filter(x => x !== t) }));
@@ -861,37 +850,40 @@ function StepLicenseTerms({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className={`flex flex-col items-start justify-start ${rowGapClass} lg:flex-row`}>
-        <div className="flex w-full flex-1 flex-col gap-2 lg:min-w-[200px]">
-          <span className={labelClass}>License Duration</span>
-          <CombinedChevronField
-            open={durationOpen}
-            onToggle={() => setDurationOpen(o => !o)}
-            anchorRef={durationAnchorRef}
-          >
-            <span className="text-body-2 text-deli-white">{durationLabel || "Select duration…"}</span>
-          </CombinedChevronField>
-          <FloatingPopoverList anchorRef={durationAnchorRef} open={durationOpen} onClose={() => setDurationOpen(false)}>
-            <DeliCustomScrollArea maxHeightPx={DROPDOWN_SCROLL_MAX_HEIGHT_PX}>
-              {LICENSE_DURATION_OPTIONS.map(o => (
-                <button
-                  key={o.seconds}
-                  type="button"
-                  onClick={() => {
-                    setFormData(p => ({ ...p, licenseDurationSeconds: String(o.seconds) }));
-                    setDurationOpen(false);
-                  }}
-                  className="w-full cursor-pointer rounded-lg px-2 py-2.5 text-left text-body-2 text-deli-white transition-colors hover:bg-deli-hover"
-                >
-                  {o.label}
-                </button>
-              ))}
-            </DeliCustomScrollArea>
-          </FloatingPopoverList>
-        </div>
+      <div className={`flex flex-col justify-start ${rowGapClass} lg:flex-row`}>
+        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
+          <span className={labelClass}>Defendant</span>
+          <input
+            type="text"
+            className={inputClass}
+            style={fieldShell}
+            placeholder="Defendant name"
+            value={formData.defendant}
+            onChange={e => setFormData(p => ({ ...p, defendant: e.target.value }))}
+          />
+        </label>
+        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
+          <span className={labelClass}>Defendant OpenCorporates Page</span>
+          <input
+            type="url"
+            className={inputClass}
+            style={fieldShell}
+            placeholder="https://opencorporates.com/companies/..."
+            value={formData.defendantOpenCorporatesPage}
+            onChange={e => onDefendantOpenCorporatesPageChange(e.target.value)}
+            aria-invalid={openCorporatesUrlError ? true : undefined}
+            aria-describedby={openCorporatesUrlError ? "defendant-opencorporates-error" : undefined}
+          />
+          {openCorporatesUrlError ? (
+            <p id="defendant-opencorporates-error" className={fieldErrorClass}>
+              {openCorporatesUrlError}
+            </p>
+          ) : null}
+        </label>
+      </div>
 
-        <div className="flex w-full flex-1 flex-col gap-2 lg:min-w-[200px]">
-          <span className={labelClass}>Territory Restrictions</span>
+      <div className="flex w-full flex-col gap-2 lg:max-w-md">
+        <span className={labelClass}>Territory Restrictions</span>
           <CombinedChevronField
             open={territoryOpen}
             onToggle={() => setTerritoryOpen(o => !o)}
@@ -939,20 +931,69 @@ function StepLicenseTerms({
               ))}
             </DeliCustomScrollArea>
           </FloatingPopoverList>
-          <p className="m-0 text-body-3 text-deli-grey-light italic">Territories where the campaign is not active</p>
-        </div>
+        <p className="m-0 text-body-3 text-deli-grey-light">Territories where the campaign is not active</p>
+      </div>
+
+      <div className="flex w-full flex-col gap-2 lg:max-w-md">
+        <CaseStatusDeliSelect
+          value={formData.status}
+          onChange={status => setFormData(p => ({ ...p, status }))}
+        />
       </div>
 
       <label className="flex flex-col gap-2">
-        <span className={labelClass}>Usage Rights Definitions</span>
+        <span className={labelClass}>Case Description</span>
         <textarea
           className={textareaClass}
           style={fieldShell}
-          placeholder="Describe usage rights for this license campaign"
+          placeholder="Describe the litigation case for funders"
+          value={formData.caseDescription}
+          onChange={e => setFormData(p => ({ ...p, caseDescription: e.target.value }))}
+        />
+      </label>
+
+      <label className="flex flex-col gap-2">
+        <span className={labelClass}>Litigation Finance Agreement</span>
+        <textarea
+          className={textareaClass}
+          style={fieldShell}
+          placeholder="Describe the litigation finance agreement for this campaign"
           value={formData.usageRightsDefinition}
           onChange={e => setFormData(p => ({ ...p, usageRightsDefinition: e.target.value }))}
         />
       </label>
+    </div>
+  );
+}
+
+function CaseStatusDeliSelect({ value, onChange }: { value: string; onChange: (status: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const selectedLabel = IP_STATUSES.find(item => String(item.value) === value)?.label ?? "Select status…";
+
+  return (
+    <div className="flex flex-col gap-2">
+      <span className={labelClass}>Case status</span>
+      <CombinedChevronField open={open} onToggle={() => setOpen(o => !o)} anchorRef={anchorRef}>
+        <span className="text-body-2 text-deli-white">{selectedLabel}</span>
+      </CombinedChevronField>
+      <FloatingPopoverList anchorRef={anchorRef} open={open} onClose={() => setOpen(false)}>
+        <DeliCustomScrollArea maxHeightPx={DROPDOWN_SCROLL_MAX_HEIGHT_PX}>
+          {IP_STATUSES.map(item => (
+            <button
+              key={item.value}
+              type="button"
+              onClick={() => {
+                onChange(String(item.value));
+                setOpen(false);
+              }}
+              className="w-full cursor-pointer rounded-lg px-2 py-2.5 text-left text-body-2 text-deli-white transition-colors hover:bg-deli-hover"
+            >
+              {item.label}
+            </button>
+          ))}
+        </DeliCustomScrollArea>
+      </FloatingPopoverList>
     </div>
   );
 }

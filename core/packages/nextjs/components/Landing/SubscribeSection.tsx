@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { BackgroundEdgeBlend } from "./BackgroundEdgeBlend";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -68,12 +69,13 @@ export const SubscribeSection = () => {
   };
 
   return (
-    <div className="relative z-10 flex w-full justify-center overflow-hidden py-10">
-      <div className="relative mx-auto w-full max-w-[1440px] min-h-[425px] overflow-hidden rounded-[20px] bg-[rgba(0,0,0,0.5)]">
-        {/* Background Blur Ellipse */}
-        <div className="absolute w-[291px] h-[291px] -left-[49px] -top-[44px] bg-[linear-gradient(135.75deg,#010E6D_21.8%,rgba(1,14,109,0.5)_94.06%)] blur-[72px]" />
+    <div className="relative z-10 w-full overflow-hidden py-24">
+      <div className="mx-auto w-full max-w-[1440px] px-5 lg:px-[75px]">
+        <div className="relative min-h-[425px] w-full overflow-hidden rounded-[20px] bg-[rgba(0,0,0,0.5)]">
+          {/* Background Blur Ellipse */}
+          <div className="absolute h-[291px] w-[291px] -left-[49px] -top-[44px] bg-[linear-gradient(135.75deg,#010E6D_21.8%,rgba(1,14,109,0.5)_94.06%)] blur-[72px]" />
 
-        <div className="relative z-10 flex min-h-[425px] w-full flex-col items-center justify-center px-5 py-16 lg:flex-row lg:px-[75px] lg:py-0">
+          <div className="relative z-10 flex min-h-[425px] w-full flex-col items-center justify-center px-5 py-16 lg:flex-row lg:px-12 lg:py-0">
           {/* Content Frame */}
           <div className="relative flex w-full max-w-[545px] flex-col items-center gap-[22px]">
             {/* top */}
@@ -137,6 +139,7 @@ export const SubscribeSection = () => {
 
           {/* DNA Video Background - Repositioned for Mobile */}
           <div className="relative mt-10 h-[300px] w-full overflow-hidden lg:absolute lg:right-0 lg:top-0 lg:mt-0 lg:block lg:h-full lg:w-[425px]">
+            <BackgroundEdgeBlend />
             <video
               autoPlay
               loop
@@ -151,6 +154,7 @@ export const SubscribeSection = () => {
               <source src="/assets/dna.mov" type="video/mp4" />
             </video>
           </div>
+        </div>
         </div>
       </div>
     </div>

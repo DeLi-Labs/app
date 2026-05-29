@@ -25,7 +25,7 @@ import { zeroAddress, decodeFunctionData, decodeEventLog, getEventSelector, getA
 import { createStorageGateway } from "../../nextjs/services/gateway/storage/StorageGatewayFactory";
 import { INDUSTRIES } from "../../nextjs/utils/industryData";
 
-import { ERC20_DECIMALS_ABI, ERC20_TOTAL_SUPPLY_ABI, getTokenPriceUSD, quoteOneLicensePriceNumeraire } from "./helpers";
+import { ERC20_DECIMALS_ABI, ERC20_TOTAL_SUPPLY_ABI, getTokenPriceUSD, parseLicenseMetadata, quoteOneLicensePriceNumeraire } from "./helpers";
 
 // Load .env file explicitly
 const __filename = fileURLToPath(import.meta.url);
@@ -122,13 +122,12 @@ ponder.on("IPERC721:Transfer", async ({ event, context }) => {
       patentClassification: string;
       filingDate: string;
       grantDate: string;
+      espacenetUrl?: string;
+      epoUrl?: string;
+      ownerLinkedinUrl?: string;
+      ownerWebsiteUrl?: string;
       description: string;
       image: string;
-      status?: number;
-      statusUpdateTimestamp?: number;
-      statusUpdateExplanation?: string;
-      reasonCode?: number;
-      caseReference?: string;
       industry?: string[];
       attachments?: Array<{
         name: string;
@@ -232,14 +231,13 @@ ponder.on("IPERC721:Transfer", async ({ event, context }) => {
       patentClassification: metadata.patentClassification || "",
       filingDate: metadata.filingDate || "",
       grantDate: metadata.grantDate || "",
+      espacenetUrl: metadata.espacenetUrl || "",
+      epoUrl: metadata.epoUrl || "",
+      ownerLinkedinUrl: metadata.ownerLinkedinUrl || "",
+      ownerWebsiteUrl: metadata.ownerWebsiteUrl || "",
       description: metadata.description || "",
       image: metadata.image || "",
       creationTimestamp: event.block.timestamp,
-      status: metadata.status ?? null,
-      statusUpdateTimestamp: metadata.statusUpdateTimestamp ? BigInt(metadata.statusUpdateTimestamp) : null,
-      statusUpdateExplanation: metadata.statusUpdateExplanation || null,
-      reasonCode: metadata.reasonCode ?? null,
-      caseReference: metadata.caseReference || null,
       industry: industries,
       categoryId,
       retailPercent: 0,
@@ -267,22 +265,6 @@ ponder.on("IPERC721:Transfer", async ({ event, context }) => {
     }
   } catch (error) {
     console.error(`Error processing mint for tokenId ${tokenId}:`, error);
-  }
-});
-
-ponder.on("IPERC721:MetadataUpdated", async ({ event, context }) => {
-  const { tokenId, metadata: contractMetadata } = event.args;
-
-  try {
-    await context.db.update(ip, { tokenId }).set({
-      status: contractMetadata.status,
-      statusUpdateTimestamp: contractMetadata.statusUpdateTimestamp,
-      statusUpdateExplanation: contractMetadata.statusUpdateExplanation,
-      reasonCode: contractMetadata.reasonCode,
-      caseReference: contractMetadata.caseReference,
-    });
-  } catch (error) {
-    console.error(`Error processing MetadataUpdated for tokenId ${tokenId}:`, error);
   }
 });
 
@@ -362,6 +344,13 @@ ponder.on("CampaignManager:CampaignInitialized", async ({ event, context }) => {
       licenseDuration?: number | string;
       territoryRestriction?: string[];
       usageRightsDefinition?: string;
+      caseDescription?: string;
+      estimatedDamages?: string;
+      patentStrength?: string;
+      defendantRecoverability?: string;
+      timelineProjection?: string;
+      defendant?: string;
+      defendantOpenCorporatesPage?: string;
       transferrabilityFlag?: "Transferrable" | "NonTransferrable";
     }>(licenceMetadataUri);
 
@@ -429,6 +418,19 @@ ponder.on("CampaignManager:CampaignInitialized", async ({ event, context }) => {
     const totalSupply = Number(formatUnits(totalSupplyRaw, licenseDecimals));
     const totalEmittedLicensesValueUSD = totalSupply * currentPrice * numeraireUSDPrice;
 
+    let onChainMetadata: ReturnType<typeof parseLicenseMetadata> = null;
+    try {
+      onChainMetadata = parseLicenseMetadata(
+        await context.client.readContract({
+          abi: licenseContract.abi,
+          address: licenseAddress,
+          functionName: "metadata",
+        }),
+      );
+    } catch (error) {
+      console.warn(`Failed to read on-chain metadata for license ${licenseAddress}:`, error);
+    }
+
     await context.db.insert(campaign).values({
       licenseAddress: normalizedLicense,
       licenseSymbol: (licenseSymbol as string) || "",
@@ -443,7 +445,17 @@ ponder.on("CampaignManager:CampaignInitialized", async ({ event, context }) => {
       licenseDuration: metadata.licenseDuration ? BigInt(metadata.licenseDuration.toString()) : 0n,
       territoryRestriction: metadata.territoryRestriction || [],
       usageRightsDefinition: metadata.usageRightsDefinition || "",
+      caseDescription: metadata.caseDescription || "",
+      estimatedDamages: metadata.estimatedDamages || "",
+      patentStrength: metadata.patentStrength || "",
+      defendantRecoverability: metadata.defendantRecoverability || "",
+      timelineProjection: metadata.timelineProjection || "",
+      defendant: metadata.defendant || "",
+      defendantOpenCorporatesPage: metadata.defendantOpenCorporatesPage || "",
       transferrabilityFlag: metadata.transferrabilityFlag || "Transferrable",
+      status: onChainMetadata?.status ?? null,
+      statusUpdateTimestamp: onChainMetadata?.statusUpdateTimestamp ?? null,
+      statusUpdateExplanation: onChainMetadata?.statusUpdateExplanation ?? null,
       currentPrice,
       totalSupply,
       totalEmittedLicensesValueUSD,
@@ -505,6 +517,26 @@ ponder.on("CampaignManager:CampaignInitialized", async ({ event, context }) => {
     }
   } catch (error) {
     console.error(`Error processing campaign initialization for patentId ${patentId}:`, error);
+  }
+});
+
+ponder.on("LicenseERC20:MetadataUpdated", async ({ event, context }) => {
+  const licenseAddress = event.log.address.toLowerCase() as Address;
+  const contractMetadata = parseLicenseMetadata(event.args.metadata);
+
+  if (!contractMetadata) {
+    console.warn(`Could not parse MetadataUpdated payload for license ${licenseAddress}`);
+    return;
+  }
+
+  try {
+    await context.db.update(campaign, { licenseAddress }).set({
+      status: contractMetadata.status,
+      statusUpdateTimestamp: contractMetadata.statusUpdateTimestamp,
+      statusUpdateExplanation: contractMetadata.statusUpdateExplanation,
+    });
+  } catch (error) {
+    console.error(`Error processing MetadataUpdated for license ${licenseAddress}:`, error);
   }
 });
 
@@ -786,11 +818,10 @@ ponder.on("IPoolManager:Swap", async ({ event, context }) => {
     totalTradingVolumeUSD: campaignRow.totalTradingVolumeUSD + swapValueUSD,
   });
 
-  // --- Update IP aggregates ---
-  if (ipRecord && isSell) {
-    const ipRetail = computeRetailUpdate(ipRecord.totalInteractions, ipRecord.totalSales, nonRetail);
+  const currentDayData = await findPeriodRow(context, campaignDayData, licenseAddress, periodStart24h);
 
-    const currentDayData = await findPeriodRow(context, campaignDayData, licenseAddress, periodStart24h);
+  // --- Update IP aggregates ---
+  if (ipRecord) {
     let topGrowthUpdate: { topGrowth24hCampaignLicenseAddress: Address } | undefined;
     if (currentDayData) {
       const storedTop = ipRecord.topGrowth24hCampaignLicenseAddress;
@@ -804,14 +835,24 @@ ponder.on("IPoolManager:Swap", async ({ event, context }) => {
       }
     }
 
-    await context.db.update(ip, { tokenId: ipRecord.tokenId }).set({
-      totalInteractions: ipRetail.totalInteractions,
-      totalSales: ipRetail.totalSales,
-      retailPercent: ipRetail.retailPercent,
-      totalTradingVolumeUSD: ipRecord.totalTradingVolumeUSD + swapValueUSD,
-      totalEmittedLicensesValueUSD: ipRecord.totalEmittedLicensesValueUSD + emittedValueDelta,
+    const ipGrowthUpdate: Record<string, unknown> = {
+      growthPercent: currentDayData?.growthPercent ?? ipRecord.growthPercent,
       ...(topGrowthUpdate ?? {}),
-    });
+    };
+
+    if (isSell) {
+      const ipRetail = computeRetailUpdate(ipRecord.totalInteractions, ipRecord.totalSales, nonRetail);
+      await context.db.update(ip, { tokenId: ipRecord.tokenId }).set({
+        ...ipGrowthUpdate,
+        totalInteractions: ipRetail.totalInteractions,
+        totalSales: ipRetail.totalSales,
+        retailPercent: ipRetail.retailPercent,
+        totalTradingVolumeUSD: ipRecord.totalTradingVolumeUSD + swapValueUSD,
+        totalEmittedLicensesValueUSD: ipRecord.totalEmittedLicensesValueUSD + emittedValueDelta,
+      });
+    } else {
+      await context.db.update(ip, { tokenId: ipRecord.tokenId }).set(ipGrowthUpdate);
+    }
   }
 
   // --- Update account aggregates ---
@@ -843,20 +884,19 @@ ponder.on("IPoolManager:Swap", async ({ event, context }) => {
   }
 
   // --- Update category & industry aggregates ---
-  if (ipRecord?.categoryId && isSell) {
+  if (ipRecord?.categoryId) {
     const catRecord = await context.db.find(category, { id: ipRecord.categoryId });
     if (catRecord) {
-      const catRetail = computeRetailUpdate(catRecord.totalInteractions, catRecord.totalSales, nonRetail);
+      const catUpdate: Record<string, unknown> = {};
+      if (isSell) {
+        const catRetail = computeRetailUpdate(catRecord.totalInteractions, catRecord.totalSales, nonRetail);
+        catUpdate.totalInteractions = catRetail.totalInteractions;
+        catUpdate.totalSales = catRetail.totalSales;
+        catUpdate.retailPercent = catRetail.retailPercent;
+        catUpdate.totalTradingVolumeUSD = catRecord.totalTradingVolumeUSD + swapValueUSD;
+        catUpdate.totalEmittedLicensesValueUSD = catRecord.totalEmittedLicensesValueUSD + emittedValueDelta;
+      }
 
-      const catUpdate: Record<string, unknown> = {
-        totalInteractions: catRetail.totalInteractions,
-        totalSales: catRetail.totalSales,
-        retailPercent: catRetail.retailPercent,
-        totalTradingVolumeUSD: catRecord.totalTradingVolumeUSD + swapValueUSD,
-        totalEmittedLicensesValueUSD: catRecord.totalEmittedLicensesValueUSD + emittedValueDelta,
-      };
-
-      const currentDayData = await findPeriodRow(context, campaignDayData, licenseAddress, periodStart24h);
       if (currentDayData) {
         let shouldUpdateTop = !catRecord.topGrowth24hCampaignLicenseAddress;
         if (!shouldUpdateTop && catRecord.topGrowth24hCampaignLicenseAddress) {
@@ -868,24 +908,25 @@ ponder.on("IPoolManager:Swap", async ({ event, context }) => {
         }
       }
 
-      await context.db.update(category, { id: ipRecord.categoryId }).set(catUpdate);
+      if (Object.keys(catUpdate).length > 0) {
+        await context.db.update(category, { id: ipRecord.categoryId }).set(catUpdate);
+      }
     }
 
     for (const ind of new Set(ipRecord.industry)) {
       const indRecord = await context.db.find(industry, { id: ind });
       if (!indRecord) continue;
 
-      const indRetail = computeRetailUpdate(indRecord.totalInteractions, indRecord.totalSales, nonRetail);
+      const indUpdate: Record<string, unknown> = {};
+      if (isSell) {
+        const indRetail = computeRetailUpdate(indRecord.totalInteractions, indRecord.totalSales, nonRetail);
+        indUpdate.totalInteractions = indRetail.totalInteractions;
+        indUpdate.totalSales = indRetail.totalSales;
+        indUpdate.retailPercent = indRetail.retailPercent;
+        indUpdate.totalTradingVolumeUSD = indRecord.totalTradingVolumeUSD + swapValueUSD;
+        indUpdate.totalEmittedLicensesValueUSD = indRecord.totalEmittedLicensesValueUSD + emittedValueDelta;
+      }
 
-      const indUpdate: Record<string, unknown> = {
-        totalInteractions: indRetail.totalInteractions,
-        totalSales: indRetail.totalSales,
-        retailPercent: indRetail.retailPercent,
-        totalTradingVolumeUSD: indRecord.totalTradingVolumeUSD + swapValueUSD,
-        totalEmittedLicensesValueUSD: indRecord.totalEmittedLicensesValueUSD + emittedValueDelta,
-      };
-
-      const currentDayData = await findPeriodRow(context, campaignDayData, licenseAddress, periodStart24h);
       if (currentDayData) {
         let shouldUpdateTop = !indRecord.topGrowth24hCampaignLicenseAddress;
         if (!shouldUpdateTop && indRecord.topGrowth24hCampaignLicenseAddress) {
@@ -897,7 +938,9 @@ ponder.on("IPoolManager:Swap", async ({ event, context }) => {
         }
       }
 
-      await context.db.update(industry, { id: ind }).set(indUpdate);
+      if (Object.keys(indUpdate).length > 0) {
+        await context.db.update(industry, { id: ind }).set(indUpdate);
+      }
     }
   }
 });

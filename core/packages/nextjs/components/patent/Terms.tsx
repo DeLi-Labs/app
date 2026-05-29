@@ -1,4 +1,6 @@
-import { type MouseEvent as ReactMouseEvent, type ReactNode, type UIEvent, useEffect, useRef, useState } from "react";
+import { type MouseEvent as ReactMouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import { formatEstimatedDamagesDisplay } from "~~/utils/generateEstimatedDamages";
+import { formatTimelineProjectionDisplay } from "~~/utils/generateTimelineProjection";
 import { PATENT_CATEGORY_COLORS, type PatentCategory } from "~~/utils/patentCategoryColors";
 
 export type ScrollContainerProps = {
@@ -63,7 +65,7 @@ const ScrollContainer = ({
     return () => resizeObserver.disconnect();
   }, [header, children, maxHeightPx]);
 
-  const onScroll = (_event: UIEvent<HTMLDivElement>) => {
+  const onScroll = () => {
     updateScrollState();
   };
 
@@ -137,7 +139,11 @@ const ScrollContainer = ({
 export type TransferabilityFlags = "Transferable" | "NonTransferable";
 
 export type PatentTermsDetailsProps = {
-  description: string; //
+  caseDescription: string; //
+  estimatedDamages: string; //
+  patentStrength: string; //
+  defendantRecoverability: string; //
+  timelineProjection: string; //
   territoryRestrictions: string[]; //
   usageRightsDefinition: string; //
   transferabilityFlags: TransferabilityFlags; //
@@ -232,25 +238,28 @@ export const PatentTermsDetails = (props: PatentTermsDetailsProps) => {
             value={rest.registrationAuthority}
             isLoading={rest.isLoading}
           />
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-transparent bg-deli-main p-4 [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-grey)_border-box]">
-        <div className="flex flex-col gap-2.5 lg:gap-4">
-          <TermsInfoField label="Inventor Names:" value={rest.inventorNames} isLoading={rest.isLoading} />
-          <TermsInfoField label="Patent Classification:" value={rest.patentClassification} isLoading={rest.isLoading} />
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-transparent bg-deli-main p-4 [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-grey)_border-box]">
-        <div className="flex flex-col gap-2.5 lg:gap-4">
-          <TermsInfoField label="Filing Date:" value={rest.filingDate} isLoading={rest.isLoading} />
-          <TermsInfoField label="Grant Date:" value={rest.grantDate} isLoading={rest.isLoading} />
           <TermsInfoField
-            label="NFT Mint Date:"
-            value={formatUnixTimestampSecondsToDateString(rest.creationTimestamp)}
+            label="Estimated Damages:"
+            value={formatEstimatedDamagesDisplay(rest.estimatedDamages)}
             isLoading={rest.isLoading}
           />
+          <TermsInfoField label="Patent Strength:" value={rest.patentStrength} isLoading={rest.isLoading} />
+          <TermsInfoField
+            label="Defendant Recoverability:"
+            value={rest.defendantRecoverability}
+            isLoading={rest.isLoading}
+          />
+          <TermsInfoField
+            label="Timeline Projection:"
+            value={formatTimelineProjectionDisplay(rest.timelineProjection)}
+            isLoading={rest.isLoading}
+          />
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-transparent bg-deli-main p-4 [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-grey)_border-box]">
+        <div className="flex flex-col gap-2.5 lg:gap-4">
+          <TermsInfoField label="Patent Classification:" value={rest.patentClassification} isLoading={rest.isLoading} />
         </div>
       </div>
     </div>
@@ -260,7 +269,7 @@ export const PatentTermsDetails = (props: PatentTermsDetailsProps) => {
     <section className={`flex w-full flex-col gap-[30px] lg:flex-row lg:gap-7.5 ${className ?? ""}`}>
       <div className="flex w-full flex-col gap-[30px] lg:w-2/3 lg:gap-6">
         <div id="description">
-          <ScrollContainer header="Description" category={rest.category} isLoading={rest.isLoading}>
+          <ScrollContainer header="Case Description" category={rest.category} isLoading={rest.isLoading}>
             {rest.isLoading ? (
               <div className="flex flex-col gap-2">
                 <div className="h-4 w-full animate-pulse rounded-md bg-deli-background" />
@@ -268,14 +277,14 @@ export const PatentTermsDetails = (props: PatentTermsDetailsProps) => {
                 <div className="h-4 w-3/4 animate-pulse rounded-md bg-deli-background" />
               </div>
             ) : (
-              rest.description
+              rest.caseDescription
             )}
           </ScrollContainer>
         </div>
 
         {!hideUsageRightsSection ? (
           <ScrollContainer
-            header="Usage Rights & Licensing Parameters"
+            header="Litigation Funding Agreement"
             category={rest.category}
             isLoading={rest.isLoading}
           >
@@ -293,18 +302,6 @@ export const PatentTermsDetails = (props: PatentTermsDetailsProps) => {
                 <p className="m-0 text-body-2">
                   <span className="text-deli-white">Territory Restriction: </span>
                   <span className="text-deli-grey-light">{rest.territoryRestrictions.join(", ") || "-"}</span>
-                </p>
-
-                <p className="m-0 text-body-2">
-                  <span className="text-deli-white">Transferability: </span>
-                  <span className="text-deli-grey-light">{rest.transferabilityFlags}</span>
-                </p>
-
-                <p className="m-0 text-body-2">
-                  <span className="text-deli-white">License Duration: </span>
-                  <span className="text-deli-grey-light">
-                    {mapDurationSecondsToHumanReadable(rest.licenseDuration)}
-                  </span>
                 </p>
               </div>
             )}

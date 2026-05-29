@@ -6,10 +6,10 @@ import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 const traditionalItems = [
   "Six-figure due diligence",
   "Multi-million profit threshold",
-  "Only 3–5% of cases funded",
+  "Only 3-5% of cases funded",
   "Years of capital lock-in",
   "Closed to retail funders",
-  "Opaque underwriting",
+  "Fees regardless of outcome",
 ];
 
 const deliWayItems = [
@@ -18,7 +18,7 @@ const deliWayItems = [
   "Milestone-gated capital",
   "Funder exit checkpoints",
   "Open to collective funders",
-  "Transparent on-chain rails",
+  "Platform earns only when funders earn",
 ];
 
 /** Matches PatentHeader / StatCard: solid fill + var(--deli-stroke-grey) rim */
@@ -28,14 +28,17 @@ const cardShell =
 const listIconShell =
   "border border-transparent [background:linear-gradient(var(--deli-background),var(--deli-background))_padding-box,var(--deli-stroke-grey)_border-box]";
 
+const comparisonCardClass = `relative w-full min-w-0 rounded-[20px] overflow-hidden p-6 flex flex-col gap-8 min-h-[560px] h-auto sm:p-8 lg:h-[455px] lg:p-10 ${cardShell}`;
+const bannerCardClass = `relative w-full min-w-0 rounded-[20px] overflow-hidden pb-1 group min-h-[560px] h-auto lg:h-[455px] ${cardShell}`;
+
 export const WhyDeliLabs = () => {
   return (
     <section className="relative py-24 overflow-hidden flex flex-col justify-center items-center bg-transparent">
       <div className="relative mx-auto w-full max-w-[1440px] px-5 lg:px-[75px]">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-8">
+        <div className="mb-16 flex min-w-0 flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           <h2 className="font-urbanist font-light text-[35px] lg:text-[50px] leading-[110%] text-deli-white m-0">
-            Why DeLi labs?
+            Why DeLi Labs?
           </h2>
           <p className="font-urbanist font-light text-[16px] lg:text-[18px] leading-[150%] text-deli-white max-w-[500px] m-0">
             Forget six-figure due diligence and gated underwriting. We compared traditional litigation finance with
@@ -44,9 +47,9 @@ export const WhyDeliLabs = () => {
         </div>
 
         {/* Grid Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-[474px_474px_312px] gap-[14.5px] justify-center">
+        <div className="grid w-full min-w-0 grid-cols-1 items-stretch gap-[14.5px] lg:grid-cols-[minmax(0,1.52fr)_minmax(0,1.52fr)_minmax(0,1fr)]">
           {/* Card 1: Traditional Licensing */}
-          <div className={`relative rounded-[20px] overflow-hidden p-10 flex flex-col gap-8 h-[455px] ${cardShell}`}>
+          <div className={comparisonCardClass}>
             {/* Exact Figma Gradient for Traditional Licensing part */}
             <div
               className="absolute pointer-events-none z-0"
@@ -64,20 +67,22 @@ export const WhyDeliLabs = () => {
             <h3 className="font-urbanist text-[25px] leading-[1.4em] text-deli-white z-10">Traditional Litigation Finance</h3>
             <div className="flex flex-col gap-7 z-10">
               {traditionalItems.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-5">
+                <div key={idx} className="flex min-w-0 items-center gap-5">
                   <div
                     className={`relative flex-shrink-0 w-[30px] h-[30px] rounded-[6px] flex items-center justify-center text-white/30 overflow-hidden ${listIconShell}`}
                   >
                     <XMarkIcon className="relative z-10 w-[10px] h-[10px]" />
                   </div>
-                  <span className="font-urbanist text-[21px] leading-[1.3em] text-[#555555]">{item}</span>
+                  <span className="min-w-0 font-urbanist text-[18px] leading-[1.3em] text-[#555555] sm:text-[21px]">
+                    {item}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Card 2: The DeLi Way */}
-          <div className={`relative rounded-[20px] overflow-hidden p-10 flex flex-col gap-8 h-[455px] ${cardShell}`}>
+          <div className={comparisonCardClass}>
             {/* 5-Layer Figma Gradient System for the top-right corner */}
             {/* Layer 1: "Star" base glow */}
             <div
@@ -209,20 +214,22 @@ export const WhyDeliLabs = () => {
             <h3 className="font-urbanist text-[25px] leading-[1.4em] text-deli-white z-10">The DeLi Way</h3>
             <div className="flex flex-col gap-7 z-10">
               {deliWayItems.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-5">
+                <div key={idx} className="flex min-w-0 items-center gap-5">
                   <div
                     className={`relative flex-shrink-0 w-[30px] h-[30px] rounded-[6px] flex items-center justify-center text-deli-white overflow-hidden ${listIconShell}`}
                   >
                     <CheckIcon className="relative z-10 w-3 h-[9px]" />
                   </div>
-                  <span className="font-urbanist text-[21px] leading-[1.3em] text-deli-white">{item}</span>
+                  <span className="min-w-0 font-urbanist text-[18px] leading-[1.3em] text-deli-white sm:text-[21px]">
+                    {item}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Card 3: Banner / Turn your ideas */}
-          <div className={`relative rounded-[20px] overflow-hidden pb-1 group w-full lg:w-[312px] h-[455px] ${cardShell}`}>
+          <div className={bannerCardClass}>
             {/* Ellipse (White) */}
             <div
               className="absolute pointer-events-none z-0"
@@ -285,40 +292,29 @@ export const WhyDeliLabs = () => {
             />
 
             {/* Rocket Image */}
-            <div
-              className="absolute z-10"
-              style={{ width: "270px", height: "270px", left: "calc(50% - 135px)", top: "48px" }}
-            >
+            <div className="absolute left-1/2 top-12 z-10 aspect-square w-[min(100%,270px)] -translate-x-1/2">
               <Image src="/assets/banner-bg.svg" alt="Rocket background" fill className="object-contain" />
             </div>
 
             {/* Bottom Dark Fade Rectangle */}
             <div
-              className="absolute z-[15] pointer-events-none"
+              className="absolute bottom-0 left-0 z-[15] h-[70%] min-h-[200px] max-h-[319px] w-full pointer-events-none"
               style={{
-                width: "100%",
-                height: "319px",
-                left: "0px",
-                bottom: "0px",
                 background: "linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 61.98%)",
               }}
             />
 
-            {/* Bottom shine glow (from CSS "grad") */}
+            {/* Bottom shine glow — anchored to card bottom edge */}
             <div
-              className="absolute z-[16] pointer-events-none"
+              className="absolute -left-5 -right-5 bottom-0 top-0 z-[16] pointer-events-none"
               style={{
-                width: "calc(100% + 40px)",
-                height: "455px",
-                left: "-20px",
-                top: "0px",
                 background: "rgba(0, 0, 0, 0.01)",
                 boxShadow:
                   "inset 0px -18.19px 18.19px -10px rgba(255, 255, 255, 0.4), inset 0px -26.38px 27.28px -17.28px #6694FF, inset 0px -22.77px 54.57px #04305C",
               }}
             />
 
-            {/* launch-btn container — matches Header Launch App link */}
+            {/* launch-btn container - matches Header Launch App link */}
             <div className="absolute z-20 flex items-center p-0" style={{ right: "16px", top: "16px" }}>
               <Link href="/registration" className="flex items-center gap-[14px] p-0 transition-all group">
                 <span className="text-body-2 text-white group-hover:text-deli-accent font-normal leading-[130%] transition-colors">
@@ -337,13 +333,10 @@ export const WhyDeliLabs = () => {
               className="absolute z-20 bottom-6 left-5 right-5 flex max-h-[210px] min-h-0 flex-col items-start gap-[10px] p-0"
             >
               <h3 className="font-urbanist shrink-0 font-normal text-[35px] leading-[120%] text-white m-0 self-stretch">
-                Turn patent disputes
-                <br />
-                into liquid capital.
+                Get access to on-chain capital
               </h3>
               <p className="font-urbanist min-h-0 shrink font-normal text-[16px] leading-[130%] text-[#9FA1A1] m-0 min-w-0 self-stretch">
-                The first Web 3.0 platform for collective patent enforcement funding. Open every case to a global
-                pool of funders through per-case DAOs.
+                The first Web 3.0 platform for collective patent enforcement funding.
               </p>
             </div>
           </div>

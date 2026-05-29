@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePrivy } from "@privy-io/react-auth";
 import { useAccount, useAccountEffect, useDisconnect } from "wagmi";
 import { ProfileContent } from "~~/components/profile/ProfileContent";
 import { useProfileHeaderMenuContext } from "~~/components/profile/ProfileHeaderMenuContext";
@@ -15,6 +16,9 @@ const DISCONNECTED_REDIRECT_MS = 200;
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { logout, authenticated: privyAuthenticated } = usePrivy();
+  const privyAuthenticatedRef = useRef(privyAuthenticated);
+  privyAuthenticatedRef.current = privyAuthenticated;
   const { address, status } = useAccount();
   const { disconnect } = useDisconnect();
   const [activeTab, setActiveTab] = useState<ProfileTab>("ips");
@@ -28,6 +32,7 @@ export default function ProfilePage() {
 
   useAccountEffect({
     onDisconnect() {
+      if (privyAuthenticatedRef.current) return;
       router.replace("/registration");
     },
   });
@@ -39,13 +44,16 @@ export default function ProfilePage() {
     if (status !== "disconnected") {
       return;
     }
+    if (privyAuthenticated) {
+      return;
+    }
 
     const id = window.setTimeout(() => {
       router.replace("/registration");
     }, DISCONNECTED_REDIRECT_MS);
 
     return () => window.clearTimeout(id);
-  }, [status, router]);
+  }, [status, privyAuthenticated, router]);
 
   const loadOwnerItems = useCallback(async () => {
     if (!address) {
@@ -114,7 +122,7 @@ export default function ProfilePage() {
     refetchAfterSubmission();
   };
 
-  const handleRequestStartLicensing = useCallback((patentTokenId: number | null) => {
+  const handleRequestStartFunding = useCallback((patentTokenId: number | null) => {
     setRegisterIpOpen(false);
     setActiveTab("ips");
     setStartCampaignPatentTokenId(patentTokenId);
@@ -132,10 +140,16 @@ export default function ProfilePage() {
     refetchAfterSubmission();
   };
 
-  const handleExit = useCallback(() => {
-    disconnect();
-    router.push("/registration");
-  }, [disconnect, router]);
+  const handleExit = useCallback(async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Failed to logout from Privy:", error);
+    } finally {
+      disconnect();
+      window.location.assign("/registration");
+    }
+  }, [disconnect, logout]);
 
   const handleSelectTab = useCallback((tab: ProfileTab) => {
     setRegisterIpOpen(false);
@@ -144,9 +158,9 @@ export default function ProfilePage() {
     setActiveTab(tab);
   }, []);
 
-  const handleStartLicensing = useCallback(() => {
-    handleRequestStartLicensing(null);
-  }, [handleRequestStartLicensing]);
+  const handleStartFunding = useCallback(() => {
+    handleRequestStartFunding(null);
+  }, [handleRequestStartFunding]);
 
   useEffect(() => {
     setProfileHeaderMenuConfig({
@@ -155,7 +169,7 @@ export default function ProfilePage() {
       hasPatents: normalizedIps.length > 0,
       address,
       onRegisterIp: handleRegisterIp,
-      onStartLicensing: handleStartLicensing,
+      onStartFunding: handleStartFunding,
       onExit: handleExit,
       onSelectTab: handleSelectTab,
     });
@@ -165,7 +179,7 @@ export default function ProfilePage() {
     normalizedIps.length,
     address,
     handleRegisterIp,
-    handleStartLicensing,
+    handleStartFunding,
     handleExit,
     handleSelectTab,
     setProfileHeaderMenuConfig,
@@ -178,15 +192,15 @@ export default function ProfilePage() {
   }, [clearProfileHeaderMenuConfig]);
 
   return (
-    <main className="flex min-h-screen flex-col bg-deli-main px-[10px] pb-8 pt-10 lg:p-[75px]">
-      <div className="flex min-h-0 flex-1 gap-8">
+    <main className="flex min-h-screen flex-col bg-deli-main pb-8 pt-20 lg:pb-[75px]">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-8 px-5 lg:px-[75px] lg:pt-[75px]">
         <ProfileSidebar
           activeTab={activeTab}
           hasCampaigns={hasCampaigns}
           hasPatents={normalizedIps.length > 0}
           address={address}
           onRegisterIp={handleRegisterIp}
-          onStartLicensing={handleStartLicensing}
+          onStartFunding={handleStartFunding}
           onExit={handleExit}
           onSelectTab={handleSelectTab}
         />
@@ -202,7 +216,7 @@ export default function ProfilePage() {
           onRegisterIpSuccess={handleRegisterIpSuccess}
           onCloseStartCampaign={handleCloseStartCampaign}
           onStartCampaignSuccess={handleStartCampaignSuccess}
-          onRequestStartLicensing={handleRequestStartLicensing}
+          onRequestStartFunding={handleRequestStartFunding}
         />
       </div>
     </main>

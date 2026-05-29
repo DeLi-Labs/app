@@ -37,6 +37,39 @@ export function getPoolIdForAddress(address: `0x${string}`): `0x${string}` | und
     return ADDRESS_TO_POOL_ID[normalized];
 }
 
+export type ParsedLicenseMetadata = {
+    status: number;
+    statusUpdateTimestamp: bigint;
+    statusUpdateExplanation: string;
+};
+
+/** viem returns struct getters as positional arrays; events use named objects. */
+export function parseLicenseMetadata(raw: unknown): ParsedLicenseMetadata | null {
+    if (raw == null) return null;
+
+    if (Array.isArray(raw)) {
+        const [status, statusUpdateTimestamp, statusUpdateExplanation] = raw;
+        if (status === undefined || status === null) return null;
+        return {
+            status: Number(status),
+            statusUpdateTimestamp: BigInt(statusUpdateTimestamp ?? 0),
+            statusUpdateExplanation: String(statusUpdateExplanation ?? ""),
+        };
+    }
+
+    if (typeof raw === "object") {
+        const obj = raw as Record<string, unknown>;
+        if (!("status" in obj)) return null;
+        return {
+            status: Number(obj.status),
+            statusUpdateTimestamp: BigInt((obj.statusUpdateTimestamp as bigint | number | string) ?? 0),
+            statusUpdateExplanation: String(obj.statusUpdateExplanation ?? ""),
+        };
+    }
+
+    return null;
+}
+
 function getStateViewContract() {
     const chainId = scaffoldConfig.targetNetworks[0].id as keyof typeof externalContracts;
     return externalContracts[chainId].StateView;

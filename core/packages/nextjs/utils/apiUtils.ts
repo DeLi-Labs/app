@@ -4,6 +4,17 @@ import { IncomingMessage } from "http";
 import type { NextApiResponse } from "next";
 import scaffoldConfig from "~~/scaffold.config";
 import { CampaignUploadFormData, UploadFormData } from "~~/types";
+import {
+  validateEspacenetUrl,
+  validateEpoUrl,
+  validateLinkedinUrl,
+  validateOwnerWebsiteUrl,
+} from "~~/utils/patentRegistryUrl";
+import { validateOpenCorporatesCompanyUrl } from "~~/utils/openCorporatesUrl";
+
+const DEFAULT_INVENTOR_NAMES = "N/A";
+const DEFAULT_FILING_DATE = "2000-01-01";
+const DEFAULT_GRANT_DATE = "2000-01-01";
 import { INDUSTRIES } from "~~/utils/industryData";
 
 /**
@@ -108,32 +119,50 @@ export const parseFormData = async (req: IncomingMessage): Promise<ParseResult> 
     // Extract and validate required fields
     const name = getFieldValue(fields.name);
     const patentNumber = getFieldValue(fields.patentNumber);
-    const inventorNames = getFieldValue(fields.inventorNames);
+    const inventorNames = getFieldValue(fields.inventorNames) || DEFAULT_INVENTOR_NAMES;
     const jurisdiction = getFieldValues(fields.jurisdiction);
     const registrationAuthority = getFieldValue(fields.registrationAuthority);
     const patentClassification = getFieldValue(fields.patentClassification);
-    const filingDate = getFieldValue(fields.filingDate);
-    const grantDate = getFieldValue(fields.grantDate);
+    const filingDate = getFieldValue(fields.filingDate) || DEFAULT_FILING_DATE;
+    const grantDate = getFieldValue(fields.grantDate) || DEFAULT_GRANT_DATE;
+    const espacenetUrlRaw = getFieldValue(fields.espacenetUrl);
+    const epoUrlRaw = getFieldValue(fields.epoUrl);
+    const ownerLinkedinUrlRaw = getFieldValue(fields.ownerLinkedinUrl);
+    const ownerWebsiteUrlRaw = getFieldValue(fields.ownerWebsiteUrl);
     const description = getFieldValue(fields.description);
     const industry = getFieldValues(fields.industry);
 
     if (
       !name ||
       !patentNumber ||
-      !inventorNames ||
       jurisdiction.length === 0 ||
       !registrationAuthority ||
       !patentClassification ||
-      !filingDate ||
-      !grantDate ||
       !description ||
       industry.length === 0
     ) {
       return {
         success: false,
         error:
-          "Name, patent number, inventor names, jurisdiction, registration authority, patent classification, filing date, grant date, description, and at least one industry are required",
+          "Name, patent number, jurisdiction, registration authority, patent classification, description, and at least one industry are required",
       };
+    }
+
+    const espacenetValidation = validateEspacenetUrl(espacenetUrlRaw ?? "");
+    if (!espacenetValidation.valid) {
+      return { success: false, error: espacenetValidation.error };
+    }
+    const epoValidation = validateEpoUrl(epoUrlRaw ?? "");
+    if (!epoValidation.valid) {
+      return { success: false, error: epoValidation.error };
+    }
+    const linkedinValidation = validateLinkedinUrl(ownerLinkedinUrlRaw ?? "");
+    if (!linkedinValidation.valid) {
+      return { success: false, error: linkedinValidation.error };
+    }
+    const websiteValidation = validateOwnerWebsiteUrl(ownerWebsiteUrlRaw ?? "");
+    if (!websiteValidation.valid) {
+      return { success: false, error: websiteValidation.error };
     }
 
     const validIndustries = INDUSTRIES.map(item => item.industry);
@@ -154,27 +183,20 @@ export const parseFormData = async (req: IncomingMessage): Promise<ParseResult> 
     // Parse attachments
     const attachments = parseAttachments(fields, files);
 
-    const statusStr = getFieldValue(fields.status);
-    const statusUpdateTimestampStr = getFieldValue(fields.statusUpdateTimestamp);
-    const statusUpdateExplanation = getFieldValue(fields.statusUpdateExplanation);
-    const reasonCodeStr = getFieldValue(fields.reasonCode);
-    const caseReference = getFieldValue(fields.caseReference);
-
     const formData: UploadFormData = {
       name,
       patentNumber,
-      inventorNames: inventorNames || "",
+      inventorNames,
       jurisdiction,
       registrationAuthority,
       patentClassification,
       filingDate,
       grantDate,
+      espacenetUrl: espacenetValidation.normalized,
+      epoUrl: epoValidation.normalized,
+      ownerLinkedinUrl: linkedinValidation.normalized,
+      ownerWebsiteUrl: websiteValidation.normalized,
       description,
-      status: statusStr ? parseInt(statusStr) : undefined,
-      statusUpdateTimestamp: statusUpdateTimestampStr ? parseInt(statusUpdateTimestampStr) : undefined,
-      statusUpdateExplanation,
-      reasonCode: reasonCodeStr ? parseInt(reasonCodeStr) : undefined,
-      caseReference,
       industry,
       image: imageFile,
       attachments,
@@ -301,6 +323,17 @@ export const parseCampaignFormData = async (req: IncomingMessage): Promise<Campa
     // Extract territory restrictions
     const territoryRestriction = getFieldValues(fields.territoryRestriction);
     const usageRightsDefinition = getFieldValue(fields.usageRightsDefinition) || "";
+    const caseDescription = getFieldValue(fields.caseDescription) || "";
+    if (!caseDescription.trim()) {
+      return { success: false, error: "Case description is required" };
+    }
+    const defendant = getFieldValue(fields.defendant) || "";
+    const defendantOpenCorporatesPageRaw = getFieldValue(fields.defendantOpenCorporatesPage) || "";
+    const openCorporatesValidation = validateOpenCorporatesCompanyUrl(defendantOpenCorporatesPageRaw);
+    if (!openCorporatesValidation.valid) {
+      return { success: false, error: openCorporatesValidation.error };
+    }
+    const defendantOpenCorporatesPage = openCorporatesValidation.normalized;
     const transferrabilityFlag = (getFieldValue(fields.transferrabilityFlag) ||
       "Transferrable") as CampaignUploadFormData["transferrabilityFlag"];
 
@@ -320,6 +353,9 @@ export const parseCampaignFormData = async (req: IncomingMessage): Promise<Campa
       licenseDuration,
       territoryRestriction,
       usageRightsDefinition,
+      caseDescription,
+      defendant,
+      defendantOpenCorporatesPage,
       transferrabilityFlag,
     };
 

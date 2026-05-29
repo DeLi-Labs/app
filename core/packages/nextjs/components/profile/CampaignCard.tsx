@@ -6,7 +6,6 @@ import type { NormalizedCampaignItem } from "~~/components/profile/types";
 import {
   categoryIcons,
   categoryStroke,
-  formatCampaignDenominationForDisplay,
   formatCompactValue,
   trimWithEllipsis,
   truncateMiddleAddress,
@@ -89,16 +88,7 @@ export const CampaignCard = ({ item }: CampaignCardProps) => {
       <div className="mt-[10px] flex w-full min-w-0 flex-col gap-1 md:flex-row">
         <div className="flex w-full min-w-0 items-stretch gap-1 md:contents">
           <div
-            className="box-border flex min-w-0 flex-1 items-center justify-center rounded-lg px-2 py-2 md:order-1 md:flex-none md:shrink-0"
-            style={greyStrokeChipStyle}
-          >
-            <span className="text-center whitespace-nowrap text-body-2 text-deli-white">
-              {formatCampaignDenominationForDisplay(item.denominationAmount, item.denominationUnit)}
-            </span>
-          </div>
-
-          <div
-            className="box-border flex min-w-0 flex-1 items-center justify-center rounded-lg px-2 py-2 md:order-3 md:flex-none md:shrink-0"
+            className="box-border flex min-w-0 flex-1 items-center justify-center rounded-lg px-2 py-2 md:order-2 md:flex-none md:shrink-0"
             style={greyStrokeChipStyle}
           >
             <span className="text-center whitespace-nowrap text-body-3 text-deli-white">{item.numeraireSymbol}</span>
@@ -106,7 +96,7 @@ export const CampaignCard = ({ item }: CampaignCardProps) => {
         </div>
 
         <div
-          className="box-border flex min-w-0 w-full items-center justify-center gap-2 rounded-lg px-2 py-2 md:order-2 md:min-w-0 md:flex-1"
+          className="box-border flex min-w-0 w-full items-center justify-center gap-2 rounded-lg px-2 py-2 md:order-3 md:min-w-0 md:flex-1"
           style={greyStrokeChipStyle}
         >
           <span className="shrink-0 text-body-2 text-deli-white">Address: </span>
@@ -114,7 +104,7 @@ export const CampaignCard = ({ item }: CampaignCardProps) => {
             {truncateMiddleAddress(item.licenseAddress, 10, 10)}
           </span>
           <span className="hidden min-w-0 flex-1 truncate text-body-2 text-deli-grey-light md:block md:text-center">
-            {truncateMiddleAddress(item.licenseAddress, 4, 2)}
+            {truncateMiddleAddress(item.licenseAddress, 10, 10)}
           </span>
           <button
             type="button"

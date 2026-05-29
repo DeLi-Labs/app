@@ -22,11 +22,6 @@ export type DiscoverIP = IP & {
   patentClassification: string;
   filingDate: string;
   grantDate: string;
-  status: number | null;
-  statusUpdateTimestamp: string | null;
-  statusUpdateExplanation: string | null;
-  reasonCode: number | null;
-  caseReference: string | null;
   industry: string[];
   categoryId: string | null;
   retailPercent: number;
@@ -80,7 +75,6 @@ export type IPDetails = {
   filingDate: string;
   grantDate: string;
   description: string;
-  caseReference?: string;
   industry: string[];
   categoryId: string | null;
   image: string;
@@ -111,8 +105,18 @@ export type Campaign = {
   };
   territoryRestriction: string[];
   usageRightsDefinition: string;
+  caseDescription: string;
+  estimatedDamages: string;
+  patentStrength: string;
+  defendantRecoverability: string;
+  timelineProjection: string;
+  defendant: string;
+  defendantOpenCorporatesPage: string;
   transferrabilityFlag: "Transferrable" | "NonTransferrable";
   licenseDuration: number;
+  status: number | null;
+  statusUpdateTimestamp: string | null;
+  statusUpdateExplanation: string | null;
 };
 
 export type PatentDetailCampaign = {
@@ -122,6 +126,13 @@ export type PatentDetailCampaign = {
   numeraireSymbol: string;
   licenseType: CampaignLicenseType;
   usageRightsDefinition: string;
+  caseDescription: string;
+  estimatedDamages: string;
+  patentStrength: string;
+  defendantRecoverability: string;
+  timelineProjection: string;
+  defendant: string;
+  defendantOpenCorporatesPage: string;
   transferabilityFlags: "Transferable" | "NonTransferable";
   licenseDuration: string;
   denominationUnit: string;
@@ -136,6 +147,9 @@ export type PatentDetailCampaign = {
     timestamp: string;
     avgPrice: number;
   }[];
+  status: number | null;
+  statusUpdateTimestamp: string | null;
+  statusUpdateExplanation: string | null;
 };
 
 export type PatentDetail = {
@@ -147,14 +161,15 @@ export type PatentDetail = {
   categoryId: string | null;
   owner: Address;
   inventorNames: string;
-  status: number | null;
-  statusUpdateTimestamp: string | null;
-  statusUpdateExplanation: string | null;
   patentNumber: string;
   jurisdiction: string[];
   registrationAuthority: string;
   filingDate: string;
   grantDate: string;
+  espacenetUrl: string;
+  epoUrl: string;
+  ownerLinkedinUrl: string;
+  ownerWebsiteUrl: string;
   patentClassification: string;
   creationTimestamp: string;
   campaigns: PatentDetailCampaign[];
@@ -203,11 +218,10 @@ export type UploadFormData = {
   patentClassification: string;
   filingDate: string;
   grantDate: string;
-  status?: number;
-  statusUpdateTimestamp?: number;
-  statusUpdateExplanation?: string;
-  reasonCode?: number;
-  caseReference?: string;
+  espacenetUrl: string;
+  epoUrl: string;
+  ownerLinkedinUrl: string;
+  ownerWebsiteUrl: string;
   industry: string[];
   image: formidable.File;
   attachments: Array<{
@@ -240,6 +254,10 @@ export type IpMetadataFromUris = {
   patentClassification: string;
   filingDate: string;
   grantDate: string;
+  espacenetUrl: string;
+  epoUrl: string;
+  ownerLinkedinUrl: string;
+  ownerWebsiteUrl: string;
   industry: string[];
   attachments: PreUploadedAttachment[];
 };
@@ -250,6 +268,9 @@ export type CampaignUploadFormData = {
   licenseDuration: number;
   territoryRestriction: string[];
   usageRightsDefinition: string;
+  caseDescription: string;
+  defendant: string;
+  defendantOpenCorporatesPage: string;
   transferrabilityFlag: "Transferrable" | "NonTransferrable";
 };
 

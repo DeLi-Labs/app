@@ -10,7 +10,7 @@ export type ProfileSidebarContentProps = {
   hasPatents: boolean;
   address?: string;
   onRegisterIp: () => void;
-  onStartLicensing: () => void;
+  onStartFunding: () => void;
   onExit: () => void;
   onSelectTab: (tab: ProfileTab) => void;
 };
@@ -44,7 +44,7 @@ export const ProfileSidebarContent = ({
   hasPatents,
   address,
   onRegisterIp,
-  onStartLicensing,
+  onStartFunding,
   onExit,
   onSelectTab,
 }: ProfileSidebarContentProps) => {
@@ -79,7 +79,7 @@ export const ProfileSidebarContent = ({
           <div className="h-4" />
           <button
             type="button"
-            onClick={onStartLicensing}
+            onClick={onStartFunding}
             className="flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-transparent px-3 py-3 text-body-2 text-deli-white"
             style={{
               backgroundImage: "var(--deli-background-2), var(--deli-stroke-grey)",
@@ -87,7 +87,7 @@ export const ProfileSidebarContent = ({
               backgroundClip: "padding-box, border-box",
             }}
           >
-            <span>Start Licensing</span>
+            <span>Start Funding</span>
             <span>{PLUS_ICON}</span>
           </button>
         </>
@@ -108,7 +108,7 @@ export const ProfileSidebarContent = ({
           <TabButton
             isActive={activeTab === "campaigns"}
             icon={tabIcons.campaigns}
-            title="My Licensing Campaigns"
+            title="My Funding Campaigns"
             onClick={() => onSelectTab("campaigns")}
           />
         )}

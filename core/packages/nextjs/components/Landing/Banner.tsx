@@ -2,7 +2,19 @@
 
 import { FC } from "react";
 
-export const Banner: FC = () => {
+type BannerProps = {
+  gradientColor?: string;
+};
+
+const hexToRgba = (hex: string, alpha: number) => {
+  const normalized = hex.replace("#", "");
+  const r = parseInt(normalized.slice(0, 2), 16);
+  const g = parseInt(normalized.slice(2, 4), 16);
+  const b = parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+export const Banner: FC<BannerProps> = ({ gradientColor = "#04305C" }) => {
   return (
     <section className="relative w-[100vw] flex justify-center bg-transparent mt-20 sm:mt-32 left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
       <div className="relative w-full min-h-[419px] overflow-hidden">
@@ -10,7 +22,7 @@ export const Banner: FC = () => {
         <div
           className="absolute inset-x-0 bottom-[125px] h-[321px] w-full"
           style={{
-            background: "linear-gradient(180deg, #04305C 0%, rgba(14, 46, 82, 0) 100%)",
+            background: `linear-gradient(180deg, ${gradientColor} 0%, ${hexToRgba(gradientColor, 0)} 100%)`,
             WebkitMaskImage: "url('/assets/deli%20labs.png')",
             maskImage: "url('/assets/deli%20labs.png')",
             WebkitMaskSize: "contain",

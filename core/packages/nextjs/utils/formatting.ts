@@ -13,3 +13,45 @@ export const formatNumber = (val: string | number | undefined | null) => {
   const num = typeof val === "string" ? parseFloat(val) : (val as number);
   return new Intl.NumberFormat("en-US").format(num);
 };
+
+export const getChartPriceMaxFractionDigits = (value: number): number => {
+  if (!Number.isFinite(value)) return 8;
+  const abs = Math.abs(value);
+  if (abs >= 1) return 4;
+  if (abs >= 0.01) return 6;
+  return 8;
+};
+
+export const formatChartPrice = (value: number): string => {
+  if (!Number.isFinite(value)) return "—";
+  return new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: getChartPriceMaxFractionDigits(value),
+  }).format(value);
+};
+
+/** Rounds a token amount to the same precision used for chart price display (for swap quote inputs). */
+export const formatAmountToChartPrecision = (value: number | string): string => {
+  const num = typeof value === "string" ? Number.parseFloat(value) : value;
+  if (!Number.isFinite(num)) return typeof value === "string" ? value : "0";
+
+  return new Intl.NumberFormat(undefined, {
+    useGrouping: false,
+    maximumFractionDigits: getChartPriceMaxFractionDigits(num),
+  }).format(num);
+};
+
+export const formatTokenTableDollar = (
+  val?: string | number | null,
+  { alwaysShowCents = false }: { alwaysShowCents?: boolean } = {},
+) => {
+  if (val === undefined || val === null || val === "") return "$0";
+  const num = typeof val === "string" ? Number.parseFloat(val) : val;
+  if (Number.isNaN(num)) return "$0";
+
+  const noFraction = num > 1000;
+
+  return `$${num.toLocaleString(undefined, {
+    minimumFractionDigits: noFraction ? 0 : alwaysShowCents ? 2 : 0,
+    maximumFractionDigits: noFraction ? 0 : 2,
+  })}`;
+};

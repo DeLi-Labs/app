@@ -30,15 +30,15 @@ export const PatentHeader = ({
       {!isLoading ? (
         <div className="absolute bottom-0 right-0">{patentHeaderGlowSvg(colors.start, colors.end)}</div>
       ) : null}
-      <div className="relative z-10 flex w-full flex-col gap-8 lg:flex-row lg:justify-between">
+      <div className="relative z-10 flex w-full min-w-0 flex-col gap-8 lg:flex-row lg:items-start lg:gap-8">
         <PatentHeaderGeneralData {...patentHeaderGeneralData} isLoading={isLoading} />
-        <div className="hidden shrink-0 lg:block">
-          <PatentHeaderMarketDataAndSocials {...patentHeaderMarketDataAndSocials} isLoading={isLoading} />
+        <div className="hidden min-w-0 lg:block lg:min-w-[280px] lg:max-w-[30rem] lg:flex-[0_1_30rem]">
+          <PatentHeaderMarketDataAndSocials {...patentHeaderMarketDataAndSocials} category={category} isLoading={isLoading} />
         </div>
       </div>
       <PatentHeaderIndustries {...patentHeaderIndustries} isLoading={isLoading} />
       <div className="relative z-10 w-full lg:hidden">
-        <PatentHeaderMarketDataAndSocials {...patentHeaderMarketDataAndSocials} isLoading={isLoading} />
+        <PatentHeaderMarketDataAndSocials {...patentHeaderMarketDataAndSocials} category={category} isLoading={isLoading} />
       </div>
     </section>
   );

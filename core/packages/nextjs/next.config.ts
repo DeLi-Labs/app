@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     config.externals.push("pino-pretty", "lokijs", "encoding");
     config.ignoreWarnings = [
       ...(config.ignoreWarnings ?? []),
-      warning =>
+      (warning: { message?: string; module?: { resource?: string } }) =>
         warning.message?.includes("Critical dependency: the request of a dependency is an expression") &&
         warning.module?.resource?.includes("/node_modules/ox/_esm/tempo/internal/virtualMasterPool.js"),
     ];

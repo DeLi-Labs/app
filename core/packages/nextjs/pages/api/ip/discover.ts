@@ -9,7 +9,7 @@ class DiscoverIpHandler {
     this.ipProvider = new IpProvider();
   }
 
-  @Get("/discover")
+  @Get()
   async getIpList(
     @Query("page", DefaultValuePipe(0), ParseNumberPipe()) page: number,
     @Query("pageSize", DefaultValuePipe(10), ParseNumberPipe()) pageSize: number,

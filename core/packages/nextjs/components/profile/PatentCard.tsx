@@ -5,10 +5,10 @@ import { categoryIcons, categoryStroke, formatCompactValue, trimWithEllipsis } f
 
 type PatentCardProps = {
   item: NormalizedIpItem;
-  onStartLicensing?: (item: NormalizedIpItem) => void;
+  onStartFunding?: (item: NormalizedIpItem) => void;
 };
 
-export const PatentCard = ({ item, onStartLicensing }: PatentCardProps) => {
+export const PatentCard = ({ item, onStartFunding }: PatentCardProps) => {
   const growthIsPositive = item.growthPercent >= 0;
   const categoryColor = PATENT_CATEGORY_COLORS[item.category as keyof typeof PATENT_CATEGORY_COLORS];
 
@@ -28,18 +28,18 @@ export const PatentCard = ({ item, onStartLicensing }: PatentCardProps) => {
           <span>{categoryIcons[item.category]}</span>
           <span className="text-body-2 text-deli-white">{item.category}</span>
         </div>
-        {onStartLicensing ? (
+        {onStartFunding ? (
           <button
             type="button"
-            onClick={() => onStartLicensing(item)}
+            onClick={() => onStartFunding(item)}
             className="flex cursor-pointer items-center gap-4 border-none bg-transparent p-0 text-body-2 text-deli-white hover:underline"
           >
-            <span>Start Licensing</span>
+            <span>Start Funding</span>
             <span>{ARROW_NEXT}</span>
           </button>
         ) : (
           <a href="/uploadCampaign" className="flex items-center gap-4 text-body-2 text-deli-white hover:underline">
-            <span>Start Licensing</span>
+            <span>Start Funding</span>
             <span>{ARROW_NEXT}</span>
           </a>
         )}

@@ -21,9 +21,14 @@ export class PonderIndexerGateway implements IIndexerGateway {
   private client: ReturnType<typeof getSdk>;
 
   constructor() {
-    const ponderUrl = process.env.PONDER_URL || "http://localhost:42069/graphql";
+    const ponderUrl = this.resolvePonderGraphqlUrl();
     const graphQLClient = new GraphQLClient(ponderUrl);
     this.client = getSdk(graphQLClient);
+  }
+
+  private resolvePonderGraphqlUrl(): string {
+    const rawUrl = process.env.PONDER_URL || process.env.NEXT_PUBLIC_PONDER_URL || "http://localhost:42069/graphql";
+    return rawUrl.endsWith("/graphql") ? rawUrl : `${rawUrl.replace(/\/$/, "")}/graphql`;
   }
 
   async getIpListPage(page: number, pageSize: number): Promise<IPList> {
@@ -164,7 +169,20 @@ export class PonderIndexerGateway implements IIndexerGateway {
         licenseDuration: campaign.licenseDuration ? Number(campaign.licenseDuration) : 0,
         territoryRestriction: campaign.territoryRestriction || [],
         usageRightsDefinition: campaign.usageRightsDefinition || "",
+        caseDescription: campaign.caseDescription || "",
+        estimatedDamages: campaign.estimatedDamages || "",
+        patentStrength: campaign.patentStrength || "",
+        defendantRecoverability: campaign.defendantRecoverability || "",
+        timelineProjection: campaign.timelineProjection || "",
+        defendant: campaign.defendant || "",
+        defendantOpenCorporatesPage: campaign.defendantOpenCorporatesPage || "",
         transferrabilityFlag: (campaign.transferrabilityFlag as Campaign["transferrabilityFlag"]) || "Transferrable",
+        status: campaign.status ?? null,
+        statusUpdateTimestamp:
+          campaign.statusUpdateTimestamp === null || campaign.statusUpdateTimestamp === undefined
+            ? null
+            : this.toStringValue(campaign.statusUpdateTimestamp),
+        statusUpdateExplanation: campaign.statusUpdateExplanation ?? null,
       };
     } catch (error) {
       console.error(`Error fetching campaign for license ${licenseAddress}:`, error);
@@ -291,6 +309,13 @@ export class PonderIndexerGateway implements IIndexerGateway {
             numeraireAddress: c.numeraireAddress ?? "",
             numeraireSymbol: c.numeraireSymbol ?? "",
             usageRightsDefinition: c.usageRightsDefinition ?? "",
+            caseDescription: c.caseDescription ?? "",
+            estimatedDamages: c.estimatedDamages ?? "",
+            patentStrength: c.patentStrength ?? "",
+            defendantRecoverability: c.defendantRecoverability ?? "",
+            timelineProjection: c.timelineProjection ?? "",
+            defendant: c.defendant ?? "",
+            defendantOpenCorporatesPage: c.defendantOpenCorporatesPage ?? "",
             transferabilityFlags: c.transferrabilityFlag === "NonTransferrable" ? "NonTransferable" : "Transferable",
             licenseDuration: this.toStringValue(c.licenseDuration),
             denominationUnit: c.denominationUnit,
@@ -306,6 +331,12 @@ export class PonderIndexerGateway implements IIndexerGateway {
                 timestamp: this.toStringValue(h.periodStartTimestamp),
                 avgPrice: h.avgPrice,
               })) ?? [],
+            status: c.status ?? null,
+            statusUpdateTimestamp:
+              c.statusUpdateTimestamp === null || c.statusUpdateTimestamp === undefined
+                ? null
+                : this.toStringValue(c.statusUpdateTimestamp),
+            statusUpdateExplanation: c.statusUpdateExplanation ?? null,
           };
         }) ?? [];
 
@@ -318,17 +349,15 @@ export class PonderIndexerGateway implements IIndexerGateway {
         categoryId: ip.categoryId ?? null,
         owner: (ip.accountAddress ?? zeroAddress) as `0x${string}`,
         inventorNames: ip.inventorNames,
-        status: ip.status ?? null,
-        statusUpdateTimestamp:
-          ip.statusUpdateTimestamp === null || ip.statusUpdateTimestamp === undefined
-            ? null
-            : this.toStringValue(ip.statusUpdateTimestamp),
-        statusUpdateExplanation: ip.statusUpdateExplanation ?? null,
         patentNumber: ip.patentNumber,
         jurisdiction: ip.jurisdiction,
         registrationAuthority: ip.registrationAuthority,
         filingDate: ip.filingDate,
         grantDate: ip.grantDate,
+        espacenetUrl: ip.espacenetUrl ?? "",
+        epoUrl: ip.epoUrl ?? "",
+        ownerLinkedinUrl: ip.ownerLinkedinUrl ?? "",
+        ownerWebsiteUrl: ip.ownerWebsiteUrl ?? "",
         patentClassification: ip.patentClassification,
         creationTimestamp: this.toStringValue(ip.creationTimestamp),
         campaigns,
@@ -476,6 +505,13 @@ export class PonderIndexerGateway implements IIndexerGateway {
           },
           territoryRestriction: campaign.territoryRestriction || [],
           usageRightsDefinition: campaign.usageRightsDefinition || "",
+          caseDescription: campaign.caseDescription || "",
+          estimatedDamages: campaign.estimatedDamages || "",
+          patentStrength: campaign.patentStrength || "",
+          defendantRecoverability: campaign.defendantRecoverability || "",
+          timelineProjection: campaign.timelineProjection || "",
+          defendant: campaign.defendant || "",
+          defendantOpenCorporatesPage: campaign.defendantOpenCorporatesPage || "",
           transferrabilityFlag: (campaign.transferrabilityFlag as Campaign["transferrabilityFlag"]) || "Transferrable",
           licenseDuration: campaign.licenseDuration ? Number(campaign.licenseDuration) : 0,
         };
@@ -520,11 +556,6 @@ export class PonderIndexerGateway implements IIndexerGateway {
       description: ip.description,
       image: ip.image,
       creationTimestamp: ip.creationTimestamp,
-      status: ip.status ?? null,
-      statusUpdateTimestamp: ip.statusUpdateTimestamp ?? null,
-      statusUpdateExplanation: ip.statusUpdateExplanation ?? null,
-      reasonCode: ip.reasonCode ?? null,
-      caseReference: ip.caseReference ?? null,
       industry: ip.industry ?? [],
       categoryId: ip.categoryId ?? null,
       retailPercent: ip.retailPercent,

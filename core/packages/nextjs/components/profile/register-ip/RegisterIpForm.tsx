@@ -13,8 +13,17 @@ import {
   DeliCustomScrollArea,
   type DeliCustomScrollAreaHandle,
 } from "~~/components/profile/DeliCustomScrollArea";
-import { DeliDatePicker } from "~~/components/profile/register-ip/DeliDatePicker";
 import { categoryIcons, safeCategory } from "~~/components/profile/utils";
+import {
+  getEpoFieldError,
+  getEspacenetFieldError,
+  getLinkedinFieldError,
+  getOwnerWebsiteFieldError,
+  validateEpoUrl,
+  validateEspacenetUrl,
+  validateLinkedinUrl,
+  validateOwnerWebsiteUrl,
+} from "~~/utils/patentRegistryUrl";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useDeployedContractInfo, useScaffoldWriteContract, useTargetNetwork } from "~~/hooks/scaffold-eth";
 import { INDUSTRIES } from "~~/utils/industryData";
@@ -38,16 +47,13 @@ type IpFormState = {
   image: File | null;
   attachments: AttachmentRow[];
   patentNumber: string;
-  inventorNames: string;
   jurisdiction: string[];
   registrationAuthority: string;
   patentClassification: string;
-  filingDate: string;
-  grantDate: string;
-  status: string;
-  statusUpdateExplanation: string;
-  reasonCode: string;
-  caseReference: string;
+  espacenetUrl: string;
+  epoUrl: string;
+  ownerLinkedinUrl: string;
+  ownerWebsiteUrl: string;
   industry: string[];
 };
 
@@ -55,16 +61,13 @@ const initialForm = (): IpFormState => ({
   name: "",
   description: "",
   patentNumber: "",
-  inventorNames: "",
   jurisdiction: [],
   registrationAuthority: "",
   patentClassification: "",
-  filingDate: "",
-  grantDate: "",
-  status: "0",
-  statusUpdateExplanation: "",
-  reasonCode: "0",
-  caseReference: "",
+  espacenetUrl: "",
+  epoUrl: "",
+  ownerLinkedinUrl: "",
+  ownerWebsiteUrl: "",
   industry: [],
   image: null,
   attachments: [],
@@ -77,7 +80,13 @@ const fieldShell: CSSProperties = {
   backgroundClip: "padding-box, border-box",
 };
 
-const STEP_TITLES = ["General Information", "Legal & Registry Data", "Timeline", "Attachments"] as const;
+const STEP_TITLES = ["General Information", "Legal & Registry Data", "Socials & Registries", "Attachments"] as const;
+
+const DEFAULT_INVENTOR_NAMES = "N/A";
+const DEFAULT_FILING_DATE = "2000-01-01";
+const DEFAULT_GRANT_DATE = "2000-01-01";
+
+const fieldErrorClass = "m-0 text-body-3 text-error";
 
 const labelClass = "text-h6 text-deli-white";
 
@@ -266,10 +275,6 @@ export const RegisterIpForm = ({ onCancel, onSuccess }: RegisterIpFormProps) => 
           toast.error("Please enter a patent number");
           return false;
         }
-        if (!formData.inventorNames.trim()) {
-          toast.error("Please enter inventor names");
-          return false;
-        }
         if (formData.jurisdiction.length === 0) {
           toast.error("Please add at least one jurisdiction");
           return false;
@@ -284,12 +289,24 @@ export const RegisterIpForm = ({ onCancel, onSuccess }: RegisterIpFormProps) => 
         }
       }
       if (s === 2) {
-        if (!formData.filingDate) {
-          toast.error("Please select a filing date");
+        const espacenetErr = getEspacenetFieldError(formData.espacenetUrl, true);
+        if (espacenetErr) {
+          toast.error(espacenetErr);
           return false;
         }
-        if (!formData.grantDate) {
-          toast.error("Please select a grant date");
+        const epoErr = getEpoFieldError(formData.epoUrl, true);
+        if (epoErr) {
+          toast.error(epoErr);
+          return false;
+        }
+        const linkedinErr = getLinkedinFieldError(formData.ownerLinkedinUrl, true);
+        if (linkedinErr) {
+          toast.error(linkedinErr);
+          return false;
+        }
+        const websiteErr = getOwnerWebsiteFieldError(formData.ownerWebsiteUrl, true);
+        if (websiteErr) {
+          toast.error(websiteErr);
           return false;
         }
       }
@@ -422,19 +439,37 @@ export const RegisterIpForm = ({ onCancel, onSuccess }: RegisterIpFormProps) => 
     formDataToSend.append("name", formData.name);
     formDataToSend.append("description", formData.description);
     formDataToSend.append("patentNumber", formData.patentNumber);
-    formDataToSend.append("inventorNames", formData.inventorNames);
+    const espacenetValidation = validateEspacenetUrl(formData.espacenetUrl);
+    const epoValidation = validateEpoUrl(formData.epoUrl);
+    const linkedinValidation = validateLinkedinUrl(formData.ownerLinkedinUrl);
+    const websiteValidation = validateOwnerWebsiteUrl(formData.ownerWebsiteUrl);
+    if (!espacenetValidation.valid) {
+      toast.error(espacenetValidation.error);
+      return;
+    }
+    if (!epoValidation.valid) {
+      toast.error(epoValidation.error);
+      return;
+    }
+    if (!linkedinValidation.valid) {
+      toast.error(linkedinValidation.error);
+      return;
+    }
+    if (!websiteValidation.valid) {
+      toast.error(websiteValidation.error);
+      return;
+    }
+
+    formDataToSend.append("inventorNames", DEFAULT_INVENTOR_NAMES);
     formData.jurisdiction.forEach(j => formDataToSend.append("jurisdiction", j));
     formDataToSend.append("registrationAuthority", formData.registrationAuthority);
     formDataToSend.append("patentClassification", formData.patentClassification);
-    formDataToSend.append("filingDate", formData.filingDate);
-    formDataToSend.append("grantDate", formData.grantDate);
-    if (formData.status) formDataToSend.append("status", formData.status);
-    formDataToSend.append("statusUpdateTimestamp", String(Math.floor(Date.now() / 1000)));
-    if (formData.statusUpdateExplanation) {
-      formDataToSend.append("statusUpdateExplanation", formData.statusUpdateExplanation);
-    }
-    if (formData.reasonCode) formDataToSend.append("reasonCode", formData.reasonCode);
-    if (formData.caseReference) formDataToSend.append("caseReference", formData.caseReference);
+    formDataToSend.append("filingDate", DEFAULT_FILING_DATE);
+    formDataToSend.append("grantDate", DEFAULT_GRANT_DATE);
+    formDataToSend.append("espacenetUrl", espacenetValidation.normalized);
+    formDataToSend.append("epoUrl", epoValidation.normalized);
+    formDataToSend.append("ownerLinkedinUrl", linkedinValidation.normalized);
+    formDataToSend.append("ownerWebsiteUrl", websiteValidation.normalized);
     if (formData.industry.length === 0) {
       toast.error("Please select at least one industry");
       return;
@@ -600,22 +635,7 @@ export const RegisterIpForm = ({ onCancel, onSuccess }: RegisterIpFormProps) => 
             />
           ) : null}
           {step === 1 ? <StepLegal formData={formData} setFormData={setFormData} inputClass={inputClass} /> : null}
-          {step === 2 ? (
-            <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
-              <DeliDatePicker
-                label="Filing Date"
-                value={formData.filingDate}
-                onChange={v => setFormData(p => ({ ...p, filingDate: v }))}
-                required
-              />
-              <DeliDatePicker
-                label="Grant Date"
-                value={formData.grantDate}
-                onChange={v => setFormData(p => ({ ...p, grantDate: v }))}
-                required
-              />
-            </div>
-          ) : null}
+          {step === 2 ? <StepSocialsRegistries formData={formData} setFormData={setFormData} inputClass={inputClass} /> : null}
           {step === 3 ? (
             <StepAttachments
               formData={formData}
@@ -1034,6 +1054,98 @@ function RegistrationAuthorityDeliSelect({
   );
 }
 
+function StepSocialsRegistries({
+  formData,
+  setFormData,
+  inputClass,
+}: {
+  formData: IpFormState;
+  setFormData: React.Dispatch<React.SetStateAction<IpFormState>>;
+  inputClass: string;
+}) {
+  const [espacenetError, setEspacenetError] = useState<string | null>(null);
+  const [epoError, setEpoError] = useState<string | null>(null);
+  const [linkedinError, setLinkedinError] = useState<string | null>(null);
+  const [websiteError, setWebsiteError] = useState<string | null>(null);
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className={`flex flex-col justify-start ${rowGap15Class} lg:flex-row`}>
+        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
+          <span className={labelClass}>Espacenet</span>
+          <input
+            type="url"
+            className={inputClass}
+            style={fieldShell}
+            placeholder="https://worldwide.espacenet.com/patent/..."
+            value={formData.espacenetUrl}
+            onChange={e => {
+              const value = e.target.value;
+              setFormData(p => ({ ...p, espacenetUrl: value }));
+              setEspacenetError(getEspacenetFieldError(value));
+            }}
+            aria-invalid={espacenetError ? true : undefined}
+          />
+          {espacenetError ? <p className={fieldErrorClass}>{espacenetError}</p> : null}
+        </label>
+        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
+          <span className={labelClass}>EPO</span>
+          <input
+            type="url"
+            className={inputClass}
+            style={fieldShell}
+            placeholder="https://register.epo.org/..."
+            value={formData.epoUrl}
+            onChange={e => {
+              const value = e.target.value;
+              setFormData(p => ({ ...p, epoUrl: value }));
+              setEpoError(getEpoFieldError(value));
+            }}
+            aria-invalid={epoError ? true : undefined}
+          />
+          {epoError ? <p className={fieldErrorClass}>{epoError}</p> : null}
+        </label>
+      </div>
+      <div className={`flex flex-col justify-start ${rowGap15Class} lg:flex-row`}>
+        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
+          <span className={labelClass}>Owner&apos;s LinkedIn</span>
+          <input
+            type="url"
+            className={inputClass}
+            style={fieldShell}
+            placeholder="https://www.linkedin.com/in/..."
+            value={formData.ownerLinkedinUrl}
+            onChange={e => {
+              const value = e.target.value;
+              setFormData(p => ({ ...p, ownerLinkedinUrl: value }));
+              setLinkedinError(getLinkedinFieldError(value));
+            }}
+            aria-invalid={linkedinError ? true : undefined}
+          />
+          {linkedinError ? <p className={fieldErrorClass}>{linkedinError}</p> : null}
+        </label>
+        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
+          <span className={labelClass}>Owner&apos;s Website</span>
+          <input
+            type="url"
+            className={inputClass}
+            style={fieldShell}
+            placeholder="https://example.com"
+            value={formData.ownerWebsiteUrl}
+            onChange={e => {
+              const value = e.target.value;
+              setFormData(p => ({ ...p, ownerWebsiteUrl: value }));
+              setWebsiteError(getOwnerWebsiteFieldError(value));
+            }}
+            aria-invalid={websiteError ? true : undefined}
+          />
+          {websiteError ? <p className={fieldErrorClass}>{websiteError}</p> : null}
+        </label>
+      </div>
+    </div>
+  );
+}
+
 function StepLegal({
   formData,
   setFormData,
@@ -1045,30 +1157,17 @@ function StepLegal({
 }) {
   return (
     <div className="flex flex-col gap-6">
-      <div className={`flex flex-col justify-start ${rowGap15Class} lg:flex-row`}>
-        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
-          <span className={labelClass}>Patent Number</span>
-          <input
-            type="text"
-            className={inputClass}
-            style={fieldShell}
-            placeholder="Number which patent is registered in official registry"
-            value={formData.patentNumber}
-            onChange={e => setFormData(p => ({ ...p, patentNumber: e.target.value }))}
-          />
-        </label>
-        <label className="flex flex-1 flex-col gap-2 lg:min-w-[200px]">
-          <span className={labelClass}>Inventor Names</span>
-          <input
-            type="text"
-            className={inputClass}
-            style={fieldShell}
-            placeholder="Inventor names"
-            value={formData.inventorNames}
-            onChange={e => setFormData(p => ({ ...p, inventorNames: e.target.value }))}
-          />
-        </label>
-      </div>
+      <label className="flex flex-col gap-2 lg:max-w-md">
+        <span className={labelClass}>Patent Number</span>
+        <input
+          type="text"
+          className={inputClass}
+          style={fieldShell}
+          placeholder="Number which patent is registered in official registry"
+          value={formData.patentNumber}
+          onChange={e => setFormData(p => ({ ...p, patentNumber: e.target.value }))}
+        />
+      </label>
 
       <div className={`flex flex-col justify-start items-start ${rowGap15Class} lg:flex-row`}>
         <div className="flex w-full flex-1 flex-col lg:min-w-[280px]">

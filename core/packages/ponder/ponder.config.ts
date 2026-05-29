@@ -1,7 +1,7 @@
 import { config as loadDotenv } from "dotenv";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
-import { createConfig } from "ponder";
+import { createConfig, factory } from "ponder";
 import deployedContracts from "../nextjs/contracts/deployedContracts";
 import externalContracts from "../nextjs/contracts/externalContracts";
 import scaffoldConfig from "../nextjs/scaffold.config";
@@ -57,6 +57,35 @@ const deployed = Object.fromEntries(deployedContractNames.map((contractName) => 
 
 const externalContractNames = Object.keys(externalContractsForNetwork);
 const external = Object.fromEntries(externalContractNames.map((contractName) => {
+  if (contractName === "LicenseERC20") {
+    const campaignManager = deployedContractsForNetwork["CampaignManager"];
+    if (!campaignManager?.address) {
+      throw new Error("CampaignManager address is required for LicenseERC20 factory indexing");
+    }
+
+    return [contractName, {
+      chain: targetNetwork.name as string,
+      abi: externalContractsForNetwork[contractName].abi,
+      address: factory({
+        address: campaignManager.address as `0x${string}`,
+        event: {
+          type: "event",
+          name: "CampaignInitialized",
+          inputs: [
+            { name: "patentId", type: "uint256", indexed: false },
+            { name: "license", type: "address", indexed: false },
+            { name: "numeraire", type: "address", indexed: false },
+            { name: "poolId", type: "bytes32", indexed: false },
+            { name: "licenseType", type: "uint8", indexed: false },
+          ],
+        },
+        parameter: "license",
+      }),
+      startBlock:
+        campaignManager.deployedOnBlock ?? fallbackStartBlock,
+    }];
+  }
+
   return [contractName, {
     chain: targetNetwork.name as string,
     abi: externalContractsForNetwork[contractName].abi,

@@ -1,13 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { COPY_OWNER_ICON, DROPDOWN_ICON } from "~~/components/assets/common";
+import { DROPDOWN_ICON } from "~~/components/assets/common";
 import { DROPDOWN_SCROLL_MAX_HEIGHT_PX, DeliCustomScrollArea } from "~~/components/profile/DeliCustomScrollArea";
-import { formatCampaignDenominationForDisplay } from "~~/components/profile/utils";
+import { isValidOpenCorporatesCompanyUrl, normalizeExternalUrl } from "~~/utils/openCorporatesUrl";
 import { isAttachmentProxyImageSrc, storageUriToProxiedImageUrl } from "~~/utils/storageMediaUrl";
 
 export type CampaignItem = {
   licenseAddress: string;
   licenseSymbol: string;
+  defendant?: string;
+  defendantOpenCorporatesPage?: string;
   denomination: {
     unit: string;
     amount: number | string;
@@ -35,20 +37,44 @@ export type PatentHeaderGeneralDataProps = {
 const PatentHeaderGeneralData = (data: PatentHeaderGeneralDataProps) => {
   const showCampaignSelector = data.showCampaignSelector !== false;
   const skeletonClassName = "animate-pulse rounded-md bg-deli-background";
-  const truncatedOwner = data.owner.length > 8 ? `${data.owner.slice(0, 4)}...${data.owner.slice(-4)}` : data.owner;
   const resolvedImageSrc = storageUriToProxiedImageUrl(data.image);
 
-  const handleCopyOwner = async () => {
-    if (!data.owner) return;
-    await navigator.clipboard.writeText(data.owner);
+  const campaignList = useMemo(
+    () => (Array.isArray(data.campaigns) ? data.campaigns : [data.campaigns]),
+    [data.campaigns],
+  );
+
+  const [selectedLicenseAddress, setSelectedLicenseAddress] = useState(
+    () => campaignList[0]?.licenseAddress ?? "",
+  );
+
+  useEffect(() => {
+    if (campaignList.length === 0) return;
+    if (!campaignList.some(c => c.licenseAddress === selectedLicenseAddress)) {
+      setSelectedLicenseAddress(campaignList[0].licenseAddress);
+    }
+  }, [campaignList, selectedLicenseAddress]);
+
+  const selectedCampaign =
+    campaignList.find(c => c.licenseAddress === selectedLicenseAddress) ?? campaignList[0];
+
+  const defendantName = selectedCampaign?.defendant?.trim() || "—";
+  const defendantPageRaw = selectedCampaign?.defendantOpenCorporatesPage ?? "";
+  const defendantPageUrl = isValidOpenCorporatesCompanyUrl(defendantPageRaw)
+    ? normalizeExternalUrl(defendantPageRaw)
+    : "";
+
+  const handleCampaignSelect = (campaign: CampaignItem) => {
+    setSelectedLicenseAddress(campaign.licenseAddress);
+    data.onCampaignSelect?.(campaign);
   };
 
   return (
-    <div className="flex w-full max-w-[35rem] min-w-0 shrink-0 flex-col gap-6 xl:w-[35rem]">
+    <div className="flex w-full min-w-0 max-w-[35rem] flex-1 flex-col gap-6">
       <div
         className={`grid w-full max-w-full gap-x-6 lg:gap-x-6 lg:gap-y-0 ${
           showCampaignSelector
-            ? "grid-cols-[42px_minmax(0,1fr)] grid-rows-[auto_auto] gap-y-6 lg:grid-cols-[87px_minmax(0,1fr)] lg:grid-rows-[auto] lg:items-end"
+            ? "grid-cols-[42px_minmax(0,1fr)] grid-rows-[auto_auto] gap-y-2 lg:grid-cols-[87px_minmax(0,1fr)] lg:grid-rows-[auto] lg:items-end"
             : "w-max max-w-full grid-cols-[42px] grid-rows-[auto] lg:grid-cols-[87px]"
         }`}
       >
@@ -72,21 +98,25 @@ const PatentHeaderGeneralData = (data: PatentHeaderGeneralDataProps) => {
           />
         )}
         {showCampaignSelector ? (
-          <div className="max-lg:contents lg:col-start-2 lg:row-start-1 lg:flex lg:h-[87px] lg:min-h-0 lg:min-w-0 lg:flex-col lg:justify-end lg:gap-2">
+          <div className="max-lg:contents lg:col-start-2 lg:row-start-1 lg:flex lg:h-[87px] lg:min-h-0 lg:min-w-0 lg:flex-col lg:justify-end lg:gap-1">
             {data.isLoading ? (
               <div
                 className={`${skeletonClassName} col-start-2 row-start-1 h-4 w-full max-w-[min(100%,20rem)] self-center rounded-md lg:w-full lg:self-auto`}
               />
             ) : (
               <p className="text-deli-grey-light col-start-2 row-start-1 self-center text-body-2 leading-tight max-lg:min-w-0 lg:col-auto lg:row-auto lg:self-auto">
-                *terms of use may vary depending on the license mode
+                LFA and other data may vary depending on the case
               </p>
             )}
             <div className="col-span-2 row-start-2 w-full min-w-0 max-lg:w-full lg:col-span-1 lg:col-start-auto lg:row-start-auto">
               {data.isLoading ? (
                 <div className={`${skeletonClassName} h-[48px] w-full rounded-xl`} />
               ) : (
-                <CampaignDropdown campaigns={data.campaigns} onSelect={data.onCampaignSelect ?? (() => {})} />
+                <CampaignDropdown
+                  campaigns={data.campaigns}
+                  selectedLicenseAddress={selectedLicenseAddress}
+                  onSelect={handleCampaignSelect}
+                />
               )}
             </div>
           </div>
@@ -117,50 +147,50 @@ const PatentHeaderGeneralData = (data: PatentHeaderGeneralDataProps) => {
           )}
         </div>
       </div>
-      <div className="inline-flex w-fit self-start items-center justify-between gap-3 rounded-xl border border-transparent bg-deli-main [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-grey)_border-box] px-2 py-2.5">
+      <div className="inline-flex w-fit max-w-full self-start items-center rounded-xl border border-transparent bg-deli-main [background:linear-gradient(var(--deli-main),var(--deli-main))_padding-box,var(--deli-stroke-grey)_border-box] px-2 py-2.5">
         {data.isLoading ? (
           <div className={`${skeletonClassName} h-4 w-56`} />
         ) : (
-          <>
-            <p className="text-deli-grey-light text-body-2 m-0">Initial rights holder: {truncatedOwner}</p>
-            <button
-              type="button"
-              onClick={handleCopyOwner}
-              className="inline-flex items-center justify-center cursor-pointer"
-              aria-label="Copy initial rights holder"
-            >
-              {COPY_OWNER_ICON}
-            </button>
-          </>
+          <p className="text-body-2 m-0 min-w-0">
+            <span className="text-deli-grey-light">Defendant: </span>
+            {defendantPageUrl ? (
+              <a
+                href={defendantPageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-deli-accent underline hover:no-underline"
+              >
+                {defendantName}
+              </a>
+            ) : (
+              <span className="text-deli-white">{defendantName}</span>
+            )}
+          </p>
         )}
       </div>
     </div>
   );
 };
 
-const formatCampaignLabel = (campaign: CampaignItem) =>
-  `License mode: ${formatCampaignDenominationForDisplay(campaign.denomination.amount, campaign.denomination.unit)}`;
+const formatCaseAgainstLabel = (campaign: CampaignItem) => {
+  const name = campaign.defendant?.trim() || "—";
+  return `Case against: ${name}`;
+};
 
 const CampaignDropdown = ({
   campaigns,
+  selectedLicenseAddress,
   onSelect,
 }: {
   campaigns: CampaignItem | CampaignItem[];
+  selectedLicenseAddress: string;
   onSelect: (campaign: CampaignItem) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const campaignList = Array.isArray(campaigns) ? campaigns : [campaigns];
   const hasMultiple = campaignList.length > 1;
-  const [selected, setSelected] = useState<CampaignItem>(campaignList[0]);
-
-  useEffect(() => {
-    const nextSelected =
-      campaignList.find(campaign => campaign.licenseAddress === selected.licenseAddress) ?? campaignList[0];
-    if (nextSelected && nextSelected.licenseAddress !== selected.licenseAddress) {
-      setSelected(nextSelected);
-    }
-  }, [campaigns, campaignList, selected.licenseAddress]);
+  const selected = campaignList.find(c => c.licenseAddress === selectedLicenseAddress) ?? campaignList[0];
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -173,7 +203,6 @@ const CampaignDropdown = ({
   }, []);
 
   const handleSelect = (campaign: CampaignItem) => {
-    setSelected(campaign);
     setIsOpen(false);
     onSelect(campaign);
   };
@@ -199,11 +228,8 @@ const CampaignDropdown = ({
         style={{ background: bgWithBorder }}
       >
         <div ref={headerRef} className="flex min-h-11 items-center">
-          <span className="flex min-h-11 min-w-0 flex-1 items-center gap-x-1 px-2 text-body-2">
-            <span className="shrink-0 text-deli-grey-light">License mode:</span>
-            <span className="min-w-0 text-deli-white">
-              {formatCampaignDenominationForDisplay(selected.denomination.amount, selected.denomination.unit)}
-            </span>
+          <span className="flex min-h-11 min-w-0 flex-1 items-center px-2 text-body-2 text-deli-white">
+            <span className="min-w-0 truncate">{formatCaseAgainstLabel(selected)}</span>
           </span>
           {hasMultiple && (
             <button
@@ -236,7 +262,7 @@ const CampaignDropdown = ({
                     onClick={() => handleSelect(campaign)}
                     className="w-full rounded-lg px-2 py-2.5 text-left text-body-2 text-deli-white transition-colors hover:bg-deli-hover"
                   >
-                    {formatCampaignLabel(campaign)}
+                    {formatCaseAgainstLabel(campaign)}
                   </button>
                 ))}
               </DeliCustomScrollArea>

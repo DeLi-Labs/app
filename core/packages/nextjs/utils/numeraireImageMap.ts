@@ -1,7 +1,7 @@
 export const DEFAULT_NUMERAIRE_LOGO_URL = "/numeraire-logos/usd-coin-usdc-logo.png";
 
 export const NUMERAIRE_LOGO_BY_ADDRESS: Record<string, string> = {
-  "0x545FEe85C38DC3369B21430FDFB086F51834BFa7": "/numeraire-logos/usd-coin-usdc-logo.png",
+  "0xccC58F3AbE26395fd65f339bE33d6D0885d70430": "/numeraire-logos/usd-coin-usdc-logo.png",
 };
 
 export function getNumeraireLogoUrl(numeraireAddress?: string | null): string {
@@ -11,5 +11,5 @@ export function getNumeraireLogoUrl(numeraireAddress?: string | null): string {
 }
 
 export const CAMPAIGN_NUMERAIRE_ADDRESSES: readonly `0x${string}`[] = [
-  "0x545FEe85C38DC3369B21430FDFB086F51834BFa7",
+  "0xccC58F3AbE26395fd65f339bE33d6D0885d70430",
 ] as const;
