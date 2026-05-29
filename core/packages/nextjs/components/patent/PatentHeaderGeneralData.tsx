@@ -3,6 +3,7 @@ import Image from "next/image";
 import { DROPDOWN_ICON } from "~~/components/assets/common";
 import { DROPDOWN_SCROLL_MAX_HEIGHT_PX, DeliCustomScrollArea } from "~~/components/profile/DeliCustomScrollArea";
 import { isValidOpenCorporatesCompanyUrl, normalizeExternalUrl } from "~~/utils/openCorporatesUrl";
+import { normalizeMultilineText } from "~~/utils/formatting";
 import { isAttachmentProxyImageSrc, storageUriToProxiedImageUrl } from "~~/utils/storageMediaUrl";
 
 export type CampaignItem = {
@@ -63,6 +64,9 @@ const PatentHeaderGeneralData = (data: PatentHeaderGeneralDataProps) => {
   const defendantPageUrl = isValidOpenCorporatesCompanyUrl(defendantPageRaw)
     ? normalizeExternalUrl(defendantPageRaw)
     : "";
+  const description = normalizeMultilineText(data.description);
+  const descriptionPreview =
+    description.length > 120 ? `${description.slice(0, 120)}...` : description;
 
   const handleCampaignSelect = (campaign: CampaignItem) => {
     setSelectedLicenseAddress(campaign.licenseAddress);
@@ -137,8 +141,8 @@ const PatentHeaderGeneralData = (data: PatentHeaderGeneralDataProps) => {
             </>
           ) : (
             <>
-              <p className="text-deli-grey-light text-body-2">
-                {data.description.length > 120 ? `${data.description.slice(0, 120)}...` : data.description}
+              <p className="text-deli-grey-light text-body-2 whitespace-pre-line">
+                {descriptionPreview}
               </p>
               <a href="#description" className="text-deli-grey-light text-body-2 underline hover:no-underline w-fit">
                 See more

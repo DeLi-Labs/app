@@ -1,3 +1,7 @@
+/** Renders stored `\n` escape sequences as real line breaks for display. */
+export const normalizeMultilineText = (text: string): string =>
+  text.replace(/\\r\\n/g, "\n").replace(/\\n/g, "\n");
+
 export const formatDollar = (val: string | number | undefined | null) => {
   if (val === undefined || val === null) return "$0";
   const num = typeof val === "string" ? parseFloat(val) : (val as number);

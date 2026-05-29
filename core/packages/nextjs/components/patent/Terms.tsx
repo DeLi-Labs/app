@@ -1,4 +1,5 @@
 import { type MouseEvent as ReactMouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import { normalizeMultilineText } from "~~/utils/formatting";
 import { formatEstimatedDamagesDisplay } from "~~/utils/generateEstimatedDamages";
 import { formatTimelineProjectionDisplay } from "~~/utils/generateTimelineProjection";
 import { PATENT_CATEGORY_COLORS, type PatentCategory } from "~~/utils/patentCategoryColors";
@@ -277,7 +278,7 @@ export const PatentTermsDetails = (props: PatentTermsDetailsProps) => {
                 <div className="h-4 w-3/4 animate-pulse rounded-md bg-deli-background" />
               </div>
             ) : (
-              rest.caseDescription
+              normalizeMultilineText(rest.caseDescription)
             )}
           </ScrollContainer>
         </div>
@@ -297,7 +298,9 @@ export const PatentTermsDetails = (props: PatentTermsDetailsProps) => {
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                <p className="m-0 text-body-2 text-deli-grey-light whitespace-pre-line">{rest.usageRightsDefinition}</p>
+                <p className="m-0 text-body-2 text-deli-grey-light whitespace-pre-line">
+                  {normalizeMultilineText(rest.usageRightsDefinition)}
+                </p>
 
                 <p className="m-0 text-body-2">
                   <span className="text-deli-white">Territory Restriction: </span>
