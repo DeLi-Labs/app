@@ -28,7 +28,7 @@ const scaffoldConfig = {
   rpcOverrides: {
     // Example:
     // [chains.mainnet.id]: "https://mainnet.rpc.buidlguidl.com",
-    [chains.foundry.id]: process.env.RPC_URL || "",
+    [chains.foundry.id]: process.env.NEXT_PUBLIC_RPC_URL || "",
   },
   // This is ours WalletConnect's default project ID.
   // You can get your own at https://cloud.walletconnect.com
