@@ -248,10 +248,3 @@ Several decisions are upstream of detailed design and still open, including: pla
 ---
 
 *DeLi — making patent enforcement workable for the cases the market leaves behind.*
-
----
-
-## Theme test
-
-![Dark mode — smart fabric with circuits](smart-fabric-with-circuits.jpg#gh-dark-mode-only)
-![Light mode — vertical farming facility](Top_10_Vertical_Farming_Companies_Revolutionizing_Urban_Agriculture-Image-12-e1750158065133.jpg#gh-light-mode-only)
