@@ -80,18 +80,8 @@ The case-DAO releases capital to the patent owner (and operational vendors) only
 
 The lifecycle also includes designated **exit checkpoints** where an individual funder can exit and crystallize a loss (e.g. after DD but before filing, or after an unfavorable preliminary ruling) — the principle being that a funder should be able to *stop the bleed at known checkpoints* rather than be locked in for the full case.
 
-> **🎨 Diagram prompt — milestone capital release & exits**
->
-> ```text
-> A horizontal staircase/tranche diagram. A descending-into-the-case path with steps,
-> each step a milestone ("DD complete", "Notice served", "Filing", "Written procedure",
-> "Oral hearing", "Judgment"). At each step, a coin icon drops from a "Treasury" tank
-> into the case, labeled "tranche released". Two side doors labeled "Funder exit
-> checkpoint" placed after "DD complete" and after "Preliminary ruling", with a small
-> figure stepping out and a red down-arrow "crystallize loss". One milestone marked
-> with a gavel icon "non-standard decision → DAO vote". Process-flow infographic,
-> green for releases, amber for exits.
-> ```
+![Milestone capital release and exit checkpoints](image/dark08.png#gh-dark-mode-only)
+![Milestone capital release and exit checkpoints](image/light08.png#gh-light-mode-only)
 
 ### Confidentiality layer (ZK)
 
@@ -102,18 +92,8 @@ Patent enforcement defaults to confidentiality: settlement amounts are NDA-cover
 - **Funder identity** is KYC'd off-chain and pseudonymous on-chain, with **selective disclosure** of provable properties (e.g. accredited status).
 - **Case substance** stays off-chain in confidential storage; only **hashes anchored on-chain** for tamper-evidence and operational metadata sit on the ledger.
 
-> **🎨 Diagram prompt — on-chain / off-chain confidentiality split**
->
-> ```text
-> A split diagram with a vertical divider. Right side "Public Ledger (on-chain)":
-> shows only abstract hash blocks, a lock icon, "transfer commitment", "milestone
-> metadata", "anchored hashes" — no amounts, no names. Left side "Off-chain
-> Confidential Layer": shows "KYC identities", "claim charts & evidence", "damages
-> models", "settlement amounts" behind a shield icon. Dotted arrows crossing the
-> divider labeled "hash anchoring" and "selective disclosure". A ZK badge on the
-> transfer arrow. Security/privacy infographic, navy + cyan, lock and shield
-> iconography.
-> ```
+![On-chain / off-chain confidentiality split](image/dark09.png#gh-dark-mode-only)
+![On-chain / off-chain confidentiality split](image/light09.png#gh-light-mode-only)
 
 ---
 
@@ -124,17 +104,8 @@ Patent enforcement defaults to confidentiality: settlement amounts are NDA-cover
 3. **Markup on external integrations** — notices, expert engagement, filings, translation, payment rails all run through the platform at a small markup; scales with case *activity*, not outcome.
 4. **Settlement commission** — a commission on the infringer → patent-owner stablecoin transfer when a case settles through the platform.
 
-> **🎨 Diagram prompt — four revenue streams**
->
-> ```text
-> A central "DeLi Platform" node with four labeled revenue arrows radiating outward,
-> each with a distinct icon: (1) "Founder's share" — equity/pie-slice icon, tagged
-> "outcome-linked"; (2) "Data subscription" — recurring/calendar icon, tagged
-> "even on skipped cases"; (3) "Integration markup" — gear/invoice icon, tagged
-> "scales with activity"; (4) "Settlement commission" — coin-transfer icon, tagged
-> "on settlement". Each arrow annotated whether it depends on case outcome or not.
-> Clean monetization wheel, four accent colors, minimal.
-> ```
+![Four revenue streams](image/dark10.png#gh-dark-mode-only)
+![Four revenue streams](image/light10.png#gh-light-mode-only)
 
 ---
 
