@@ -6,18 +6,8 @@ DeLi orchestrates the three parties in a patent enforcement case — the **paten
 
 The first version targets the **Unified Patent Court (UPC)**, the easiest jurisdiction to integrate against.
 
-> **🎨 Image prompt — hero banner**
->
-> ```text
-> A clean, modern fintech/legaltech hero illustration. Three abstract human figures
-> arranged around a glowing central node labeled "CASE": on the left a "Patent Owner"
-> holding a document with a patent seal, on the right a "Funder" with coins/capital
-> flowing toward the center, at the bottom an "Infringer" extending a handshake.
-> The central node is a hexagonal on-chain "vault" with a subtle blockchain/cube
-> texture and a small lock icon. Cool blue-to-teal palette, soft gradients, flat
-> vector style with thin line accents, plenty of negative space, no text other than
-> the three role labels. Wide 16:9 banner.
-> ```
+![Hero banner — three parties around a case node](image/dark01.png#gh-dark-mode-only)
+![Hero banner — three parties around a case node](image/light01.png#gh-light-mode-only)
 
 ---
 
@@ -29,18 +19,8 @@ In Europe the gap is stark: **no member state offers dedicated public funding** 
 
 DeLi is aimed squarely at that underserved segment.
 
-> **🎨 Diagram prompt — the funding gap**
->
-> ```text
-> A funnel diagram showing litigation-finance case selection. Wide top labeled
-> "Cases reviewed (100%)" narrowing sharply to a thin bottom spout labeled
-> "Cases funded (3–5%)". To the right of the funnel, a horizontal threshold line at
-> "~$2M expected profit": cases above the line shown as green dots flowing into the
-> funnel, cases below the line shown as many grey dots falling away into a labeled
-> bucket "DeLi's target segment — structurally unfunded today". Annotate the funnel
-> wall with "$50K–$500K diligence cost per case". Minimal, infographic style,
-> blue/green/grey palette.
-> ```
+![The funding gap — litigation-finance case selection funnel](image/dark02.png#gh-dark-mode-only)
+![The funding gap — litigation-finance case selection funnel](image/light02.png#gh-light-mode-only)
 
 ---
 
@@ -52,18 +32,8 @@ DeLi is aimed squarely at that underserved segment.
 
 **Infringer** — gets a structured **path to settle or take a voluntary license** before being sued, **lower-commission cross-border payment via blockchain rails**, and a verifiable **good-faith response receipt**: a timestamped, independently auditable record of timely engagement usable in court as mitigation evidence.
 
-> **🎨 Diagram prompt — three-party interaction map**
->
-> ```text
-> A triangular relationship diagram. Three labeled nodes at the corners: "Patent
-> Owner" (top), "Funder" (bottom-left), "Infringer" (bottom-right), with the DeLi
-> platform as a rounded panel behind/under all three. Arrows: Funder → Owner labeled
-> "staged capital"; Owner → Infringer labeled "notice / settlement / license offer";
-> Infringer → Owner labeled "settlement payment (ZK-confidential)"; Infringer →
-> platform labeled "good-faith response receipt". Each node has 2–3 small benefit
-> bullets next to it. Flat vector, three accent colors (one per party), neutral
-> background.
-> ```
+![Three-party interaction map](image/dark03.png#gh-dark-mode-only)
+![Three-party interaction map](image/light03.png#gh-light-mode-only)
 
 ---
 
@@ -81,18 +51,8 @@ For every accepted case, the platform spins up a dedicated **case-DAO**:
 
 Standardization lives at the **platform layer** (same UI, same milestone schema, same vendor integrations); flexibility lives at the **case-DAO layer** (each case's funders vote on case-specific non-standard decisions).
 
-> **🎨 Diagram prompt — platform vs. per-case architecture**
->
-> ```text
-> A two-layer architecture diagram. Top layer: a wide horizontal bar labeled "DeLi
-> Platform Layer — uniform UI, milestone schema, vendor integrations, AI dashboard".
-> Below it, three to four identical self-contained boxes side by side, each labeled
-> "Case-DAO" and each containing: a small "Treasury" coin icon, a "Legal Wrapper"
-> document icon, and a cluster of 3 "Funder" avatars. A dashed boundary around each
-> Case-DAO box labeled "isolated risk & accounting". Emphasize that the boxes do NOT
-> connect to each other. Clean enterprise-architecture style, blue/grey, isometric
-> optional.
-> ```
+![Platform vs. per-case architecture](image/dark04.png#gh-dark-mode-only)
+![Platform vs. per-case architecture](image/light04.png#gh-light-mode-only)
 
 ### Three entry points
 
@@ -102,18 +62,8 @@ A patent owner can enter at different moments in the case lifecycle. Each define
 2. **Active-litigation (L)** — a UPC action is already underway; capital is needed to continue prosecution. Tools: procedural document support, UPC-CMS integration. *Medium uncertainty.*
 3. **Post-judgment (A)** — a favorable first-instance judgment exists; capital is needed to collect. Tools: enforcement, asset tracing, cross-border recognition. *Lowest uncertainty, highest ROI, constrained by recoverability.*
 
-> **🎨 Diagram prompt — lifecycle entry points**
->
-> ```text
-> A horizontal case-lifecycle timeline left to right: "Detection" → "Pre-suit notice
-> & DD" → "Filing at UPC" → "Written & oral procedure" → "First-instance judgment" →
-> "Enforcement / collection". Three downward arrows enter the timeline at three
-> points, labeled "P — Pre-litigation entry", "L — Active-litigation entry", and
-> "A — Post-judgment entry". Beside each entry arrow, a small gauge showing
-> Uncertainty (P high, L medium, A low) and a tool tag ("detection/notice tools",
-> "UPC-CMS & filings", "enforcement & asset tracing"). Timeline infographic style,
-> clear stage chips, single accent color with the three entries highlighted.
-> ```
+![Lifecycle entry points](image/dark05.png#gh-dark-mode-only)
+![Lifecycle entry points](image/light05.png#gh-light-mode-only)
 
 ### AI-assisted case dashboard
 
@@ -121,18 +71,8 @@ Regardless of entry point, every accepted case is surfaced to prospective funder
 
 It **does not replace** the funder's own due diligence; it gives them structured material to start from and shortens the back-and-forth with the owner.
 
-> **🎨 Image prompt — funder case dashboard mockup**
->
-> ```text
-> A sleek dashboard UI mockup (web app) titled "Case Overview". Left column: case
-> identity card with patent number, jurisdiction "UPC", and lifecycle stage badge.
-> Center: six horizontal score bars with confidence indicators — "Patent strength",
-> "Infringement read", "Damages range", "Defendant recoverability", "Procedural
-> risk", "Timeline projection". Right column: a "Capital" panel showing committed vs.
-> target with a progress ring and a "Join case-DAO" button. Subtle dark-mode
-> fintech aesthetic, teal accents, realistic but not cluttered. No real company
-> names.
-> ```
+![Funder case dashboard mockup](image/dark06.png#gh-dark-mode-only)
+![Funder case dashboard mockup](image/light06.png#gh-light-mode-only)
 
 ### Milestone-gated capital & exit checkpoints
 
@@ -226,18 +166,8 @@ The current implementation (in [`core/`](./core)) is an early on-chain MVP of th
 
 This covers the case-as-on-chain-entity and milestone-aware foundations described above. The confidentiality layer, AI case dashboard, governance/exit mechanics, and UPC integration are upstream of the open research areas and not yet implemented.
 
-> **🎨 Diagram prompt — current MVP building blocks**
->
-> ```text
-> A compact component diagram of four connected on-chain blocks: "Patent NFT"
-> (ownership anchor) → "License Token (per case)" which carries a "Case Lifecycle
-> Status" chip → "Campaign / Funding" (raises capital, seeds market) → "Swap Router"
-> (trade into the case). Show the lifecycle status as a small progress strip with
-> stages collapsed. Mark the blocks as "implemented" with a solid border, and add a
-> faded/dashed cluster labeled "planned: confidentiality (ZK), AI dashboard,
-> governance & exits, UPC integration". Developer-architecture style, monochrome with
-> one green accent for implemented blocks.
-> ```
+![Current MVP building blocks](image/dark07.png#gh-dark-mode-only)
+![Current MVP building blocks](image/light07.png#gh-light-mode-only)
 
 ---
 
